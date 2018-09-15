@@ -1,0 +1,10 @@
+num main() {
+	num a = 3;
+	num b = -4;
+	num c = 3; 
+	num d = 5; 
+
+	num total = -100 - a - b - c - d;
+
+	return total; 
+}

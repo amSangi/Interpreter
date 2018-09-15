@@ -1,0 +1,18 @@
+num main() {
+	bool a = true; 
+	bool b = false; 
+	bool c = true; 
+
+	bool predicate = !(a && b) || c; 
+
+	num value = 0; 
+
+	if (predicate && 3 > 5) {
+		value = 100; 
+	}
+	else {
+		value = 200; 
+	}
+	 
+	return value; 
+ }
