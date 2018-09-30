@@ -1,8 +1,9 @@
 #include "parser.h"
 #include <sstream>
+#include <iostream>
 
-using std::make_unique; 
-using std::unique_ptr; 
+using std::make_shared;
+using std::shared_ptr;
 using std::vector; 
 using std::string; 
 
@@ -12,61 +13,61 @@ Parser::Parser(Lexer& lexer)
 	next_token_(lexer_.GetNext()) {}
 
 
-unique_ptr<Program> Parser::Parse() {
-	NextToken(); 
+shared_ptr<Program> Parser::Parse() {
+	NextToken();
 
-	auto program = make_unique<Program>(); 
+	auto program = make_shared<Program>();
 
-	// Parse function declarations 
+	// Parse function declarations
 	auto function_decl = GetFunctionDecl();
-	while (function_decl.get() != nullptr) {
-		program->AddFuncDecl(std::move(function_decl));
-		function_decl = GetFunctionDecl(); 
+	while (function_decl != nullptr) {
+		program->AddFuncDecl(function_decl);
+		function_decl = GetFunctionDecl();
 	}
 
 	// Parse main declaration
-	auto main = GetMain(); 
-	if (main.get() == nullptr) {
-		Error("No 'main' entry point found"); 
+	auto main = GetMain();
+	if (main == nullptr) {
+		Error("No 'main' entry point found");
 	}
-	program->SetMain(std::move(main)); 
 
-	// Main must be last declaration according to EBNF 
+	program->SetMain(main);
+
 	Expect(EndOfFileToken);
-	return program; 
+	return program;
 }
 
-unique_ptr<FunctionDecl> Parser::GetMain() {
-	auto main = make_unique<FunctionDecl>(); 
+shared_ptr<FunctionDecl> Parser::GetMain() {
+	auto main = make_shared<FunctionDecl>();
 
 	Expect(NumberKeyword);
-	main->SetReturnType(make_unique<NumType>()); 
+	main->SetReturnType(make_shared<NumType>());
 
 	Expect(MainKeyword);
-	main->SetName("main"); 
+	main->SetName("main");
 
 	Expect(OpenParanToken);
 	Expect(CloseParanToken);
 	Expect(OpenBraceToken);
 
 	// Parse statements
-	auto stm = GetStatement(); 
+	auto stm = GetStatement();
 	while (stm != nullptr) {
-		main->AddStm(std::move(stm)); 
-		stm = GetStatement(); 
+		main->AddStm(stm);
+		stm = GetStatement();
 	}
-	
+
 	Expect(CloseBraceToken);
-	return main; 
+	return main;
 }
 
-unique_ptr<FunctionDecl> Parser::GetFunctionDecl() {
-	auto fun_decl = make_unique<FunctionDecl>(); 
+shared_ptr<FunctionDecl> Parser::GetFunctionDecl() {
+	auto fun_decl = make_shared<FunctionDecl>();
 	
 	if (next_token_.GetType() == MainKeyword) return nullptr; 
 
 	auto type = GetStaticType(); 
-	fun_decl->SetReturnType(std::move(type)); 
+	fun_decl->SetReturnType(type);
 
 	Expect(IdentifierToken);
 	fun_decl->SetName(current_token_.GetValue()); 
@@ -75,8 +76,8 @@ unique_ptr<FunctionDecl> Parser::GetFunctionDecl() {
 
 	// Parse formal arguments
 	auto var_decl = GetVarDecl(); 
-	while (var_decl.get() != nullptr) {
-		fun_decl->AddFormal(std::move(var_decl)); 
+	while (var_decl != nullptr) {
+		fun_decl->AddFormal(var_decl);
 		var_decl = GetVarDecl(); 
 	}
 
@@ -86,7 +87,7 @@ unique_ptr<FunctionDecl> Parser::GetFunctionDecl() {
 	// Parse statements
 	auto stm = GetStatement();
 	while (stm != nullptr) {
-		fun_decl->AddStm(std::move(stm));
+		fun_decl->AddStm(stm);
 		stm = GetStatement();
 	}
 
@@ -94,8 +95,8 @@ unique_ptr<FunctionDecl> Parser::GetFunctionDecl() {
 	return fun_decl; 
 }
 
-unique_ptr<Statement> Parser::GetStatement() {
-	unique_ptr<Statement> stm; 
+shared_ptr<Statement> Parser::GetStatement() {
+	shared_ptr<Statement> stm;
 
 	switch (current_token_.GetType()) {
 	case OpenBraceToken:
@@ -130,15 +131,15 @@ unique_ptr<Statement> Parser::GetStatement() {
 	return stm;
 }
 
-unique_ptr<Block> Parser::GetBlock() {
-	auto block = make_unique<Block>(); 
+shared_ptr<Block> Parser::GetBlock() {
+	auto block = make_shared<Block>();
 
 	Expect(OpenBraceToken); 
 	
 	// Parse statements within block
 	auto stm = GetStatement(); 
 	while (stm != nullptr) {
-		block->AddStatement(std::move(stm)); 
+		block->AddStatement(stm);
 		stm = GetStatement(); 
 	}
 
@@ -148,122 +149,122 @@ unique_ptr<Block> Parser::GetBlock() {
 }
 
 
-unique_ptr<ReturnStm> Parser::GetReturnStm() {
-	auto return_stm = make_unique<ReturnStm>(); 
+shared_ptr<ReturnStm> Parser::GetReturnStm() {
+	auto return_stm = make_shared<ReturnStm>();
 
 	auto exp = GetExpression(); 
-	if (exp.get() == nullptr) return nullptr; 
+	if (exp == nullptr) return nullptr;
 
-	return_stm->SetExpression(std::move(exp)); 
+	return_stm->SetExpression(exp);
 
 	return return_stm; 
 }
 
 
-unique_ptr<IfThenElse> Parser::GetIf() {
-	auto if_then_else = make_unique<IfThenElse>(); 
+shared_ptr<IfThenElse> Parser::GetIf() {
+	auto if_then_else = make_shared<IfThenElse>();
 
 	Expect(IfKeyword); 
 	Expect(OpenParanToken); 
 
 	auto predicate = GetExpression(); 
-	if (predicate.get() == nullptr) return nullptr; 
-	if_then_else->SetPredicate(std::move(predicate)); 
+	if (predicate == nullptr) return nullptr;
+	if_then_else->SetPredicate(predicate);
 
 	Expect(CloseParanToken); 
 	
 	// Parse then block
 	auto if_block = GetBlock(); 
-	if (if_block.get() == nullptr) return nullptr; 
-	if_then_else->SetThen(std::move(if_block)); 
+	if (if_block == nullptr) return nullptr;
+	if_then_else->SetThen(if_block);
 
 	// Parse else block - if one exists
 	if (Accept(ElseKeyword)) {
 		auto else_block = GetBlock(); 
-		if (else_block.get() == nullptr) return nullptr; 
-		if_then_else->SetElse(std::move(else_block)); 
+		if (else_block == nullptr) return nullptr;
+		if_then_else->SetElse(else_block);
 	}
 
 	return if_then_else; 
 }
 
-unique_ptr<While> Parser::GetWhile() {
-	auto while_node = make_unique<While>(); 
+shared_ptr<While> Parser::GetWhile() {
+	auto while_node = make_shared<While>();
 
 	Expect(WhileKeyword); 
 	Expect(OpenParanToken); 
 
 	// Parse predicate
 	auto predicate = GetExpression();
-	if (predicate.get() == nullptr) return nullptr;
-	while_node->SetPredicate(std::move(predicate)); 
+	if (predicate == nullptr) return nullptr;
+	while_node->SetPredicate(predicate);
 
 	Expect(CloseParanToken); 
 
 
 	// Parse block
 	auto block = GetBlock(); 
-	if (block.get() == nullptr) return nullptr; 
-	while_node->SetBlock(std::move(block)); 
+	if (block == nullptr) return nullptr;
+	while_node->SetBlock(block);
 
 	return while_node; 
 }
 
-unique_ptr<VarDecl> Parser::GetVarDecl() {
-	auto var_decl = make_unique<VarDecl>(); 
+shared_ptr<VarDecl> Parser::GetVarDecl() {
+	auto var_decl = make_shared<VarDecl>();
 	
 	auto type = GetStaticType(); 
 	auto id = GetIdentifier(); 
-	if (type.get() == nullptr || id.get() == nullptr) return nullptr; 
+	if (type == nullptr || id == nullptr) return nullptr;
 
-	var_decl->SetType(std::move(type)); 
+	var_decl->SetType(type);
 	var_decl->SetName(id->GetName()); 
 
 	return var_decl; 
 }
 
-unique_ptr<Assignment> Parser::GetAssignment() {
-	auto assign = make_unique<Assignment>(); 
+shared_ptr<Assignment> Parser::GetAssignment() {
+	auto assign = make_shared<Assignment>();
 
 	auto id = GetIdentifier(); 
 	Expect(EqualToken); 
 	auto exp = GetExpression(); 
 
-	if (id.get() == nullptr || exp.get() == nullptr) return nullptr; 
+	if (id == nullptr || exp == nullptr) return nullptr;
 
 	assign->SetLValue(id->GetName()); 
-	assign->SetRValue(std::move(exp)); 
+	assign->SetRValue(exp);
 
 	return assign; 
 }
 
 
-unique_ptr<Expression> Parser::GetExpression() {
+shared_ptr<Expression> Parser::GetExpression() {
 	return GetUnaryOp(); 
 }
 
 
-unique_ptr<Expression> Parser::GetUnaryOp() {
+shared_ptr<Expression> Parser::GetUnaryOp() {
 	if (!Accept(ExclamationToken)) return GetAndOrExpression();
 
-	auto unary_op = make_unique<UnaryOp>();
+	auto unary_op = make_shared<UnaryOp>();
 	unary_op->SetOp(NOT);
 
 	// Parse expression 
 	auto exp = GetAndOrExpression();
-	if (exp.get() == nullptr) return nullptr;
-	unary_op->SetExpression(std::move(exp));
+	if (exp == nullptr) return nullptr;
+	unary_op->SetExpression(exp);
 
 	return unary_op;
 }
 
 
-unique_ptr<Expression> Parser::GetAndOrExpression() {
+shared_ptr<Expression> Parser::GetAndOrExpression() {
 	bool is_and = next_token_.GetType() == DoubleAmpersandToken; 
 	bool is_or = next_token_.GetType() == DoubleBarToken; 
 	if (!is_and && !is_or) return GetConditional(); 
 
-	auto and_or = make_unique<BinaryOp>();
+	auto and_or = make_shared<BinaryOp>();
 	and_or->SetOperator(AND);
 	if (is_or) and_or->SetOperator(OR); 
 
@@ -271,15 +272,15 @@ unique_ptr<Expression> Parser::GetAndOrExpression() {
 	NextToken(); 
 	auto right_exp = GetConditional(); 
 
-	and_or->SetLeft(std::move(left_exp)); 
-	and_or->SetRight(std::move(right_exp)); 
+	and_or->SetLeft(left_exp);
+	and_or->SetRight(right_exp);
 
 	return and_or; 
 }
 
 
-unique_ptr<Expression> Parser::GetConditional() {
-	auto conditional = make_unique<Conditional>();
+shared_ptr<Expression> Parser::GetConditional() {
+	auto conditional = make_shared<Conditional>();
 
 	// Parse predicate
 	auto predicate = GetAddSub();
@@ -291,22 +292,22 @@ unique_ptr<Expression> Parser::GetConditional() {
 	// Parse false expression
 	auto fval = GetAddSub();
 
-	if (predicate.get() == nullptr || tval.get() == nullptr || fval.get() == nullptr) return nullptr;
+	if (predicate == nullptr || tval == nullptr || fval == nullptr) return nullptr;
 
-	conditional->SetPredicate(std::move(predicate));
-	conditional->SetTrueValue(std::move(tval));
-	conditional->SetFalseValue(std::move(fval));
+	conditional->SetPredicate(predicate);
+	conditional->SetTrueValue(tval);
+	conditional->SetFalseValue(fval);
 
 	return conditional;
 }
 
 
-unique_ptr<Expression> Parser::GetAddSub() {
+shared_ptr<Expression> Parser::GetAddSub() {
 	bool is_add = next_token_.GetType() == PlusToken;
 	bool is_sub = next_token_.GetType() == MinusToken;
 	if (!is_add && !is_sub) return GetMultDiv();
 
-	auto add_sub = make_unique<BinaryOp>();
+	auto add_sub = make_shared<BinaryOp>();
 	add_sub->SetOperator(PLUS);
 	if (is_sub) add_sub->SetOperator(MINUS);
 
@@ -314,18 +315,18 @@ unique_ptr<Expression> Parser::GetAddSub() {
 	NextToken();
 	auto right_exp = GetMultDiv();
 
-	add_sub->SetLeft(std::move(left_exp));
-	add_sub->SetRight(std::move(right_exp));
+	add_sub->SetLeft(left_exp);
+	add_sub->SetRight(right_exp);
 
 	return add_sub;
 }
 
-unique_ptr<Expression> Parser::GetMultDiv() {
+shared_ptr<Expression> Parser::GetMultDiv() {
 	bool is_mul = next_token_.GetType() == AsteriskToken;
 	bool is_div = next_token_.GetType() == ForwardSlashToken;
 	if (!is_mul && !is_div) return GetPrimaryExpression();
 
-	auto mul_div = make_unique<BinaryOp>();
+	auto mul_div = make_shared<BinaryOp>();
 	mul_div->SetOperator(MULTIPLY);
 	if (is_div) mul_div->SetOperator(DIVIDE);
 
@@ -333,15 +334,15 @@ unique_ptr<Expression> Parser::GetMultDiv() {
 	NextToken();
 	auto right_exp = GetPrimaryExpression();
 
-	mul_div->SetLeft(std::move(left_exp));
-	mul_div->SetRight(std::move(right_exp));
+	mul_div->SetLeft(left_exp);
+	mul_div->SetRight(right_exp);
 
 	return mul_div;
 }
 
-unique_ptr<Expression> Parser::GetPrimaryExpression() {
+shared_ptr<Expression> Parser::GetPrimaryExpression() {
 
-	unique_ptr<Expression> exp;
+	shared_ptr<Expression> exp;
 
 	switch (current_token_.GetType()) {
 	case IdentifierToken:
@@ -349,13 +350,13 @@ unique_ptr<Expression> Parser::GetPrimaryExpression() {
 		else exp = GetIdentifier(); 
 		break;
 	case NumberKeyword:
-		exp = make_unique<NumLiteral>(std::stod(current_token_.GetValue())); 
+		exp = make_shared<NumLiteral>(std::stod(current_token_.GetValue()));
 		break;
 	case TrueKeyword:
-		exp = make_unique<BooleanLiteral>(true); 
+		exp = make_shared<BooleanLiteral>(true);
 		break;
 	case FalseKeyword:
-		exp = make_unique<BooleanLiteral>(false); 
+		exp = make_shared<BooleanLiteral>(false);
 		break;
 	case OpenParanToken:
 		exp = GetExpression(); 
@@ -368,19 +369,19 @@ unique_ptr<Expression> Parser::GetPrimaryExpression() {
 	return exp; 
 }
 
-unique_ptr<FunctionCall> Parser::GetFunctionCall() {
-	auto call = make_unique<FunctionCall>(); 
+shared_ptr<FunctionCall> Parser::GetFunctionCall() {
+	auto call = make_shared<FunctionCall>();
 
 	// Parse identifier
 	auto id = GetIdentifier(); 
-	if (id.get() == nullptr) return nullptr; 
+	if (id == nullptr) return nullptr;
 	call->SetName(id->GetName()); 
 	Expect(OpenParanToken); 
 
 	// Parse arguments
 	auto exp = GetExpression(); 
-	while (exp.get() != nullptr) {
-		call->AddArgument(std::move(exp)); 
+	while (exp != nullptr) {
+		call->AddArgument(exp);
 		exp = GetExpression(); 
 	}
 
@@ -390,26 +391,26 @@ unique_ptr<FunctionCall> Parser::GetFunctionCall() {
 }
 
 
-unique_ptr<Identifier> Parser::GetIdentifier() {
+shared_ptr<Identifier> Parser::GetIdentifier() {
 	if (current_token_.GetType() != IdentifierToken) return nullptr;
 
 	NextToken();
-	return make_unique<Identifier>(current_token_.GetValue());
+	return make_shared<Identifier>(current_token_.GetValue());
 }
 
 
-unique_ptr<StaticType> Parser::GetStaticType() {
-	unique_ptr<StaticType> type;  
+shared_ptr<StaticType> Parser::GetStaticType() {
+	shared_ptr<StaticType> type;
 
 	switch (current_token_.GetType()) {
 	case BoolKeyword:
-		type = make_unique<BoolType>(); 
+		type = make_shared<BoolType>();
 		break;
 	case NumberKeyword:
-		type = make_unique<NumType>(); 
+		type = make_shared<NumType>();
 		break; 
 	case VoidKeyword:
-		type = make_unique<VoidType>(); 
+		type = make_shared<VoidType>();
 		break; 
 	default:
 		Error("Type: Expected num, bool, or void"); 
@@ -444,15 +445,14 @@ bool Parser::Expect(TokenType token) {
 
 bool Parser::Accept(TokenType token) {
 	if (current_token_.GetType() == token) {
-		NextToken(); 
-		return true; 
+		NextToken();
+		return true;
 	}
 
 	return false; 
 }
 
 
-// TODO: Implement error handling
 void Parser::Error(const std::string msg) {
-	// stub
+    std::cout << msg << std::endl;
 }

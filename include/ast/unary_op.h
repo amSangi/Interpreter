@@ -5,7 +5,7 @@
 
 class UnaryOp : public Expression
 {
-	typedef std::unique_ptr<Expression> ExpPtr; 
+	typedef std::shared_ptr<Expression> ExpPtr;
 public:
 	UnaryOp() = default; 
 	virtual ~UnaryOp() = default; 

@@ -9,9 +9,9 @@
 class FunctionDecl : public ASTNode
 {
 	typedef std::string string;
-	typedef std::unique_ptr<VarDecl> VarPtr; 
-	typedef std::unique_ptr<Statement> StmPtr; 
-	typedef std::unique_ptr<StaticType> TypePtr;
+	typedef std::shared_ptr<VarDecl> VarPtr;
+	typedef std::shared_ptr<Statement> StmPtr;
+	typedef std::shared_ptr<StaticType> TypePtr;
 public:
 	FunctionDecl() = default; 
 	virtual ~FunctionDecl() = default;

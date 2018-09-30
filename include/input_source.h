@@ -14,11 +14,8 @@
 class InputSource
 {
 public:
-    InputSource(std::ifstream& in_file);
-    InputSource(const InputSource& other);
-    ~InputSource();
-
-    InputSource& operator=(InputSource other);
+    InputSource(std::string file_name) : input_(file_name) {}
+    ~InputSource() = default;
 
     friend void swap(InputSource& first, InputSource& second) {
         using std::swap;
@@ -32,14 +29,14 @@ public:
     void ConsumeNext();
     void SkipWhiteSpaceAndNewLines();
 
-    char LookAheadOne() const;
-    bool IsEndOfFile() const;
+    char LookAheadOne();
+    bool IsEndOfFile();
     size_t GetCurrentLine() const;
     size_t GetCurrentColumn() const;
 
 private:
-    std::ifstream& input_;
+    std::ifstream input_;
     size_t line_ = 1;
-    size_t column_ = 0;
+    size_t column_ = 1;
 
 }; // class InputSource

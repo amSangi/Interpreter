@@ -7,7 +7,7 @@
 class VarDecl : public Statement 
 {
 	typedef std::string string;
-	typedef std::unique_ptr<StaticType> TypePtr;
+	typedef std::shared_ptr<StaticType> TypePtr;
 public:
 	VarDecl() = default; 
 	virtual ~VarDecl() = default; 

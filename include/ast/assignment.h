@@ -7,10 +7,10 @@
 class Assignment : public Statement
 {
 	typedef std::string string;
-	typedef std::unique_ptr<Expression> ExpPtr;
+	typedef std::shared_ptr<Expression> ExpPtr;
 public:
 	Assignment() = default; 
-	virtual ~Assignment() = default; 
+	virtual ~Assignment() = default;
 	
 	virtual void Accept(std::shared_ptr<IVisitor> v)	{	v->Visit(this); }
 

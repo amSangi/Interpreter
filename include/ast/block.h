@@ -6,7 +6,7 @@
 
 class Block : public Statement 
 {
-	typedef std::unique_ptr<Statement> StmPtr; 
+	typedef std::shared_ptr<Statement> StmPtr;
 public:
 	Block() = default; 
 	virtual ~Block() = default; 

@@ -14,10 +14,8 @@ class Lexer
 {
 public:
 
-	explicit Lexer(InputSource& source);
-	Lexer(const Lexer& other);
+	explicit Lexer(const std::string& file_name) : input_(file_name) {}
 	~Lexer() = default;
-	Lexer& operator=(Lexer other);
 
 	friend void swap(Lexer& first, Lexer& second) {
 		using std::swap;
@@ -32,14 +30,14 @@ public:
 private:
 	static const std::vector<std::string> kReservedWords;
 
-	InputSource& input_;
+	InputSource input_;
 
 	Token RecognizeSymbol(char start);
 	Token RecognizeIdentifier(char start);
 	Token RecognizeNumber(char start);
 	Token RecognizeReserved(const std::string& word);
 
-	bool IsEndOfStatement() const;
+	bool IsEndOfStatement();
 
 }; // class Lexer
 

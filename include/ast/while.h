@@ -6,8 +6,8 @@
 
 class While : public Statement
 {
-	typedef std::unique_ptr<Expression> ExpPtr; 
-	typedef std::unique_ptr<Block> BlockPtr;
+	typedef std::shared_ptr<Expression> ExpPtr;
+	typedef std::shared_ptr<Block> BlockPtr;
 public:
 	While() = default; 
 	virtual ~While() = default; 

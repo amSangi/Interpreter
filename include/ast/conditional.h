@@ -4,7 +4,7 @@
 
 class Conditional : public Expression
 {
-	typedef std::unique_ptr<Expression> ExpPtr;
+	typedef std::shared_ptr<Expression> ExpPtr;
 public:
 	Conditional() = default; 
 	virtual ~Conditional() = default;

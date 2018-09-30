@@ -1,25 +1,7 @@
 #include "input_source.h"
-#include <fstream>
 #include "utility.h"
 
 using namespace sangi; 
-
-InputSource::InputSource(std::ifstream& in_file)
-	: input_(in_file) {}
-
-
-InputSource::InputSource(const InputSource& other) = default;
-
-
-InputSource::~InputSource() {
-	input_.close(); 
-}
-
-
-InputSource& InputSource::operator=(InputSource other) {
-	swap(*this, other);
-	return *this;
-}
 
 
 char InputSource::GetNextChar() {
@@ -27,15 +9,20 @@ char InputSource::GetNextChar() {
 	input_.get(c);
 	++column_;
 	if (c == '\n') {
-		column_ = 0;
+		column_ = 1;
 		++line_;
 	}
 	return c;
 }
 
 
-char InputSource::LookAheadOne() const {
+char InputSource::LookAheadOne() {
 	return static_cast<char>(input_.peek());
+}
+
+
+bool InputSource::IsEndOfFile() {
+	return input_.peek() < 0;
 }
 
 
@@ -48,11 +35,6 @@ void InputSource::SkipWhiteSpaceAndNewLines() {
 	while (!IsEndOfFile() && IsSpace(LookAheadOne())) {
 		ConsumeNext();
 	}
-}
-
-
-bool InputSource::IsEndOfFile() const {
-	return input_.peek() < 0;
 }
 
 

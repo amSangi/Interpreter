@@ -7,7 +7,7 @@
 class FunctionCall : public Expression
 {
 	typedef std::string string;
-	typedef std::unique_ptr<Expression> ExpPtr; 
+	typedef std::shared_ptr<Expression> ExpPtr;
 public:
 	FunctionCall() = default;
 	virtual ~FunctionCall() = default; 

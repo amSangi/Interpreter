@@ -5,7 +5,7 @@
 
 class Expression : public ASTNode
 {
-	typedef std::unique_ptr<StaticType> TypePtr; 
+	typedef std::shared_ptr<StaticType> TypePtr;
 public:
 	virtual ~Expression() = 0; 
 

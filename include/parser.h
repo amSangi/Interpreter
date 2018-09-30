@@ -8,10 +8,10 @@
 class Parser
 {
 public:
-	Parser(Lexer& lexer); 
+	Parser(Lexer& lexer);
 	~Parser() = default;
 
-	std::unique_ptr<Program> Parse();
+	std::shared_ptr<Program> Parse();
 private:
 	Lexer & lexer_;
 	Token current_token_; 
@@ -23,31 +23,31 @@ private:
 	void Error(const std::string msg); 
 
 	// Program
-	std::unique_ptr<FunctionDecl> GetMain(); 
-	std::unique_ptr<FunctionDecl> GetFunctionDecl();
+	std::shared_ptr<FunctionDecl> GetMain();
+	std::shared_ptr<FunctionDecl> GetFunctionDecl();
 	
 	// Statements
-	std::unique_ptr<Statement> GetStatement();
-	std::unique_ptr<ReturnStm> GetReturnStm();
-	std::unique_ptr<Block> GetBlock();
-	std::unique_ptr<IfThenElse> GetIf();
-	std::unique_ptr<While> GetWhile();
-	std::unique_ptr<VarDecl> GetVarDecl();
-	std::unique_ptr<Assignment> GetAssignment();
+	std::shared_ptr<Statement> GetStatement();
+	std::shared_ptr<ReturnStm> GetReturnStm();
+	std::shared_ptr<Block> GetBlock();
+	std::shared_ptr<IfThenElse> GetIf();
+	std::shared_ptr<While> GetWhile();
+	std::shared_ptr<VarDecl> GetVarDecl();
+	std::shared_ptr<Assignment> GetAssignment();
 	
 	// Expressions
-	std::unique_ptr<Expression> GetExpression();
-	std::unique_ptr<Expression> GetUnaryOp();
-	std::unique_ptr<Expression> GetAndOrExpression();
-	std::unique_ptr<Expression> GetConditional();
-	std::unique_ptr<Expression> GetAddSub();
-	std::unique_ptr<Expression> GetMultDiv();
-	std::unique_ptr<Expression> GetPrimaryExpression(); 
-	std::unique_ptr<FunctionCall> GetFunctionCall();
-	std::unique_ptr<Identifier> GetIdentifier();
+	std::shared_ptr<Expression> GetExpression();
+	std::shared_ptr<Expression> GetUnaryOp();
+	std::shared_ptr<Expression> GetAndOrExpression();
+	std::shared_ptr<Expression> GetConditional();
+	std::shared_ptr<Expression> GetAddSub();
+	std::shared_ptr<Expression> GetMultDiv();
+	std::shared_ptr<Expression> GetPrimaryExpression();
+	std::shared_ptr<FunctionCall> GetFunctionCall();
+	std::shared_ptr<Identifier> GetIdentifier();
 	
 	// Type
-	std::unique_ptr<StaticType> GetStaticType();
+	std::shared_ptr<StaticType> GetStaticType();
 
 
 };  // class Parser

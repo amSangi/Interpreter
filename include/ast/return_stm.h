@@ -4,7 +4,7 @@
 #include "expression.h"
 
 class ReturnStm : public Statement {
-	typedef std::unique_ptr<Expression> ExpPtr; 
+	typedef std::shared_ptr<Expression> ExpPtr;
 public:
 	ReturnStm() = default; 
 	virtual ~ReturnStm() = default; 

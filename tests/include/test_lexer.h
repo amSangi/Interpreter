@@ -31,12 +31,8 @@ protected:
 		return path;
 	}
 
-	void TestFile(std::string filename, std::vector<TokenType> expected_types) const {
-		std::ifstream in_file(GetFilePath(filename));
-		ASSERT_TRUE(in_file.is_open());
-
-		InputSource source(in_file);
-		Lexer lexer(source);
+	void TestFile(const std::string filename, std::vector<TokenType> expected_types) const {
+		Lexer lexer(GetFilePath(filename));
 
 		std::vector<Token> tokens = GetTokens(lexer);
 

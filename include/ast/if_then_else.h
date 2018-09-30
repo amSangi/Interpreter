@@ -5,8 +5,8 @@
 
 class IfThenElse : public Statement
 {
-	typedef std::unique_ptr<Expression> ExpPtr; 
-	typedef std::unique_ptr<Statement> StmPtr; 
+	typedef std::shared_ptr<Expression> ExpPtr;
+	typedef std::shared_ptr<Statement> StmPtr;
 public:
 	IfThenElse() = default; 
 	virtual ~IfThenElse() = default; 

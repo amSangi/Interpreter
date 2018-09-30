@@ -2,7 +2,6 @@
 #include <cctype>
 #include "utility.h"
 #include "lexer.h"
-#include "types.h"
 
 using namespace sangi;
 
@@ -10,18 +9,6 @@ using namespace sangi;
 const std::vector<std::string> Lexer::kReservedWords{
 	"if", "else", "return", "while", "for", "true", "false", "num", "bool", "void", "main"
 };
-
-Lexer::Lexer(InputSource& input) : input_(input) {}
-
-
-Lexer::Lexer(const Lexer& other)
-	: input_(other.input_) {}
-
-Lexer& Lexer::operator=(Lexer other) {
-	swap(*this, other);
-	return *this;
-}
-
 
 size_t Lexer::GetCurrentLine() const {
 	return input_.GetCurrentLine();
@@ -201,7 +188,7 @@ Token Lexer::RecognizeReserved(const std::string& word) {
 	auto it = std::find(kReservedWords.begin(), kReservedWords.end(), word);
 
 	if (it != kReservedWords.end()) {
-		size_t index = std::distance(kReservedWords.begin(), it);
+		long index = std::distance(kReservedWords.begin(), it);
 		switch (index) {
 		case 0:
 			return Token(IfKeyword);
@@ -232,7 +219,7 @@ Token Lexer::RecognizeReserved(const std::string& word) {
 }
 
 
-bool Lexer::IsEndOfStatement() const {
-	char c = input_.LookAheadOne(); 
+bool Lexer::IsEndOfStatement() {
+	char c = input_.LookAheadOne();
 	return IsSpace(c) || c == ';';
 }

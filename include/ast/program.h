@@ -5,7 +5,7 @@
 
 class Program : public ASTNode
 {
-	typedef std::unique_ptr<FunctionDecl> FunDeclPtr; 
+	typedef std::shared_ptr<FunctionDecl> FunDeclPtr;
 public:
 	Program() = default; 
 	virtual ~Program() = default;
