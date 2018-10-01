@@ -6,6 +6,6 @@
 class ASTNode
 {
 public:
-	virtual ~ASTNode() = 0;
+	virtual ~ASTNode() = default;
 	virtual void Accept(std::shared_ptr<IVisitor> v) = 0;
 }; // interface ASTNode

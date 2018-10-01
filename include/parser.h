@@ -1,9 +1,8 @@
 #pragma once
 
+#include "ast.h"
 #include "lexer.h"
 #include "token.h"
-#include "program.h"
-#include "ast.h"
 
 class Parser
 {

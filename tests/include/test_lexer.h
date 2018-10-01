@@ -1,12 +1,13 @@
 #pragma once
 
-#include "gtest/gtest.h"
 #include <vector>
+#include "test_base.h"
 #include "lexer/token.h"
 #include "lexer/types.h"
 #include "input_source.h"
 #include "lexer/lexer.h"
-class TestLexer : public ::testing::Test
+
+class TestLexer : public TestBase
 {
 protected:
 
@@ -25,13 +26,7 @@ protected:
 		return tokens;
 	}
 
-	std::string GetFilePath(std::string filename) const {
-	    // Path into examples from bin
-	    std::string path = "../tests/examples/" + filename;
-		return path;
-	}
-
-	void TestFile(const std::string filename, std::vector<TokenType> expected_types) const {
+	void TestFile(const std::string& filename, std::vector<TokenType> expected_types) const {
 		Lexer lexer(GetFilePath(filename));
 
 		std::vector<Token> tokens = GetTokens(lexer);

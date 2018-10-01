@@ -7,7 +7,7 @@ class Expression : public ASTNode
 {
 	typedef std::shared_ptr<StaticType> TypePtr;
 public:
-	virtual ~Expression() = 0; 
+	virtual ~Expression() = default;
 
 	virtual void Accept(std::shared_ptr<IVisitor> v) = 0;
 	

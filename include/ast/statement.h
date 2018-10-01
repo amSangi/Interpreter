@@ -5,7 +5,7 @@
 class Statement : public ASTNode
 {
 public:
-	virtual ~Statement() = 0; 
+	virtual ~Statement() = default;
 	virtual void Accept(std::shared_ptr<IVisitor> v) = 0;
 
 }; // interface Statement

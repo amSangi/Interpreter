@@ -1,6 +1,6 @@
-#include "parser.h"
 #include <sstream>
 #include <iostream>
+#include "parser.h"
 
 using std::make_shared;
 using std::shared_ptr;
@@ -9,29 +9,19 @@ using std::string;
 
 Parser::Parser(Lexer& lexer)
 	: lexer_(lexer), 
-	current_token_(Token(InvalidToken)), 
+	current_token_(lexer.GetNext()),
 	next_token_(lexer_.GetNext()) {}
 
 
 shared_ptr<Program> Parser::Parse() {
-	NextToken();
-
 	auto program = make_shared<Program>();
 
 	// Parse function declarations
-	auto function_decl = GetFunctionDecl();
-	while (function_decl != nullptr) {
-		program->AddFuncDecl(function_decl);
-		function_decl = GetFunctionDecl();
+	while (next_token_.GetType() != MainKeyword) {
+		program->AddFuncDecl(GetFunctionDecl());
 	}
 
-	// Parse main declaration
-	auto main = GetMain();
-	if (main == nullptr) {
-		Error("No 'main' entry point found");
-	}
-
-	program->SetMain(main);
+	program->SetMain(GetMain());
 
 	Expect(EndOfFileToken);
 	return program;
@@ -51,10 +41,8 @@ shared_ptr<FunctionDecl> Parser::GetMain() {
 	Expect(OpenBraceToken);
 
 	// Parse statements
-	auto stm = GetStatement();
-	while (stm != nullptr) {
-		main->AddStm(stm);
-		stm = GetStatement();
+	while (current_token_.GetType() != CloseBraceToken) {
+		main->AddStm(GetStatement());
 	}
 
 	Expect(CloseBraceToken);
@@ -63,9 +51,6 @@ shared_ptr<FunctionDecl> Parser::GetMain() {
 
 shared_ptr<FunctionDecl> Parser::GetFunctionDecl() {
 	auto fun_decl = make_shared<FunctionDecl>();
-	
-	if (next_token_.GetType() == MainKeyword) return nullptr; 
-
 	auto type = GetStaticType(); 
 	fun_decl->SetReturnType(type);
 
@@ -75,20 +60,18 @@ shared_ptr<FunctionDecl> Parser::GetFunctionDecl() {
 	Expect(OpenParanToken);
 
 	// Parse formal arguments
-	auto var_decl = GetVarDecl(); 
-	while (var_decl != nullptr) {
-		fun_decl->AddFormal(var_decl);
-		var_decl = GetVarDecl(); 
+	while (current_token_.GetType() == BoolKeyword
+           || current_token_.GetType() == VoidKeyword
+           || current_token_.GetType() == NumberKeyword) {
+		fun_decl->AddFormal(GetVarDecl());
 	}
 
 	Expect(CloseParanToken);
 	Expect(OpenBraceToken);
 
 	// Parse statements
-	auto stm = GetStatement();
-	while (stm != nullptr) {
-		fun_decl->AddStm(stm);
-		stm = GetStatement();
+	while (current_token_.GetType() != CloseBraceToken) {
+		fun_decl->AddStm(GetStatement());
 	}
 
 	Expect(CloseBraceToken);
@@ -136,11 +119,8 @@ shared_ptr<Block> Parser::GetBlock() {
 
 	Expect(OpenBraceToken); 
 	
-	// Parse statements within block
-	auto stm = GetStatement(); 
-	while (stm != nullptr) {
-		block->AddStatement(stm);
-		stm = GetStatement(); 
+	while (current_token_.GetType() != CloseBraceToken) {
+		block->AddStatement(GetStatement());
 	}
 
 	Expect(CloseBraceToken); 
@@ -152,10 +132,9 @@ shared_ptr<Block> Parser::GetBlock() {
 shared_ptr<ReturnStm> Parser::GetReturnStm() {
 	auto return_stm = make_shared<ReturnStm>();
 
-	auto exp = GetExpression(); 
-	if (exp == nullptr) return nullptr;
-
-	return_stm->SetExpression(exp);
+    if (current_token_.GetType() != SemiColonToken) {
+        return_stm->SetExpression(GetExpression());
+    }
 
 	return return_stm; 
 }
@@ -167,22 +146,16 @@ shared_ptr<IfThenElse> Parser::GetIf() {
 	Expect(IfKeyword); 
 	Expect(OpenParanToken); 
 
-	auto predicate = GetExpression(); 
-	if (predicate == nullptr) return nullptr;
-	if_then_else->SetPredicate(predicate);
+	if_then_else->SetPredicate(GetExpression());
 
 	Expect(CloseParanToken); 
 	
 	// Parse then block
-	auto if_block = GetBlock(); 
-	if (if_block == nullptr) return nullptr;
-	if_then_else->SetThen(if_block);
+	if_then_else->SetThen(GetBlock());
 
 	// Parse else block - if one exists
 	if (Accept(ElseKeyword)) {
-		auto else_block = GetBlock(); 
-		if (else_block == nullptr) return nullptr;
-		if_then_else->SetElse(else_block);
+		if_then_else->SetElse(GetBlock());
 	}
 
 	return if_then_else; 
@@ -192,33 +165,20 @@ shared_ptr<While> Parser::GetWhile() {
 	auto while_node = make_shared<While>();
 
 	Expect(WhileKeyword); 
-	Expect(OpenParanToken); 
-
+	Expect(OpenParanToken);
 	// Parse predicate
-	auto predicate = GetExpression();
-	if (predicate == nullptr) return nullptr;
-	while_node->SetPredicate(predicate);
-
-	Expect(CloseParanToken); 
-
-
-	// Parse block
-	auto block = GetBlock(); 
-	if (block == nullptr) return nullptr;
-	while_node->SetBlock(block);
+	while_node->SetPredicate(GetExpression());
+	Expect(CloseParanToken);
+	while_node->SetBlock(GetBlock());
 
 	return while_node; 
 }
 
 shared_ptr<VarDecl> Parser::GetVarDecl() {
 	auto var_decl = make_shared<VarDecl>();
-	
-	auto type = GetStaticType(); 
-	auto id = GetIdentifier(); 
-	if (type == nullptr || id == nullptr) return nullptr;
 
-	var_decl->SetType(type);
-	var_decl->SetName(id->GetName()); 
+	var_decl->SetType(GetStaticType());
+	var_decl->SetName(GetIdentifier()->GetName());
 
 	return var_decl; 
 }
@@ -228,9 +188,7 @@ shared_ptr<Assignment> Parser::GetAssignment() {
 
 	auto id = GetIdentifier(); 
 	Expect(EqualToken); 
-	auto exp = GetExpression(); 
-
-	if (id == nullptr || exp == nullptr) return nullptr;
+	auto exp = GetExpression();
 
 	assign->SetLValue(id->GetName()); 
 	assign->SetRValue(exp);
@@ -249,11 +207,7 @@ shared_ptr<Expression> Parser::GetUnaryOp() {
 
 	auto unary_op = make_shared<UnaryOp>();
 	unary_op->SetOp(NOT);
-
-	// Parse expression 
-	auto exp = GetAndOrExpression();
-	if (exp == nullptr) return nullptr;
-	unary_op->SetExpression(exp);
+	unary_op->SetExpression(GetAndOrExpression());
 
 	return unary_op;
 }
@@ -269,8 +223,8 @@ shared_ptr<Expression> Parser::GetAndOrExpression() {
 	if (is_or) and_or->SetOperator(OR); 
 
 	auto left_exp = GetConditional(); 
-	NextToken(); 
-	auto right_exp = GetConditional(); 
+	NextToken(); // && ||
+	auto right_exp = GetConditional();
 
 	and_or->SetLeft(left_exp);
 	and_or->SetRight(right_exp);
@@ -286,14 +240,9 @@ shared_ptr<Expression> Parser::GetConditional() {
 	auto predicate = GetAddSub();
 	if (!Accept(QuestionToken)) return predicate; 
 
-	// Parse true expression
 	auto tval = GetAddSub();
 	Expect(ColonToken);
-	// Parse false expression
 	auto fval = GetAddSub();
-
-	if (predicate == nullptr || tval == nullptr || fval == nullptr) return nullptr;
-
 	conditional->SetPredicate(predicate);
 	conditional->SetTrueValue(tval);
 	conditional->SetFalseValue(fval);
@@ -312,7 +261,7 @@ shared_ptr<Expression> Parser::GetAddSub() {
 	if (is_sub) add_sub->SetOperator(MINUS);
 
 	auto left_exp = GetMultDiv();
-	NextToken();
+	NextToken(); // + -
 	auto right_exp = GetMultDiv();
 
 	add_sub->SetLeft(left_exp);
@@ -331,7 +280,7 @@ shared_ptr<Expression> Parser::GetMultDiv() {
 	if (is_div) mul_div->SetOperator(DIVIDE);
 
 	auto left_exp = GetPrimaryExpression();
-	NextToken();
+	NextToken(); // * /
 	auto right_exp = GetPrimaryExpression();
 
 	mul_div->SetLeft(left_exp);
@@ -372,19 +321,11 @@ shared_ptr<Expression> Parser::GetPrimaryExpression() {
 shared_ptr<FunctionCall> Parser::GetFunctionCall() {
 	auto call = make_shared<FunctionCall>();
 
-	// Parse identifier
-	auto id = GetIdentifier(); 
-	if (id == nullptr) return nullptr;
-	call->SetName(id->GetName()); 
-	Expect(OpenParanToken); 
-
-	// Parse arguments
-	auto exp = GetExpression(); 
-	while (exp != nullptr) {
-		call->AddArgument(exp);
-		exp = GetExpression(); 
+	call->SetName(GetIdentifier()->GetName());
+	Expect(OpenParanToken);
+	while (current_token_.GetType() != CloseParanToken) {
+		call->AddArgument(GetExpression());
 	}
-
 	Expect(CloseParanToken); 
 
 	return call; 
