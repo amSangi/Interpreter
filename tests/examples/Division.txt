@@ -1,9 +1,11 @@
 num main() {
-	num a = 10; 
-	num b = -1000; 
-	num c = 35; 
+	num a;
+	num b;
+	num c;
+	num result;
 
-	num result = b * -c / a; 
+	a = 10; b = -1000; c = 35;
+	result = b * -c / a;
 
 	return result; 
 }

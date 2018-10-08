@@ -41,6 +41,7 @@ private:
 	std::shared_ptr<Expression> GetConditional();
 	std::shared_ptr<Expression> GetAddSub();
 	std::shared_ptr<Expression> GetMultDiv();
+	std::shared_ptr<Expression> GetComparison();
 	std::shared_ptr<Expression> GetPrimaryExpression();
 	std::shared_ptr<FunctionCall> GetFunctionCall();
 	std::shared_ptr<Identifier> GetIdentifier();

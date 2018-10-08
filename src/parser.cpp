@@ -132,7 +132,9 @@ shared_ptr<Block> Parser::GetBlock() {
 shared_ptr<ReturnStm> Parser::GetReturnStm() {
 	auto return_stm = make_shared<ReturnStm>();
 
-    if (current_token_.GetType() != SemiColonToken) {
+	Expect(ReturnKeyword);
+
+	if (current_token_.GetType() != SemiColonToken) {
         return_stm->SetExpression(GetExpression());
     }
 
@@ -198,36 +200,23 @@ shared_ptr<Assignment> Parser::GetAssignment() {
 
 
 shared_ptr<Expression> Parser::GetExpression() {
-	return GetUnaryOp(); 
+    return GetAndOrExpression();
 }
-
-
-shared_ptr<Expression> Parser::GetUnaryOp() {
-	if (!Accept(ExclamationToken)) return GetAndOrExpression();
-
-	auto unary_op = make_shared<UnaryOp>();
-	unary_op->SetOp(NOT);
-	unary_op->SetExpression(GetAndOrExpression());
-
-	return unary_op;
-}
-
 
 shared_ptr<Expression> Parser::GetAndOrExpression() {
-	bool is_and = next_token_.GetType() == DoubleAmpersandToken; 
-	bool is_or = next_token_.GetType() == DoubleBarToken; 
-	if (!is_and && !is_or) return GetConditional(); 
-
 	auto and_or = make_shared<BinaryOp>();
-	and_or->SetOperator(AND);
-	if (is_or) and_or->SetOperator(OR); 
+	auto left_exp = GetConditional();
 
-	auto left_exp = GetConditional(); 
-	NextToken(); // && ||
-	auto right_exp = GetConditional();
+    bool is_and = current_token_.GetType() == DoubleAmpersandToken;
+    bool is_or = current_token_.GetType() == DoubleBarToken;
+    if (!is_and && !is_or) return left_exp;
+    and_or->SetOperator(AND);
+    if (is_or) and_or->SetOperator(OR);
+
+    NextToken(); // && ||
 
 	and_or->SetLeft(left_exp);
-	and_or->SetRight(right_exp);
+	and_or->SetRight(GetExpression());
 
 	return and_or; 
 }
@@ -240,53 +229,85 @@ shared_ptr<Expression> Parser::GetConditional() {
 	auto predicate = GetAddSub();
 	if (!Accept(QuestionToken)) return predicate; 
 
-	auto tval = GetAddSub();
+	auto tval = GetExpression();
 	Expect(ColonToken);
-	auto fval = GetAddSub();
 	conditional->SetPredicate(predicate);
 	conditional->SetTrueValue(tval);
-	conditional->SetFalseValue(fval);
+	conditional->SetFalseValue(GetExpression());
 
 	return conditional;
 }
 
 
 shared_ptr<Expression> Parser::GetAddSub() {
-	bool is_add = next_token_.GetType() == PlusToken;
-	bool is_sub = next_token_.GetType() == MinusToken;
-	if (!is_add && !is_sub) return GetMultDiv();
-
 	auto add_sub = make_shared<BinaryOp>();
+	auto left_exp = GetMultDiv();
+
+    bool is_add = current_token_.GetType() == PlusToken;
+    bool is_sub = current_token_.GetType() == MinusToken;
+    if (!is_add && !is_sub) return left_exp;
+
 	add_sub->SetOperator(PLUS);
 	if (is_sub) add_sub->SetOperator(MINUS);
 
-	auto left_exp = GetMultDiv();
 	NextToken(); // + -
-	auto right_exp = GetMultDiv();
 
 	add_sub->SetLeft(left_exp);
-	add_sub->SetRight(right_exp);
+	add_sub->SetRight(GetExpression());
 
 	return add_sub;
 }
 
 shared_ptr<Expression> Parser::GetMultDiv() {
-	bool is_mul = next_token_.GetType() == AsteriskToken;
-	bool is_div = next_token_.GetType() == ForwardSlashToken;
-	if (!is_mul && !is_div) return GetPrimaryExpression();
-
 	auto mul_div = make_shared<BinaryOp>();
-	mul_div->SetOperator(MULTIPLY);
+	auto left_exp = GetComparison();
+
+
+    bool is_mul = current_token_.GetType() == AsteriskToken;
+    bool is_div = current_token_.GetType() == ForwardSlashToken;
+    if (!is_mul && !is_div) return left_exp;
+
+    mul_div->SetOperator(MULTIPLY);
 	if (is_div) mul_div->SetOperator(DIVIDE);
 
-	auto left_exp = GetPrimaryExpression();
 	NextToken(); // * /
-	auto right_exp = GetPrimaryExpression();
 
 	mul_div->SetLeft(left_exp);
-	mul_div->SetRight(right_exp);
+	mul_div->SetRight(GetExpression());
 
 	return mul_div;
+}
+
+
+shared_ptr<Expression> Parser::GetComparison() {
+    auto comp = make_shared<BinaryOp>();
+    auto left_exp = GetPrimaryExpression();
+
+    switch (current_token_.GetType()) {
+    	case GreaterThanToken:
+    		comp->SetOperator(GT);
+    		break;
+    	case GreaterThanEqualToken:
+    		comp->SetOperator(GTE);
+    		break;
+    	case EqualEqualToken:
+    		comp->SetOperator(EQ);
+    		break;
+    	case LessThanToken:
+    		comp->SetOperator(LT);
+    		break;
+    	case LessThanEqualToken:
+    		comp->SetOperator(LTE);
+    		break;
+		default:
+			return left_exp;
+    }
+
+    NextToken(); // > >= == < <=
+
+    comp->SetLeft(left_exp);
+    comp->SetRight(GetExpression());
+	return comp;
 }
 
 shared_ptr<Expression> Parser::GetPrimaryExpression() {
@@ -296,18 +317,25 @@ shared_ptr<Expression> Parser::GetPrimaryExpression() {
 	switch (current_token_.GetType()) {
 	case IdentifierToken:
 		if (next_token_.GetType() == OpenParanToken) exp = GetFunctionCall(); 
-		else exp = GetIdentifier(); 
-		break;
-	case NumberKeyword:
-		exp = make_shared<NumLiteral>(std::stod(current_token_.GetValue()));
-		break;
+		else exp = GetIdentifier();
+        break;
+    case NumericLiteral:
+        exp = make_shared<NumLiteral>(std::stod(current_token_.GetValue()));
+        NextToken();
+        break;
 	case TrueKeyword:
 		exp = make_shared<BooleanLiteral>(true);
-		break;
+        NextToken();
+        break;
 	case FalseKeyword:
 		exp = make_shared<BooleanLiteral>(false);
-		break;
+        NextToken();
+        break;
+    case ExclamationToken:
+        exp = GetUnaryOp();
+        break;
 	case OpenParanToken:
+	    NextToken();
 		exp = GetExpression(); 
 		Expect(CloseParanToken);
 		break;
@@ -315,7 +343,16 @@ shared_ptr<Expression> Parser::GetPrimaryExpression() {
 		return nullptr; 
 	}
 
-	return exp; 
+	return exp;
+}
+
+shared_ptr<Expression> Parser::GetUnaryOp() {
+    Expect(ExclamationToken);
+    auto unary_op = make_shared<UnaryOp>();
+    unary_op->SetOp(NOT);
+    unary_op->SetExpression(GetExpression());
+
+    return unary_op;
 }
 
 shared_ptr<FunctionCall> Parser::GetFunctionCall() {

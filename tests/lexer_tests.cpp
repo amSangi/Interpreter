@@ -22,23 +22,28 @@ TEST_F(TestLexer, TestAllTokens) {
 
 
 TEST_F(TestLexer, TestSimpleAdd) {
-	
+
 	std::vector<TokenType> expected_types{
-		NumberKeyword, MainKeyword, OpenParanToken, CloseParanToken, OpenBraceToken, 
-		NumberKeyword, IdentifierToken, EqualToken, NumericLiteral, SemiColonToken,
-		NumberKeyword, IdentifierToken, EqualToken, NumericLiteral, SemiColonToken,
-		NumberKeyword, IdentifierToken, EqualToken, NumericLiteral, SemiColonToken,
-		NumberKeyword, IdentifierToken, EqualToken, NumericLiteral, SemiColonToken,
-		NumberKeyword, IdentifierToken, EqualToken,
-			IdentifierToken, PlusToken, 
-			IdentifierToken, PlusToken, 
-			IdentifierToken, PlusToken, 
-			IdentifierToken, PlusToken, 
-			NumericLiteral, SemiColonToken, 
+		NumberKeyword, MainKeyword, OpenParanToken, CloseParanToken, OpenBraceToken,
+		NumberKeyword, IdentifierToken, SemiColonToken,
+		NumberKeyword, IdentifierToken, SemiColonToken,
+		NumberKeyword, IdentifierToken, SemiColonToken,
+		NumberKeyword, IdentifierToken, SemiColonToken,
+		NumberKeyword, IdentifierToken, SemiColonToken,
+		IdentifierToken, EqualToken, NumericLiteral, SemiColonToken,
+		IdentifierToken, EqualToken, NumericLiteral, SemiColonToken,
+		IdentifierToken, EqualToken, NumericLiteral, SemiColonToken,
+		IdentifierToken, EqualToken, NumericLiteral, SemiColonToken,
+		IdentifierToken, EqualToken,
+			IdentifierToken, PlusToken,
+			IdentifierToken, PlusToken,
+			IdentifierToken, PlusToken,
+			IdentifierToken, PlusToken,
+			NumericLiteral, SemiColonToken,
 		ReturnKeyword, IdentifierToken, SemiColonToken, CloseBraceToken
-	}; 
-	
-	TestFile("Add.txt", expected_types); 
+	};
+
+	TestFile("Add.txt", expected_types);
 }
 
 
@@ -46,37 +51,49 @@ TEST_F(TestLexer, TestSimpleSubtract) {
 
 	std::vector<TokenType> expected_types{
 		NumberKeyword, MainKeyword, OpenParanToken, CloseParanToken, OpenBraceToken,
-		NumberKeyword, IdentifierToken, EqualToken, NumericLiteral, SemiColonToken,
-		NumberKeyword, IdentifierToken, EqualToken, MinusToken, NumericLiteral, SemiColonToken,
-		NumberKeyword, IdentifierToken, EqualToken, NumericLiteral, SemiColonToken,
-		NumberKeyword, IdentifierToken, EqualToken, NumericLiteral, SemiColonToken,
-		NumberKeyword, IdentifierToken, EqualToken,
-			MinusToken, NumericLiteral, MinusToken, 
+		NumberKeyword, IdentifierToken, SemiColonToken,
+		NumberKeyword, IdentifierToken, SemiColonToken,
+		NumberKeyword, IdentifierToken, SemiColonToken,
+		NumberKeyword, IdentifierToken, SemiColonToken,
+		NumberKeyword, IdentifierToken, SemiColonToken,
+
+        IdentifierToken, EqualToken, NumericLiteral, SemiColonToken,
+		IdentifierToken, EqualToken, MinusToken, NumericLiteral, SemiColonToken,
+		IdentifierToken, EqualToken, NumericLiteral, SemiColonToken,
+		IdentifierToken, EqualToken, NumericLiteral, SemiColonToken,
+		IdentifierToken, EqualToken,
+		MinusToken, NumericLiteral, MinusToken,
 			IdentifierToken, MinusToken,
-			IdentifierToken, MinusToken, 
-			IdentifierToken, MinusToken, 
+			IdentifierToken, MinusToken,
+			IdentifierToken, MinusToken,
 			IdentifierToken, SemiColonToken,
-		ReturnKeyword, IdentifierToken, SemiColonToken, CloseBraceToken
+
+        ReturnKeyword, IdentifierToken, SemiColonToken, CloseBraceToken
 	};
 
-	TestFile("Subtract.txt", expected_types); 
+	TestFile("Subtract.txt", expected_types);
 }
 
 
 TEST_F(TestLexer, TestSimpleMultiply) {
-	
+
 	std::vector<TokenType> expected_types{
 		NumberKeyword, MainKeyword, OpenParanToken, CloseParanToken, OpenBraceToken,
-		NumberKeyword, IdentifierToken, EqualToken, NumericLiteral, SemiColonToken,
-		NumberKeyword, IdentifierToken, EqualToken, NumericLiteral, SemiColonToken,
-		NumberKeyword, IdentifierToken, EqualToken, NumericLiteral, SemiColonToken,
-		NumberKeyword, IdentifierToken, EqualToken, MinusToken, NumericLiteral, SemiColonToken,
-		NumberKeyword, IdentifierToken, EqualToken,
+		NumberKeyword, IdentifierToken, SemiColonToken,
+		NumberKeyword, IdentifierToken, SemiColonToken,
+		NumberKeyword, IdentifierToken, SemiColonToken,
+		NumberKeyword, IdentifierToken, SemiColonToken,
+		NumberKeyword, IdentifierToken, SemiColonToken,
+		IdentifierToken, EqualToken, NumericLiteral, SemiColonToken,
+		IdentifierToken, EqualToken, NumericLiteral, SemiColonToken,
+		IdentifierToken, EqualToken, NumericLiteral, SemiColonToken,
+		IdentifierToken, EqualToken, MinusToken, NumericLiteral, SemiColonToken,
+		IdentifierToken, EqualToken,
+		IdentifierToken, AsteriskToken,
 			IdentifierToken, AsteriskToken,
 			IdentifierToken, AsteriskToken,
 			IdentifierToken, AsteriskToken,
-			IdentifierToken, AsteriskToken,
-			MinusToken, NumericLiteral, SemiColonToken, 
+			MinusToken, NumericLiteral, SemiColonToken,
 		ReturnKeyword, IdentifierToken, SemiColonToken, CloseBraceToken
 	};
 
@@ -88,16 +105,20 @@ TEST_F(TestLexer, TestSimpleDivision) {
 
 	std::vector<TokenType> expected_types{
 		NumberKeyword, MainKeyword, OpenParanToken, CloseParanToken, OpenBraceToken,
-		NumberKeyword, IdentifierToken, EqualToken, NumericLiteral, SemiColonToken,
-		NumberKeyword, IdentifierToken, EqualToken, MinusToken, NumericLiteral, SemiColonToken,
-		NumberKeyword, IdentifierToken, EqualToken, NumericLiteral, SemiColonToken,
-		NumberKeyword, IdentifierToken, EqualToken,
-			IdentifierToken, AsteriskToken, 
-			MinusToken, IdentifierToken, ForwardSlashToken, 
-			IdentifierToken, SemiColonToken, 
+		NumberKeyword, IdentifierToken, SemiColonToken,
+		NumberKeyword, IdentifierToken, SemiColonToken,
+		NumberKeyword, IdentifierToken, SemiColonToken,
+		NumberKeyword, IdentifierToken, SemiColonToken,
+		IdentifierToken, EqualToken, NumericLiteral, SemiColonToken,
+		IdentifierToken, EqualToken, MinusToken, NumericLiteral, SemiColonToken,
+		IdentifierToken, EqualToken, NumericLiteral, SemiColonToken,
+		IdentifierToken, EqualToken,
+		IdentifierToken, AsteriskToken,
+			MinusToken, IdentifierToken, ForwardSlashToken,
+			IdentifierToken, SemiColonToken,
 		ReturnKeyword, IdentifierToken, SemiColonToken, CloseBraceToken
 	};
-	
+
 	TestFile("Division.txt", expected_types);
 }
 
@@ -106,13 +127,17 @@ TEST_F(TestLexer, TestSimpleProgram) {
 
 	std::vector<TokenType> expected_types{
 		NumberKeyword, MainKeyword, OpenParanToken, CloseParanToken, OpenBraceToken,
-		BoolKeyword, IdentifierToken, EqualToken, TrueKeyword, SemiColonToken, 
-		BoolKeyword, IdentifierToken, EqualToken, FalseKeyword, SemiColonToken,
-		BoolKeyword, IdentifierToken, EqualToken, TrueKeyword, SemiColonToken,
-		BoolKeyword, IdentifierToken, EqualToken, 
+		BoolKeyword, IdentifierToken, SemiColonToken,
+		BoolKeyword, IdentifierToken, SemiColonToken,
+		BoolKeyword, IdentifierToken, SemiColonToken,
+		BoolKeyword, IdentifierToken, SemiColonToken,
+		IdentifierToken, EqualToken, TrueKeyword, SemiColonToken,
+		IdentifierToken, EqualToken, TrueKeyword, SemiColonToken,
+		IdentifierToken, EqualToken, FalseKeyword, SemiColonToken,
+		IdentifierToken, EqualToken,
 			ExclamationToken, OpenParanToken, IdentifierToken, DoubleAmpersandToken, 
 			IdentifierToken, CloseParanToken, DoubleBarToken, IdentifierToken, SemiColonToken, 
-		NumberKeyword, IdentifierToken, EqualToken, NumericLiteral, SemiColonToken, 
+		NumberKeyword, IdentifierToken, SemiColonToken,
 		IfKeyword, OpenParanToken, IdentifierToken, DoubleAmpersandToken, NumericLiteral, 
 			GreaterThanToken, NumericLiteral, CloseParanToken, OpenBraceToken, 
 			IdentifierToken, EqualToken, NumericLiteral, SemiColonToken, CloseBraceToken, 

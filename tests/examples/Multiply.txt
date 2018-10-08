@@ -1,10 +1,12 @@
 num main() {
-	num a = 3; 
-	num b = 1; 
-	num c = 5; 
-	num d = -10; 
+	num a;
+	num b;
+	num c;
+	num d;
+	num product;
 
-	num product = a * b * c * d * -3; 
+    a = 3; b = 1; c = 5; d = -10;
+	product = a * b * c * d * -3;
 
 	return product; 
 }

@@ -12,8 +12,7 @@ Assignment --> Identifier "=" Expression ";""
 VarDecl --> Type Identifier ";"
 
 
-Expression --> NotExpression
-NotExpression --> ( "!" )? AndOrExpression
+Expression --> AndOrExpression
 AndOrExpression --> CondExpression ( ("&&" | "||") CondExpression )*
 CondExpression --> AddSubExpression ( "?" AddSubExpression ":" AddSubExpression )*
 AddSubExpression --> MultDivExpression ( ("+" | "-") MultDivExpression )*
@@ -23,8 +22,10 @@ PrimaryExpression -->
 	| FunctionCall
 	| NumLiteral
 	| BooleanLiteral
+	| NotExpression
 	| "(" Expression ")"
 
+NotExpression --> ( "!" )? Expression
 FunctionCall --> Identifier "(" ExpressionList ")"
 ExpressionList --> Expression ("," Expression)*
 
