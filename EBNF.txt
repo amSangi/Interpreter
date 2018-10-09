@@ -2,14 +2,14 @@ Program --> (Function)* MainFunction
 
 MainFunction --> "int" "main" "(" ")" Block
 Function --> Type Identifier "(" FormalList ")" Block
-FormalList --> Type Identifier ("," Type Identifier)*
+FormalList --> VarDecl ("," VarDecl)*
 
-Statement --> Block | If | While | VarDecl | Assignment
+Statement --> Block | If  | While | VarDecl ";" | Assignment ";"
 Block --> "{" (Statement)* "}"
 If --> "if" "(" Expression ")" Statement "else" Statement
 While --> "while" "(" Expression ")" Statement
-Assignment --> Identifier "=" Expression ";""
-VarDecl --> Type Identifier ";"
+Assignment --> Identifier "=" Expression
+VarDecl --> Type Identifier
 
 
 Expression --> AndOrExpression
