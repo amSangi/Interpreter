@@ -1,0 +1,37 @@
+num add(num x, num y) {
+    return x + y;
+}
+
+num div(num x, num y) {
+    return x / y;
+}
+
+num mul(num x, num y) {
+    return x * y;
+}
+
+num sub(num x, num y) {
+    return x - y;
+}
+
+num gcd(num x, num y) {
+    if (x % y == 0) {
+        return y;
+    }
+    else {
+        return gcd(y, x % y);
+    }
+}
+
+num main() {
+    num x;
+    num y;
+    num z;
+    x = sub(add(100, 100), 5);
+    y = div(1500, mul(5, 3));
+    z = gcd(x, y);
+    while (z >= 0) {
+        z = sub(z, 1);
+    }
+    return z + 10;
+}

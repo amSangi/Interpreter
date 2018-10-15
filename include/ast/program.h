@@ -1,5 +1,6 @@
 #pragma once
 
+#include <string>
 #include "ast_node.h"
 #include "function_decl.h"
 
@@ -11,6 +12,14 @@ public:
 	virtual ~Program() = default;
 
 	virtual void Accept(std::shared_ptr<IVisitor> v)			{	v->Visit(this);	}
+	virtual std::string ToString()								{
+		std::string res;
+		for (auto function : functions_) {
+			res += function->ToString();
+		}
+		res += main_->ToString();
+		return res;
+	}
 
 	void SetMain(FunDeclPtr main)								{	main_ = std::move(main); }
 	void AddFuncDecl(FunDeclPtr fun)							{	functions_.emplace_back(std::move(fun)); }

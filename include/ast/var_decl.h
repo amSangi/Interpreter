@@ -13,6 +13,8 @@ public:
 	virtual ~VarDecl() = default; 
 
 	virtual void Accept(std::shared_ptr<IVisitor> v)		{	v->Visit(this); }
+	virtual std::string ToString() 							{	return type_->ToString() + " "
+																		+ identifier_name_ + ";"; }
 
 	void SetType(TypePtr type)								{	type_ = std::move(type); }
 	void SetName(const string name)							{	identifier_name_ = name; }

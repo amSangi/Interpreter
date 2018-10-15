@@ -1,5 +1,6 @@
 #pragma once
 
+#include <string>
 #include "static_type.h"
 
 class NumType : public StaticType
@@ -9,6 +10,7 @@ public:
 	virtual ~NumType() = default; 
 	
 	virtual void Accept(std::shared_ptr<IVisitor> v)		{	v->Visit(this);	}
+	virtual std::string ToString()							{ 	return "num"; }
 	
 	virtual Type GetType() const							{	return type_; }
 private:

@@ -17,7 +17,7 @@ TEST_F(TestLexer, TestAllTokens) {
 			NumberKeyword, BoolKeyword, VoidKeyword, ForKeyword, WhileKeyword
 	}; 
 
-	TestFile("Tokens.txt", expected_types); 
+	TestFile("tokens.txt", expected_types);
 }
 
 
@@ -43,7 +43,7 @@ TEST_F(TestLexer, TestSimpleAdd) {
 		ReturnKeyword, IdentifierToken, SemiColonToken, CloseBraceToken
 	};
 
-	TestFile("Add.txt", expected_types);
+	TestFile("add.txt", expected_types);
 }
 
 
@@ -71,7 +71,7 @@ TEST_F(TestLexer, TestSimpleSubtract) {
         ReturnKeyword, IdentifierToken, SemiColonToken, CloseBraceToken
 	};
 
-	TestFile("Subtract.txt", expected_types);
+	TestFile("subtract.txt", expected_types);
 }
 
 
@@ -97,7 +97,7 @@ TEST_F(TestLexer, TestSimpleMultiply) {
 		ReturnKeyword, IdentifierToken, SemiColonToken, CloseBraceToken
 	};
 
-	TestFile("Multiply.txt", expected_types);
+	TestFile("multiply.txt", expected_types);
 }
 
 
@@ -119,7 +119,7 @@ TEST_F(TestLexer, TestSimpleDivision) {
 		ReturnKeyword, IdentifierToken, SemiColonToken, CloseBraceToken
 	};
 
-	TestFile("Division.txt", expected_types);
+	TestFile("division.txt", expected_types);
 }
 
 
@@ -146,5 +146,5 @@ TEST_F(TestLexer, TestSimpleProgram) {
 		ReturnKeyword, IdentifierToken, SemiColonToken, CloseBraceToken
 	};
 
-	TestFile("SimpleProgram.txt", expected_types); 
+	TestFile("simple_program.txt", expected_types);
 }

@@ -1,5 +1,6 @@
 #pragma once
 
+#include <string>
 #include "statement.h"
 #include "expression.h"
 #include "block.h"
@@ -13,6 +14,12 @@ public:
 	virtual ~While() = default; 
 	
 	virtual void Accept(std::shared_ptr<IVisitor> v)			{	v->Visit(this);	}
+	virtual std::string ToString()								{
+		std::string res = "while (" + test_->ToString() + ") {\n";
+		res += block_->ToString();
+		res += "\n}\n";
+		return res;
+	}
 
 	void SetPredicate(ExpPtr exp)								{	test_  = std::move(exp); }
 	void SetBlock(BlockPtr block)								{	block_ = std::move(block); }

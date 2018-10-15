@@ -1,5 +1,6 @@
 #pragma once
 
+#include <string>
 #include "expression.h"
 
 class Conditional : public Expression
@@ -10,6 +11,9 @@ public:
 	virtual ~Conditional() = default;
 
 	virtual void Accept(std::shared_ptr<IVisitor> v)			{	v->Visit(this);	}
+	virtual std::string ToString()								{ 	return predicate_->ToString()
+																			  + " ? " + tval_->ToString()
+																			  + " : " + fval_->ToString(); }
 
 	void SetPredicate(ExpPtr pred)								{	predicate_ = std::move(pred); }
 	void SetTrueValue(ExpPtr tval)								{	tval_ = std::move(tval); }

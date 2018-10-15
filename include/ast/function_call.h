@@ -13,6 +13,15 @@ public:
 	virtual ~FunctionCall() = default; 
 
 	virtual void Accept(std::shared_ptr<IVisitor> v)	{	v->Visit(this); }
+	virtual std::string ToString()						{
+		string res = identifier_name_ + "(";
+		for (int i = 0; i < arguments_.size(); ++i) {
+			res += arguments_[i]->ToString();
+			if (i + 1 < arguments_.size()) res += ", ";
+		}
+		res += ")";
+		return res;
+	}
 
 	void SetName(const string name)						{	identifier_name_ = name; }
 	void AddArgument(ExpPtr arg)						{	arguments_.emplace_back(std::move(arg)); }

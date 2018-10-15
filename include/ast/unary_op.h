@@ -1,5 +1,6 @@
 #pragma once
 
+#include <string>
 #include "expression.h"
 #include "operator.h"
 
@@ -11,14 +12,15 @@ public:
 	virtual ~UnaryOp() = default; 
 
 	virtual void Accept(std::shared_ptr<IVisitor> v)		{	v->Visit(this);	}
+	virtual std::string ToString()							{ 	return UOpToString(op_) + exp_->ToString(); }
 
-	void SetExpression(ExpPtr exp)							{	expression_ = std::move(exp); }
+	void SetExpression(ExpPtr exp)							{	exp_ = std::move(exp); }
 	void SetOp(UOperator op)								{	op_ = op; }
 	UOperator GetOperator() const							{	return op_; }
-	Expression* GetExpression() const						{	return expression_.get(); }
+	Expression* GetExpression() const						{	return exp_.get(); }
 private:
 	UOperator op_; 
-	ExpPtr expression_;
+	ExpPtr exp_;
 
 }; // class UnaryOp
 

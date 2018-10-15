@@ -1,5 +1,6 @@
 #pragma once
 
+#include <string>
 #include "statement.h"
 #include "expression.h"
 
@@ -9,7 +10,8 @@ public:
 	ReturnStm() = default; 
 	virtual ~ReturnStm() = default; 
 
-	virtual void Accept(std::shared_ptr<IVisitor> v)	{ v->Visit(this); }
+	virtual void Accept(std::shared_ptr<IVisitor> v)	{ 	v->Visit(this); }
+	virtual std::string ToString()						{	return "return " + exp_->ToString() + ";"; }
 
 	void SetExpression(ExpPtr exp)						{	exp_ = std::move(exp); }
 	Expression* GetExpression() const					{	return exp_.get(); }

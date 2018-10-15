@@ -54,7 +54,7 @@ shared_ptr<FunctionDecl> Parser::GetFunctionDecl() {
 	auto type = GetStaticType(); 
 	fun_decl->SetReturnType(type);
 
-	Expect(IdentifierToken);
+	Accept(IdentifierToken);
 	fun_decl->SetName(current_token_.GetValue()); 
 
 	Expect(OpenParanToken);
@@ -259,23 +259,25 @@ shared_ptr<Expression> Parser::GetAddSub() {
 }
 
 shared_ptr<Expression> Parser::GetMultDiv() {
-	auto mul_div = make_shared<BinaryOp>();
+	auto exp = make_shared<BinaryOp>();
 	auto left_exp = GetComparison();
 
 
     bool is_mul = current_token_.GetType() == AsteriskToken;
     bool is_div = current_token_.GetType() == ForwardSlashToken;
-    if (!is_mul && !is_div) return left_exp;
+    bool is_mod = current_token_.GetType() == ModToken;
+    if (!is_mul && !is_div && !is_mod) return left_exp;
 
-    mul_div->SetOperator(MULTIPLY);
-	if (is_div) mul_div->SetOperator(DIVIDE);
+	exp->SetOperator(MULTIPLY);
+	if (is_div) exp->SetOperator(DIVIDE);
+	if (is_mod) exp->SetOperator(MODULO);
 
 	NextToken(); // * /
 
-	mul_div->SetLeft(left_exp);
-	mul_div->SetRight(GetExpression());
+	exp->SetLeft(left_exp);
+	exp->SetRight(GetExpression());
 
-	return mul_div;
+	return exp;
 }
 
 
@@ -372,8 +374,9 @@ shared_ptr<FunctionCall> Parser::GetFunctionCall() {
 shared_ptr<Identifier> Parser::GetIdentifier() {
 	if (current_token_.GetType() != IdentifierToken) return nullptr;
 
+	auto id = make_shared<Identifier>(current_token_.GetValue());
 	NextToken();
-	return make_shared<Identifier>(current_token_.GetValue());
+	return id;
 }
 
 

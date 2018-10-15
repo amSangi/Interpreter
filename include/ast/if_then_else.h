@@ -1,5 +1,6 @@
 #pragma once
 
+#include <string>
 #include "expression.h"
 #include "statement.h"
 
@@ -12,6 +13,18 @@ public:
 	virtual ~IfThenElse() = default; 
 
 	virtual void Accept(std::shared_ptr<IVisitor> v)		{	v->Visit(this); }
+	virtual std::string ToString() {
+		std::string res = "if (" + predicate_->ToString() + ") \n";
+		res += then_->ToString() + "\n";
+		if (else_ != nullptr) {
+			res += "else \n";
+			res += else_->ToString();
+			res += "\n";
+		}
+		return res;
+	}
+
+
 
 	void SetPredicate(ExpPtr exp)							{	predicate_ = std::move(exp); }
 	void SetThen(StmPtr stm)								{	then_ = std::move(stm); }

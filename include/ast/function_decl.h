@@ -17,6 +17,20 @@ public:
 	virtual ~FunctionDecl() = default;
 
 	virtual void Accept(std::shared_ptr<IVisitor> v)			{	v->Visit(this); }
+	virtual std::string ToString()								{
+		std::string res = return_type_->ToString() + " " + name_ + "(";
+		for (int i = 0; i < formals_.size(); ++i) {
+			res += formals_[i]->ToString();
+			if (i + 1 < formals_.size()) res += ", ";
+		}
+		res += ") {\n";
+		for (auto statement : statements_) {
+			res += statement->ToString();
+			res += "\n";
+		}
+		res += "}\n";
+		return res;
+	}
 
 	void SetReturnType(TypePtr type)							{	return_type_ = std::move(type); }
 	void SetName(const string name)								{	name_ = name; }

@@ -7,4 +7,5 @@ add_library(${PROJECT_NAME} input_source.cpp
                             lexer.cpp
                             parser.cpp
                             token.cpp
-                            utility.cpp)
+                            utility.cpp
+                            operator.cpp)

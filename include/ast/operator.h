@@ -1,10 +1,13 @@
 #pragma once
 
+#include <string>
+
 enum BOperator {
 	PLUS, 
 	MINUS, 
 	MULTIPLY, 
-	DIVIDE, 
+	DIVIDE,
+	MODULO, 
 	AND, 
 	OR, 
 	GT, 
@@ -18,5 +21,7 @@ enum UOperator {
 	NOT, 
 }; // enum UOperator
 
+std::string BOpToString(BOperator op);
 
+std::string UOpToString(UOperator op);
 

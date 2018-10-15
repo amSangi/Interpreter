@@ -86,6 +86,8 @@ Token Lexer::RecognizeSymbol(char start)
 		return Token(AsteriskToken);
 	case '/':
 		return Token(ForwardSlashToken);
+	case '%':
+		return Token(ModToken);
 	case '!':
 		return Token(ExclamationToken);
 	case '&':

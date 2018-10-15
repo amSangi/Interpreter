@@ -21,7 +21,8 @@ enum TokenType {
 	PlusToken,							// +
 	MinusToken,							// -
 	AsteriskToken,						// *
-	ForwardSlashToken,					// / 
+	ForwardSlashToken,					// /
+	ModToken,							// %
 	DoubleAmpersandToken,				// &&
 	AmpersandToken,						// &
 	ExclamationToken,					// !
