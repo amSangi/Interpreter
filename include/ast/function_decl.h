@@ -1,7 +1,7 @@
 #pragma once
 
-#include <string>
 #include <vector>
+#include "function_param.h"
 #include "statement.h"
 #include "static_type.h"
 #include "var_decl.h"
@@ -9,7 +9,7 @@
 class FunctionDecl : public ASTNode
 {
 	typedef std::string string;
-	typedef std::shared_ptr<VarDecl> VarPtr;
+	typedef std::shared_ptr<FunctionParam> ParamPtr;
 	typedef std::shared_ptr<Statement> StmPtr;
 	typedef std::shared_ptr<StaticType> TypePtr;
 public:
@@ -34,17 +34,17 @@ public:
 
 	void SetReturnType(TypePtr type)							{	return_type_ = std::move(type); }
 	void SetName(const string name)								{	name_ = name; }
-	void AddFormal(VarPtr var)									{	formals_.emplace_back(std::move(var)); }
+	void AddFormal(ParamPtr var)								{	formals_.emplace_back(std::move(var)); }
 	void AddStm(StmPtr stm)										{	statements_.emplace_back(std::move(stm)); }
 
 	StaticType* GetReturnType() const							{	return return_type_.get(); }
 	string GetName() const										{	return name_; }
-	const std::vector<VarPtr>& GetFormals() const				{	return formals_; }
+	const std::vector<ParamPtr>& GetFormals() const				{	return formals_; }
 	const std::vector<StmPtr>& GetStatements() const			{	return statements_; }
 private:
 	TypePtr return_type_;
 	string name_;
-	std::vector<VarPtr> formals_;
+	std::vector<ParamPtr> formals_;
 	std::vector<StmPtr> statements_;
 
 }; // class FunctionDecl

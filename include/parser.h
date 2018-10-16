@@ -22,32 +22,33 @@ private:
 	void Error(const std::string msg); 
 
 	// Program
-	std::shared_ptr<FunctionDecl> GetMain();
-	std::shared_ptr<FunctionDecl> GetFunctionDecl();
-	
+	std::shared_ptr<FunctionDecl> ConsumeMain();
+	std::shared_ptr<FunctionDecl> ConsumeFunctionDecl();
+	std::shared_ptr<FunctionParam> ConsumeFunctionParam();
+
 	// Statements
-	std::shared_ptr<Statement> GetStatement();
-	std::shared_ptr<ReturnStm> GetReturnStm();
-	std::shared_ptr<Block> GetBlock();
-	std::shared_ptr<IfThenElse> GetIf();
-	std::shared_ptr<While> GetWhile();
-	std::shared_ptr<VarDecl> GetVarDecl();
-	std::shared_ptr<Assignment> GetAssignment();
+	std::shared_ptr<Statement> ConsumeStatement();
+	std::shared_ptr<ReturnStm> ConsumeReturnStm();
+	std::shared_ptr<Block> ConsumeBlock();
+	std::shared_ptr<IfThenElse> ConsumeIf();
+	std::shared_ptr<While> ConsumeWhile();
+	std::shared_ptr<VarDecl> ConsumeVarDecl();
+	std::shared_ptr<Assignment> ConsumeAssignment();
 	
 	// Expressions
-	std::shared_ptr<Expression> GetExpression();
-	std::shared_ptr<Expression> GetUnaryOp();
-	std::shared_ptr<Expression> GetAndOrExpression();
-	std::shared_ptr<Expression> GetConditional();
-	std::shared_ptr<Expression> GetAddSub();
-	std::shared_ptr<Expression> GetMultDiv();
-	std::shared_ptr<Expression> GetComparison();
-	std::shared_ptr<Expression> GetPrimaryExpression();
-	std::shared_ptr<FunctionCall> GetFunctionCall();
-	std::shared_ptr<Identifier> GetIdentifier();
+	std::shared_ptr<Expression> ConsumeExpression();
+	std::shared_ptr<Expression> ConsumeUnaryOp();
+	std::shared_ptr<Expression> ConsumeAndOrExpression();
+	std::shared_ptr<Expression> ConsumeConditional();
+	std::shared_ptr<Expression> ConsumeAddSub();
+	std::shared_ptr<Expression> ConsumeMultDiv();
+	std::shared_ptr<Expression> ConsumeComparison();
+	std::shared_ptr<Expression> ConsumePrimaryExpression();
+	std::shared_ptr<FunctionCall> ConsumeFunctionCall();
+	std::shared_ptr<Identifier> ConsumeIdentifier();
 	
 	// Type
-	std::shared_ptr<StaticType> GetStaticType();
+	std::shared_ptr<StaticType> ConsumeStaticType();
 
 
 };  // class Parser

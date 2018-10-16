@@ -1,6 +1,5 @@
 #pragma once
 
-#include <string>
 #include "ast_node.h"
 #include "function_decl.h"
 

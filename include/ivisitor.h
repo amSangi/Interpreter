@@ -8,7 +8,8 @@ class Block;
 class IfThenElse; 
 class While; 
 class VarDecl;
-class FunctionDecl; 
+class FunctionDecl;
+class FunctionParam;
 class MainFunction; 
 class Identifier; 
 class BinaryOp; 
@@ -41,6 +42,7 @@ public:
 	// Functions
 	virtual void Visit(FunctionDecl* n) = 0;
 	virtual void Visit(MainFunction* n) = 0;
+	virtual void Visit(FunctionParam* n) = 0;
 
 	// Expressions
 	virtual void Visit(Identifier* n) = 0;

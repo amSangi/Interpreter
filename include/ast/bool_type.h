@@ -1,6 +1,5 @@
 #pragma once
 
-#include <string>
 #include "static_type.h"
 
 class BoolType : public StaticType

@@ -18,16 +18,17 @@ shared_ptr<Program> Parser::Parse() {
 
 	// Parse function declarations
 	while (next_token_.GetType() != MainKeyword) {
-		program->AddFuncDecl(GetFunctionDecl());
+		program->AddFuncDecl(ConsumeFunctionDecl());
 	}
 
-	program->SetMain(GetMain());
+	program->SetMain(ConsumeMain());
 
 	Expect(EndOfFileToken);
 	return program;
 }
 
-shared_ptr<FunctionDecl> Parser::GetMain() {
+/* ---------- Functions ---------- */
+shared_ptr<FunctionDecl> Parser::ConsumeMain() {
 	auto main = make_shared<FunctionDecl>();
 
 	Expect(NumberKeyword);
@@ -42,16 +43,16 @@ shared_ptr<FunctionDecl> Parser::GetMain() {
 
 	// Parse statements
 	while (current_token_.GetType() != CloseBraceToken) {
-		main->AddStm(GetStatement());
+		main->AddStm(ConsumeStatement());
 	}
 
 	Expect(CloseBraceToken);
 	return main;
 }
 
-shared_ptr<FunctionDecl> Parser::GetFunctionDecl() {
+shared_ptr<FunctionDecl> Parser::ConsumeFunctionDecl() {
 	auto fun_decl = make_shared<FunctionDecl>();
-	auto type = GetStaticType(); 
+	auto type = ConsumeStaticType();
 	fun_decl->SetReturnType(type);
 
 	std::string val = current_token_.GetValue();
@@ -64,7 +65,7 @@ shared_ptr<FunctionDecl> Parser::GetFunctionDecl() {
 	while (current_token_.GetType() == BoolKeyword
            || current_token_.GetType() == VoidKeyword
            || current_token_.GetType() == NumberKeyword) {
-		fun_decl->AddFormal(GetVarDecl());
+		fun_decl->AddFormal(ConsumeFunctionParam());
 		if (current_token_.GetType() == CommaToken) {
 		    NextToken();
 		}
@@ -75,40 +76,50 @@ shared_ptr<FunctionDecl> Parser::GetFunctionDecl() {
 
 	// Parse statements
 	while (current_token_.GetType() != CloseBraceToken) {
-		fun_decl->AddStm(GetStatement());
+		fun_decl->AddStm(ConsumeStatement());
 	}
 
 	Expect(CloseBraceToken);
 	return fun_decl; 
 }
 
-shared_ptr<Statement> Parser::GetStatement() {
+shared_ptr<FunctionParam> Parser::ConsumeFunctionParam() {
+	auto param = make_shared<FunctionParam>();
+
+	param->SetType(ConsumeStaticType());
+	param->SetName(ConsumeIdentifier()->GetName());
+
+	return param;
+}
+
+/* ---------- Statements ---------- */
+shared_ptr<Statement> Parser::ConsumeStatement() {
 	shared_ptr<Statement> stm;
 
 	switch (current_token_.GetType()) {
 	case OpenBraceToken:
-		stm = GetBlock(); 
+		stm = ConsumeBlock();
 		break;
 	case IfKeyword:
-		stm = GetIf(); 
+		stm = ConsumeIf();
 		break;
 	case WhileKeyword:
-		stm = GetWhile(); 
+		stm = ConsumeWhile();
 		break;
 	case NumberKeyword:
-		stm = GetVarDecl(); 
+		stm = ConsumeVarDecl();
 		Expect(SemiColonToken); 
 		break;
 	case BoolKeyword:
-		stm = GetVarDecl(); 
+		stm = ConsumeVarDecl();
 		Expect(SemiColonToken); 
 		break;
 	case ReturnKeyword:
-		stm = GetReturnStm(); 
+		stm = ConsumeReturnStm();
 		Expect(SemiColonToken); 
 		break;
 	case IdentifierToken:
-		stm = GetAssignment(); 
+		stm = ConsumeAssignment();
 		Expect(SemiColonToken); 
 		break;
 	default:
@@ -118,13 +129,13 @@ shared_ptr<Statement> Parser::GetStatement() {
 	return stm;
 }
 
-shared_ptr<Block> Parser::GetBlock() {
+shared_ptr<Block> Parser::ConsumeBlock() {
 	auto block = make_shared<Block>();
 
 	Expect(OpenBraceToken); 
 	
 	while (current_token_.GetType() != CloseBraceToken) {
-		block->AddStatement(GetStatement());
+		block->AddStatement(ConsumeStatement());
 	}
 
 	Expect(CloseBraceToken); 
@@ -132,69 +143,67 @@ shared_ptr<Block> Parser::GetBlock() {
 	return block; 
 }
 
-
-shared_ptr<ReturnStm> Parser::GetReturnStm() {
+shared_ptr<ReturnStm> Parser::ConsumeReturnStm() {
 	auto return_stm = make_shared<ReturnStm>();
 
 	Expect(ReturnKeyword);
 
 	if (current_token_.GetType() != SemiColonToken) {
-        return_stm->SetExpression(GetExpression());
+        return_stm->SetExpression(ConsumeExpression());
     }
 
 	return return_stm; 
 }
 
-
-shared_ptr<IfThenElse> Parser::GetIf() {
+shared_ptr<IfThenElse> Parser::ConsumeIf() {
 	auto if_then_else = make_shared<IfThenElse>();
 
 	Expect(IfKeyword); 
 	Expect(OpenParanToken); 
 
-	if_then_else->SetPredicate(GetExpression());
+	if_then_else->SetPredicate(ConsumeExpression());
 
 	Expect(CloseParanToken); 
 	
 	// Parse then block
-	if_then_else->SetThen(GetBlock());
+	if_then_else->SetThen(ConsumeBlock());
 
 	// Parse else block - if one exists
 	if (Accept(ElseKeyword)) {
-		if_then_else->SetElse(GetBlock());
+		if_then_else->SetElse(ConsumeBlock());
 	}
 
 	return if_then_else; 
 }
 
-shared_ptr<While> Parser::GetWhile() {
+shared_ptr<While> Parser::ConsumeWhile() {
 	auto while_node = make_shared<While>();
 
 	Expect(WhileKeyword); 
 	Expect(OpenParanToken);
 	// Parse predicate
-	while_node->SetPredicate(GetExpression());
+	while_node->SetPredicate(ConsumeExpression());
 	Expect(CloseParanToken);
-	while_node->SetBlock(GetBlock());
+	while_node->SetBlock(ConsumeBlock());
 
 	return while_node; 
 }
 
-shared_ptr<VarDecl> Parser::GetVarDecl() {
+shared_ptr<VarDecl> Parser::ConsumeVarDecl() {
 	auto var_decl = make_shared<VarDecl>();
 
-	var_decl->SetType(GetStaticType());
-	var_decl->SetName(GetIdentifier()->GetName());
+	var_decl->SetType(ConsumeStaticType());
+	var_decl->SetName(ConsumeIdentifier()->GetName());
 
 	return var_decl; 
 }
 
-shared_ptr<Assignment> Parser::GetAssignment() {
+shared_ptr<Assignment> Parser::ConsumeAssignment() {
 	auto assign = make_shared<Assignment>();
 
-	auto id = GetIdentifier(); 
+	auto id = ConsumeIdentifier();
 	Expect(EqualToken); 
-	auto exp = GetExpression();
+	auto exp = ConsumeExpression();
 
 	assign->SetLValue(id->GetName()); 
 	assign->SetRValue(exp);
@@ -202,14 +211,14 @@ shared_ptr<Assignment> Parser::GetAssignment() {
 	return assign; 
 }
 
-
-shared_ptr<Expression> Parser::GetExpression() {
-    return GetAndOrExpression();
+/* ---------- Expressions ---------- */
+shared_ptr<Expression> Parser::ConsumeExpression() {
+    return ConsumeAndOrExpression();
 }
 
-shared_ptr<Expression> Parser::GetAndOrExpression() {
+shared_ptr<Expression> Parser::ConsumeAndOrExpression() {
 	auto and_or = make_shared<BinaryOp>();
-	auto left_exp = GetConditional();
+	auto left_exp = ConsumeConditional();
 
     bool is_and = current_token_.GetType() == DoubleAmpersandToken;
     bool is_or = current_token_.GetType() == DoubleBarToken;
@@ -220,32 +229,61 @@ shared_ptr<Expression> Parser::GetAndOrExpression() {
     NextToken(); // && ||
 
 	and_or->SetLeft(left_exp);
-	and_or->SetRight(GetExpression());
+	and_or->SetRight(ConsumeExpression());
 
 	return and_or; 
 }
 
-
-shared_ptr<Expression> Parser::GetConditional() {
+shared_ptr<Expression> Parser::ConsumeConditional() {
 	auto conditional = make_shared<Conditional>();
 
 	// Parse predicate
-	auto predicate = GetAddSub();
+	auto predicate = ConsumeComparison();
 	if (!Accept(QuestionToken)) return predicate; 
 
-	auto tval = GetExpression();
+	auto tval = ConsumeExpression();
 	Expect(ColonToken);
 	conditional->SetPredicate(predicate);
 	conditional->SetTrueValue(tval);
-	conditional->SetFalseValue(GetExpression());
+	conditional->SetFalseValue(ConsumeExpression());
 
 	return conditional;
 }
 
+shared_ptr<Expression> Parser::ConsumeComparison() {
+    auto comp = make_shared<BinaryOp>();
+    auto left_exp = ConsumeAddSub();
 
-shared_ptr<Expression> Parser::GetAddSub() {
+    switch (current_token_.GetType()) {
+        case GreaterThanToken:
+            comp->SetOperator(GT);
+            break;
+        case GreaterThanEqualToken:
+            comp->SetOperator(GTE);
+            break;
+        case EqualEqualToken:
+            comp->SetOperator(EQ);
+            break;
+        case LessThanToken:
+            comp->SetOperator(LT);
+            break;
+        case LessThanEqualToken:
+            comp->SetOperator(LTE);
+            break;
+        default:
+            return left_exp;
+    }
+
+    NextToken(); // > >= == < <=
+
+    comp->SetLeft(left_exp);
+    comp->SetRight(ConsumeAddSub());
+    return comp;
+}
+
+shared_ptr<Expression> Parser::ConsumeAddSub() {
 	auto add_sub = make_shared<BinaryOp>();
-	auto left_exp = GetMultDiv();
+	auto left_exp = ConsumeMultDiv();
 
     bool is_add = current_token_.GetType() == PlusToken;
     bool is_sub = current_token_.GetType() == MinusToken;
@@ -257,14 +295,14 @@ shared_ptr<Expression> Parser::GetAddSub() {
 	NextToken(); // + -
 
 	add_sub->SetLeft(left_exp);
-	add_sub->SetRight(GetExpression());
+	add_sub->SetRight(ConsumeExpression());
 
 	return add_sub;
 }
 
-shared_ptr<Expression> Parser::GetMultDiv() {
+shared_ptr<Expression> Parser::ConsumeMultDiv() {
 	auto exp = make_shared<BinaryOp>();
-	auto left_exp = GetComparison();
+	auto left_exp = ConsumePrimaryExpression();
 
 
     bool is_mul = current_token_.GetType() == AsteriskToken;
@@ -279,53 +317,21 @@ shared_ptr<Expression> Parser::GetMultDiv() {
 	NextToken(); // * /
 
 	exp->SetLeft(left_exp);
-	exp->SetRight(GetExpression());
+	exp->SetRight(ConsumePrimaryExpression());
 
 	return exp;
 }
 
-
-shared_ptr<Expression> Parser::GetComparison() {
-    auto comp = make_shared<BinaryOp>();
-    auto left_exp = GetPrimaryExpression();
-
-    switch (current_token_.GetType()) {
-    	case GreaterThanToken:
-    		comp->SetOperator(GT);
-    		break;
-    	case GreaterThanEqualToken:
-    		comp->SetOperator(GTE);
-    		break;
-    	case EqualEqualToken:
-    		comp->SetOperator(EQ);
-    		break;
-    	case LessThanToken:
-    		comp->SetOperator(LT);
-    		break;
-    	case LessThanEqualToken:
-    		comp->SetOperator(LTE);
-    		break;
-		default:
-			return left_exp;
-    }
-
-    NextToken(); // > >= == < <=
-
-    comp->SetLeft(left_exp);
-    comp->SetRight(GetExpression());
-	return comp;
-}
-
-shared_ptr<Expression> Parser::GetPrimaryExpression() {
+shared_ptr<Expression> Parser::ConsumePrimaryExpression() {
 
 	shared_ptr<Expression> exp;
 
 	switch (current_token_.GetType()) {
 	case IdentifierToken:
 		if (next_token_.GetType() == OpenParanToken) {
-		    exp = GetFunctionCall();
+		    exp = ConsumeFunctionCall();
 		}
-		else exp = GetIdentifier();
+		else exp = ConsumeIdentifier();
         break;
     case NumericLiteral:
         exp = make_shared<NumLiteral>(std::stod(current_token_.GetValue()));
@@ -340,11 +346,11 @@ shared_ptr<Expression> Parser::GetPrimaryExpression() {
         NextToken();
         break;
     case ExclamationToken:
-        exp = GetUnaryOp();
+        exp = ConsumeUnaryOp();
         break;
 	case OpenParanToken:
 	    NextToken();
-		exp = GetExpression(); 
+		exp = ConsumeExpression();
 		Expect(CloseParanToken);
 		break;
 	default:
@@ -354,22 +360,22 @@ shared_ptr<Expression> Parser::GetPrimaryExpression() {
 	return exp;
 }
 
-shared_ptr<Expression> Parser::GetUnaryOp() {
+shared_ptr<Expression> Parser::ConsumeUnaryOp() {
     Expect(ExclamationToken);
     auto unary_op = make_shared<UnaryOp>();
     unary_op->SetOp(NOT);
-    unary_op->SetExpression(GetExpression());
+    unary_op->SetExpression(ConsumeExpression());
 
     return unary_op;
 }
 
-shared_ptr<FunctionCall> Parser::GetFunctionCall() {
+shared_ptr<FunctionCall> Parser::ConsumeFunctionCall() {
 	auto call = make_shared<FunctionCall>();
 
-	call->SetName(GetIdentifier()->GetName());
+	call->SetName(ConsumeIdentifier()->GetName());
 	Expect(OpenParanToken);
 	while (current_token_.GetType() != CloseParanToken) {
-		call->AddArgument(GetExpression());
+		call->AddArgument(ConsumeExpression());
 		if (current_token_.GetType() == CommaToken) {
 		    NextToken();
 		}
@@ -379,8 +385,7 @@ shared_ptr<FunctionCall> Parser::GetFunctionCall() {
 	return call; 
 }
 
-
-shared_ptr<Identifier> Parser::GetIdentifier() {
+shared_ptr<Identifier> Parser::ConsumeIdentifier() {
 	if (current_token_.GetType() != IdentifierToken) return nullptr;
 
 	auto id = make_shared<Identifier>(current_token_.GetValue());
@@ -389,7 +394,7 @@ shared_ptr<Identifier> Parser::GetIdentifier() {
 }
 
 
-shared_ptr<StaticType> Parser::GetStaticType() {
+shared_ptr<StaticType> Parser::ConsumeStaticType() {
 	shared_ptr<StaticType> type;
 
 	switch (current_token_.GetType()) {
@@ -412,11 +417,11 @@ shared_ptr<StaticType> Parser::GetStaticType() {
 }
 
 
+/* ---------- Helpers ---------- */
 void Parser::NextToken() {
 	current_token_ =  next_token_; 
 	next_token_ = lexer_.GetNext(); 
 }
-
 
 bool Parser::Expect(TokenType token) {
 	if (Accept(token)) {
@@ -432,7 +437,6 @@ bool Parser::Expect(TokenType token) {
 	return false; 
 }
 
-
 bool Parser::Accept(TokenType token) {
 	if (current_token_.GetType() == token) {
 		NextToken();
@@ -441,7 +445,6 @@ bool Parser::Accept(TokenType token) {
 
 	return false; 
 }
-
 
 void Parser::Error(const std::string msg) {
     std::cout << msg << std::endl;
