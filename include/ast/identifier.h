@@ -7,10 +7,10 @@ class Identifier : public Expression
 	typedef std::string string;
 public:
 	explicit Identifier(string name) : name_(name) {}
-	virtual ~Identifier() = default; 
+	~Identifier() override = default;
 
-	virtual void Accept(std::shared_ptr<IVisitor> v)			{	v->Visit(this); }
-	virtual std::string ToString()								{	return name_; }
+	void Accept(std::shared_ptr<IVisitor> v) override			{	v->Visit(this); }
+	std::string ToString() override								{	return name_; }
 
 	string GetName() const										{	return name_; }
 private:

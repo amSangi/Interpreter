@@ -8,11 +8,12 @@ class Assignment : public Statement
 	typedef std::string string;
 	typedef std::shared_ptr<Expression> ExpPtr;
 public:
-	Assignment() = default; 
-	virtual ~Assignment() = default;
-	
-	virtual void Accept(std::shared_ptr<IVisitor> v)	{	v->Visit(this); }
-	virtual std::string ToString()						{ 	return identifier_name_ + " = " + value_->ToString() + ";";}
+	Assignment() = default;
+	~Assignment() override = default;
+
+	void Accept(std::shared_ptr<IVisitor> v) override 	{	v->Visit(this); }
+	std::string ToString() override 					{ 	return identifier_name_ + " = "
+																   + value_->ToString() + ";";}
 
 	void SetLValue(const string value)					{	identifier_name_ = value; }
 	void SetRValue(ExpPtr value)						{	value_ = std::move(value); }

@@ -8,10 +8,10 @@ class Program : public ASTNode
 	typedef std::shared_ptr<FunctionDecl> FunDeclPtr;
 public:
 	Program() = default; 
-	virtual ~Program() = default;
+	~Program() override = default;
 
-	virtual void Accept(std::shared_ptr<IVisitor> v)			{	v->Visit(this);	}
-	virtual std::string ToString()								{
+	void Accept(std::shared_ptr<IVisitor> v) override			{	v->Visit(this);	}
+	std::string ToString() override								{
 		std::string res;
 		for (auto function : functions_) {
 			res += function->ToString();

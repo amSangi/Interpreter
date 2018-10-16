@@ -6,10 +6,10 @@ class NumLiteral : public Expression
 {
 public:
 	explicit NumLiteral(double value) : value_(value) {}
-	virtual ~NumLiteral() = default;
+	~NumLiteral() override = default;
 
-	virtual void Accept(std::shared_ptr<IVisitor> v)		{	v->Visit(this); }
-	virtual std::string ToString()							{ 	return std::to_string(value_); }
+	void Accept(std::shared_ptr<IVisitor> v) override		{	v->Visit(this); }
+	std::string ToString() override							{ 	return std::to_string(value_); }
 
 	double GetValue() const									{	return value_; }
 private:

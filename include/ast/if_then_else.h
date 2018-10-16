@@ -9,10 +9,10 @@ class IfThenElse : public Statement
 	typedef std::shared_ptr<Statement> StmPtr;
 public:
 	IfThenElse() = default; 
-	virtual ~IfThenElse() = default; 
+	~IfThenElse() override = default;
 
-	virtual void Accept(std::shared_ptr<IVisitor> v)		{	v->Visit(this); }
-	virtual std::string ToString() {
+	void Accept(std::shared_ptr<IVisitor> v) override		{	v->Visit(this); }
+	std::string ToString() override 						{
 		std::string res = "if (" + predicate_->ToString() + ")\n";
 		res += then_->ToString() + "\n";
 		if (else_ != nullptr) {

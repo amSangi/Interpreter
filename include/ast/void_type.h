@@ -6,12 +6,12 @@ class VoidType : public StaticType
 {
 public:
 	VoidType() = default; 
-	virtual ~VoidType() = default; 
+	~VoidType() override = default;
 	
-	virtual void Accept(std::shared_ptr<IVisitor> v)		{	v->Visit(this); }
-	virtual std::string ToString()							{	return "void"; }
+	void Accept(std::shared_ptr<IVisitor> v) override		{	v->Visit(this); }
+	std::string ToString() override							{	return "void"; }
 
-	virtual Type GetType() const							{	return type_; }
+	Type GetType() const override							{	return type_; }
 private:
 	Type type_ = VOID; 
 

@@ -7,10 +7,10 @@ class ReturnStm : public Statement {
 	typedef std::shared_ptr<Expression> ExpPtr;
 public:
 	ReturnStm() = default; 
-	virtual ~ReturnStm() = default; 
+	~ReturnStm() override = default;
 
-	virtual void Accept(std::shared_ptr<IVisitor> v)	{ 	v->Visit(this); }
-	virtual std::string ToString()						{	return "return " + exp_->ToString() + ";"; }
+	void Accept(std::shared_ptr<IVisitor> v) override	{ 	v->Visit(this); }
+	std::string ToString() override						{	return "return " + exp_->ToString() + ";"; }
 
 	void SetExpression(ExpPtr exp)						{	exp_ = std::move(exp); }
 	Expression* GetExpression() const					{	return exp_.get(); }

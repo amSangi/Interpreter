@@ -7,11 +7,11 @@ class BinaryOp : public Expression
 {
 	typedef std::shared_ptr<Expression> ExpPtr;
 public:
-	BinaryOp() = default; 
-	virtual ~BinaryOp() = default; 
+	BinaryOp() = default;
+	~BinaryOp() override = default;
 
-	virtual void Accept(std::shared_ptr<IVisitor> v)			{	v->Visit(this); }
-	virtual std::string ToString()								{	return "(" + left_->ToString() + ")"
+	void Accept(std::shared_ptr<IVisitor> v) override 			{	v->Visit(this); }
+	std::string ToString() override 							{	return "(" + left_->ToString() + ")"
 																		  	+ " " + BOpToString(op_) + " "
 																			+ "(" + right_->ToString() + ")"; }
 

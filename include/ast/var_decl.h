@@ -9,10 +9,10 @@ class VarDecl : public Statement
 	typedef std::shared_ptr<StaticType> TypePtr;
 public:
 	VarDecl() = default; 
-	virtual ~VarDecl() = default; 
+	~VarDecl() override = default;
 
-	virtual void Accept(std::shared_ptr<IVisitor> v)		{	v->Visit(this); }
-	virtual std::string ToString() 							{	return type_->ToString() + " "
+	void Accept(std::shared_ptr<IVisitor> v) override		{	v->Visit(this); }
+	std::string ToString() override 						{	return type_->ToString() + " "
 																		+ identifier_name_ + ";"; }
 
 	void SetType(TypePtr type)								{	type_ = std::move(type); }

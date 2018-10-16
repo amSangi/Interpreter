@@ -27,8 +27,6 @@ class ReturnStm;
 class IVisitor
 {
 public:
-	virtual ~IVisitor() = 0; 
-	
 	virtual void Visit(Program* n) = 0; 
 	
 	// Statements

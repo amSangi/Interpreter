@@ -8,13 +8,13 @@ class Block : public Statement
 {
 	typedef std::shared_ptr<Statement> StmPtr;
 public:
-	Block() = default; 
-	virtual ~Block() = default; 
+	Block() = default;
+	~Block() override = default;
 
-	virtual void Accept(std::shared_ptr<IVisitor> v)				{	v->Visit(this); }
-	virtual std::string ToString()									{
+	void Accept(std::shared_ptr<IVisitor> v) override 				{	v->Visit(this); }
+	std::string ToString() override 								{
 		std::string res = "{\n";
-		for (auto statement : statements_) {
+		for (const auto &statement : statements_) {
 			res += "";
 			res += statement->ToString();
 			res += "\n";

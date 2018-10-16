@@ -6,12 +6,12 @@ class BoolType : public StaticType
 {
 public:
 	BoolType() = default;
-	virtual ~BoolType() = default; 
+	~BoolType() override = default;
 
-	virtual void Accept(std::shared_ptr<IVisitor> v)	{	v->Visit(this); }
-	virtual std::string ToString()						{   return "bool"; }
+	void Accept(std::shared_ptr<IVisitor> v) override 	{	v->Visit(this); }
+	std::string ToString() override 					{   return "bool"; }
 
-	virtual Type GetType() const						{	return type_; }
+	Type GetType() const override						{	return type_; }
 private:
 	Type type_ = BOOL; 
 

@@ -8,10 +8,10 @@ class UnaryOp : public Expression
 	typedef std::shared_ptr<Expression> ExpPtr;
 public:
 	UnaryOp() = default; 
-	virtual ~UnaryOp() = default; 
+	~UnaryOp() override = default;
 
-	virtual void Accept(std::shared_ptr<IVisitor> v)		{	v->Visit(this);	}
-	virtual std::string ToString()							{ 	return UOpToString(op_)
+	void Accept(std::shared_ptr<IVisitor> v) override		{	v->Visit(this);	}
+	std::string ToString() override							{ 	return UOpToString(op_)
 																	  	+ "(" + exp_->ToString() + ")"; }
 
 	void SetExpression(ExpPtr exp)							{	exp_ = std::move(exp); }

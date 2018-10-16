@@ -9,10 +9,10 @@ class FunctionCall : public Expression
 	typedef std::shared_ptr<Expression> ExpPtr;
 public:
 	FunctionCall() = default;
-	virtual ~FunctionCall() = default; 
+	~FunctionCall() override = default;
 
-	virtual void Accept(std::shared_ptr<IVisitor> v)	{	v->Visit(this); }
-	virtual std::string ToString()						{
+	void Accept(std::shared_ptr<IVisitor> v) override	{	v->Visit(this); }
+	std::string ToString() override						{
 		string res = identifier_name_ + "(";
 		for (int i = 0; i < arguments_.size(); ++i) {
 			res += arguments_[i]->ToString();

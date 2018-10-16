@@ -10,10 +10,10 @@ class While : public Statement
 	typedef std::shared_ptr<Block> BlockPtr;
 public:
 	While() = default; 
-	virtual ~While() = default; 
+	~While() override = default;
 	
-	virtual void Accept(std::shared_ptr<IVisitor> v)			{	v->Visit(this);	}
-	virtual std::string ToString()								{
+	void Accept(std::shared_ptr<IVisitor> v) override			{	v->Visit(this);	}
+	std::string ToString() override								{
 		std::string res = "while (" + test_->ToString() + ")\n";
 		res += block_->ToString();
 		return res;

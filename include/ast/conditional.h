@@ -7,10 +7,10 @@ class Conditional : public Expression
 	typedef std::shared_ptr<Expression> ExpPtr;
 public:
 	Conditional() = default; 
-	virtual ~Conditional() = default;
+	~Conditional() override = default;
 
-	virtual void Accept(std::shared_ptr<IVisitor> v)			{	v->Visit(this);	}
-	virtual std::string ToString()								{ 	return predicate_->ToString()
+	void Accept(std::shared_ptr<IVisitor> v) override			{	v->Visit(this);	}
+	std::string ToString() override								{ 	return predicate_->ToString()
 																			  + " ? " + tval_->ToString()
 																			  + " : " + fval_->ToString(); }
 

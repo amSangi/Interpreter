@@ -14,10 +14,10 @@ class FunctionDecl : public ASTNode
 	typedef std::shared_ptr<StaticType> TypePtr;
 public:
 	FunctionDecl() = default; 
-	virtual ~FunctionDecl() = default;
+	~FunctionDecl() override = default;
 
-	virtual void Accept(std::shared_ptr<IVisitor> v)			{	v->Visit(this); }
-	virtual std::string ToString()								{
+	void Accept(std::shared_ptr<IVisitor> v) override			{	v->Visit(this); }
+	std::string ToString() override								{
 		std::string res = return_type_->ToString() + " " + name_ + "(";
 		for (int i = 0; i < formals_.size(); ++i) {
 			res += formals_[i]->ToString();
