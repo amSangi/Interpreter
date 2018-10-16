@@ -36,4 +36,5 @@ protected:
 			EXPECT_EQ(expected_types[i], tokens[i].GetType());
 		}
 	}
-};
+
+}; // class TestLexer

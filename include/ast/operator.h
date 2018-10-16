@@ -15,10 +15,12 @@ enum BOperator {
 	LT, 
 	LTE, 
 	EQ
+
 }; // enum BOperator
 
 enum UOperator {
-	NOT, 
+	NOT,
+
 }; // enum UOperator
 
 std::string BOpToString(BOperator op);

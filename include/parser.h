@@ -50,5 +50,4 @@ private:
 	// Type
 	std::shared_ptr<StaticType> ConsumeStaticType();
 
-
 };  // class Parser

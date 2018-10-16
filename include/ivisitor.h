@@ -58,6 +58,5 @@ public:
 	virtual void Visit(BoolType* n) = 0;
 	virtual void Visit(VoidType* n) = 0;
 
-
 }; // interface IVisitor
 
