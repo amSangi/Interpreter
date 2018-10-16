@@ -12,8 +12,9 @@ public:
 	virtual ~BinaryOp() = default; 
 
 	virtual void Accept(std::shared_ptr<IVisitor> v)			{	v->Visit(this); }
-	virtual std::string ToString()								{	return left_->ToString() + " " + BOpToString(op_)
-																		+ " " + right_->ToString(); }
+	virtual std::string ToString()								{	return "(" + left_->ToString() + ")"
+																		  	+ " " + BOpToString(op_) + " "
+																			+ "(" + right_->ToString() + ")"; }
 
 	void SetOperator(BOperator op)								{	op_ = op; }
 	void SetLeft(ExpPtr left)									{	left_ = std::move(left); }

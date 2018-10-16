@@ -54,8 +54,9 @@ shared_ptr<FunctionDecl> Parser::GetFunctionDecl() {
 	auto type = GetStaticType(); 
 	fun_decl->SetReturnType(type);
 
-	Accept(IdentifierToken);
-	fun_decl->SetName(current_token_.GetValue()); 
+	std::string val = current_token_.GetValue();
+	Expect(IdentifierToken);
+	fun_decl->SetName(val);
 
 	Expect(OpenParanToken);
 
@@ -64,6 +65,9 @@ shared_ptr<FunctionDecl> Parser::GetFunctionDecl() {
            || current_token_.GetType() == VoidKeyword
            || current_token_.GetType() == NumberKeyword) {
 		fun_decl->AddFormal(GetVarDecl());
+		if (current_token_.GetType() == CommaToken) {
+		    NextToken();
+		}
 	}
 
 	Expect(CloseParanToken);
@@ -318,7 +322,9 @@ shared_ptr<Expression> Parser::GetPrimaryExpression() {
 
 	switch (current_token_.GetType()) {
 	case IdentifierToken:
-		if (next_token_.GetType() == OpenParanToken) exp = GetFunctionCall(); 
+		if (next_token_.GetType() == OpenParanToken) {
+		    exp = GetFunctionCall();
+		}
 		else exp = GetIdentifier();
         break;
     case NumericLiteral:
@@ -364,6 +370,9 @@ shared_ptr<FunctionCall> Parser::GetFunctionCall() {
 	Expect(OpenParanToken);
 	while (current_token_.GetType() != CloseParanToken) {
 		call->AddArgument(GetExpression());
+		if (current_token_.GetType() == CommaToken) {
+		    NextToken();
+		}
 	}
 	Expect(CloseParanToken); 
 

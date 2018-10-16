@@ -11,7 +11,7 @@ num mul(num x, num y) {
 }
 
 num sub(num x, num y) {
-    return x - y;
+    return (x - y);
 }
 
 num gcd(num x, num y) {

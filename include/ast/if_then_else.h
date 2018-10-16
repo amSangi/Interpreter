@@ -14,12 +14,11 @@ public:
 
 	virtual void Accept(std::shared_ptr<IVisitor> v)		{	v->Visit(this); }
 	virtual std::string ToString() {
-		std::string res = "if (" + predicate_->ToString() + ") \n";
+		std::string res = "if (" + predicate_->ToString() + ")\n";
 		res += then_->ToString() + "\n";
 		if (else_ != nullptr) {
-			res += "else \n";
+			res += "else\n";
 			res += else_->ToString();
-			res += "\n";
 		}
 		return res;
 	}
