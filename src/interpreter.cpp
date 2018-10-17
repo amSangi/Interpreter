@@ -8,7 +8,7 @@ void Interpreter::Visit(Program* n) {
 
 }
 
-// Statements
+/* ---------- Statements ---------- */
 void Interpreter::Visit(Assignment* n) {
 
 }
@@ -33,7 +33,7 @@ void Interpreter::Visit(ReturnStm* n) {
 
 }
 
-// Functions
+/* ---------- Functions ---------- */
 void Interpreter::Visit(FunctionDecl* n) {
 
 }
@@ -46,7 +46,7 @@ void Interpreter::Visit(FunctionParam* n) {
 
 }
 
-// Expressions
+/* ---------- Expressions ---------- */
 void Interpreter::Visit(Identifier* n) {
 
 }
@@ -75,7 +75,7 @@ void Interpreter::Visit(BooleanLiteral* n) {
 
 }
 
-// Types
+/* ---------- Types ---------- */
 void Interpreter::Visit(NumType* n) {
 
 }

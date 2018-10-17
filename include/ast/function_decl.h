@@ -16,8 +16,8 @@ public:
 	FunctionDecl() = default; 
 	~FunctionDecl() override = default;
 
-	void Accept(std::shared_ptr<IVisitor> v) override			{	v->Visit(this); }
-	std::string ToString() override								{
+	void Accept(std::shared_ptr<IVisitor> v) override           {   v->Visit(this); }
+	std::string ToString() override {
 		std::string res = return_type_->ToString() + " " + name_ + "(";
 		for (int i = 0; i < formals_.size(); ++i) {
 			res += formals_[i]->ToString();
@@ -32,15 +32,15 @@ public:
 		return res;
 	}
 
-	void SetReturnType(TypePtr type)							{	return_type_ = std::move(type); }
-	void SetName(const string name)								{	name_ = name; }
-	void AddFormal(ParamPtr var)								{	formals_.emplace_back(std::move(var)); }
-	void AddStm(StmPtr stm)										{	statements_.emplace_back(std::move(stm)); }
+	void SetReturnType(TypePtr type)                            {   return_type_ = std::move(type); }
+	void SetName(const string name)                             {   name_ = name; }
+	void AddFormal(ParamPtr var)                                {   formals_.emplace_back(std::move(var)); }
+	void AddStm(StmPtr stm)                                     {   statements_.emplace_back(std::move(stm)); }
 
-	StaticType* GetReturnType() const							{	return return_type_.get(); }
-	string GetName() const										{	return name_; }
-	const std::vector<ParamPtr>& GetFormals() const				{	return formals_; }
-	const std::vector<StmPtr>& GetStatements() const			{	return statements_; }
+	StaticType* GetReturnType() const                           {   return return_type_.get(); }
+	string GetName() const                                      {   return name_; }
+	const std::vector<ParamPtr>& GetFormals() const             {   return formals_; }
+	const std::vector<StmPtr>& GetStatements() const            {   return statements_; }
 private:
 	TypePtr return_type_;
 	string name_;

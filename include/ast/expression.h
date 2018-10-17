@@ -7,8 +7,8 @@ class Expression : public ASTNode
 {
 	typedef std::shared_ptr<StaticType> TypePtr;
 public:
-	void SetType(TypePtr type)								{	type_ = std::move(type); }
-	StaticType* GetType() const								{	return type_.get(); }
+	void SetType(TypePtr type)                              {   type_ = std::move(type); }
+	StaticType* GetType() const                             {   return type_.get(); }
 private:
 	TypePtr type_;
 

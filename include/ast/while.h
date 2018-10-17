@@ -12,17 +12,17 @@ public:
 	While() = default; 
 	~While() override = default;
 	
-	void Accept(std::shared_ptr<IVisitor> v) override			{	v->Visit(this);	}
-	std::string ToString() override								{
+	void Accept(std::shared_ptr<IVisitor> v) override           {   v->Visit(this);	}
+	std::string ToString() override {
 		std::string res = "while (" + test_->ToString() + ")\n";
 		res += block_->ToString();
 		return res;
 	}
 
-	void SetPredicate(ExpPtr exp)								{	test_  = std::move(exp); }
-	void SetBlock(BlockPtr block)								{	block_ = std::move(block); }
-	Expression* GetPredicate() const							{	return test_.get(); }
-	Block* GetBlock() const										{	return block_.get(); }
+	void SetPredicate(ExpPtr exp)                               {   test_  = std::move(exp); }
+	void SetBlock(BlockPtr block)                               {   block_ = std::move(block); }
+	Expression* GetPredicate() const                            {   return test_.get(); }
+	Block* GetBlock() const                                     {   return block_.get(); }
 private:
 	ExpPtr test_; 
 	BlockPtr block_; 

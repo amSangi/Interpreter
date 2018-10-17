@@ -14,10 +14,10 @@ public:
     void Accept(std::shared_ptr<IVisitor> v) override       {   v->Visit(this); }
     std::string ToString() override                         {   return type_->ToString() + " " + identifier_name_; }
 
-    void SetType(TypePtr type)								{	type_ = std::move(type); }
-    void SetName(const string name)							{	identifier_name_ = name; }
-    StaticType* GetType() const								{	return type_.get(); }
-    string GetParamName() const								{	return identifier_name_; }
+    void SetType(TypePtr type)                              {   type_ = std::move(type); }
+    void SetName(const string name)                         {   identifier_name_ = name; }
+    StaticType* GetType() const                             {   return type_.get(); }
+    string GetParamName() const                             {   return identifier_name_; }
 private:
     TypePtr type_;
     string identifier_name_;

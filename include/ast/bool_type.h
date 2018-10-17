@@ -8,10 +8,10 @@ public:
 	BoolType() = default;
 	~BoolType() override = default;
 
-	void Accept(std::shared_ptr<IVisitor> v) override 	{	v->Visit(this); }
-	std::string ToString() override 					{   return "bool"; }
+	void Accept(std::shared_ptr<IVisitor> v) override   {   v->Visit(this); }
+	std::string ToString() override                     {   return "bool"; }
 
-	Type GetType() const override						{	return type_; }
+	Type GetType() const override                       {   return type_; }
 private:
 	Type type_ = BOOL; 
 

@@ -8,10 +8,10 @@ public:
 	explicit BooleanLiteral(bool value) : value_(value) {}
 	~BooleanLiteral() override = default;
 
-	void Accept(std::shared_ptr<IVisitor> v) override		{	v->Visit(this);	}
-	std::string ToString() override					 		{	return value_ ? "true" : "false"; }
+	void Accept(std::shared_ptr<IVisitor> v) override       {   v->Visit(this);	}
+	std::string ToString() override                         {   return value_ ? "true" : "false"; }
 
-	bool GetValue() const									{	return value_; }
+	bool GetValue() const                                   {   return value_; }
 private:
 	bool value_; 
 
