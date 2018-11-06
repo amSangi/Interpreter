@@ -15,6 +15,11 @@ public:
 private:
     void Visit(Program* n) override;
 
+    /*********** Functions ***********/
+    void Visit(FunctionDecl* n) override;
+    void Visit(MainFunction* n) override;
+    void Visit(FunctionParam* n) override;
+
     /*********** Statements ***********/
     void Visit(Assignment* n) override;
     void Visit(Block* n) override;
@@ -22,11 +27,6 @@ private:
     void Visit(While* n) override;
     void Visit(VarDecl* n) override;
     void Visit(ReturnStm* n) override;
-
-    /*********** Functions ***********/
-    void Visit(FunctionDecl* n) override;
-    void Visit(MainFunction* n) override;
-    void Visit(FunctionParam* n) override;
 
     /*********** Expressions ***********/
     void Visit(Identifier* n) override;

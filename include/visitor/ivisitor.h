@@ -30,6 +30,12 @@ class IVisitor
 public:
 	virtual void Visit(Program* n) = 0;
 
+	/*********** Functions ***********/
+	virtual void Visit(FunctionDecl* n) = 0;
+	virtual void Visit(MainFunction* n) = 0;
+	virtual void Visit(FunctionParam* n) = 0;
+	virtual void Visit(FunctionType* n) = 0;
+
 	/*********** Statements ***********/
 	virtual void Visit(Assignment* n) = 0;
 	virtual void Visit(Block* n) = 0;
@@ -37,12 +43,6 @@ public:
 	virtual void Visit(While* n) = 0;
 	virtual void Visit(VarDecl* n) = 0;
 	virtual void Visit(ReturnStm* n) = 0;
-
-	/*********** Functions ***********/
-	virtual void Visit(FunctionDecl* n) = 0;
-	virtual void Visit(MainFunction* n) = 0;
-	virtual void Visit(FunctionParam* n) = 0;
-	virtual void Visit(FunctionType* n) = 0;
 
 	/*********** Expressions ***********/
 	virtual void Visit(Identifier* n) = 0;

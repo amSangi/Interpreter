@@ -8,6 +8,19 @@ void Interpreter::Visit(Program* n) {
 
 }
 
+/*********** Functions ***********/
+void Interpreter::Visit(FunctionDecl* n) {
+
+}
+
+void Interpreter::Visit(MainFunction* n) {
+
+}
+
+void Interpreter::Visit(FunctionParam* n) {
+
+}
+
 /*********** Statements ***********/
 void Interpreter::Visit(Assignment* n) {
 
@@ -30,19 +43,6 @@ void Interpreter::Visit(VarDecl* n) {
 }
 
 void Interpreter::Visit(ReturnStm* n) {
-
-}
-
-/*********** Functions ***********/
-void Interpreter::Visit(FunctionDecl* n) {
-
-}
-
-void Interpreter::Visit(MainFunction* n) {
-
-}
-
-void Interpreter::Visit(FunctionParam* n) {
 
 }
 

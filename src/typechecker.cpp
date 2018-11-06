@@ -7,6 +7,23 @@ CheckedProgram TypeChecker::Check(std::shared_ptr<Program> program){
 }
 
 void TypeChecker::Visit(Program* n) {
+    for (auto &decl : n->GetFunctions()) {
+        decl->Accept(this);
+    }
+    n->GetMain()->Accept(this);
+}
+
+
+/* ---------- Functions ---------- */
+void TypeChecker::Visit(FunctionDecl* n) {
+
+}
+
+void TypeChecker::Visit(MainFunction* n) {
+
+}
+
+void TypeChecker::Visit(FunctionParam* n) {
 
 }
 
@@ -32,19 +49,6 @@ void TypeChecker::Visit(VarDecl* n) {
 }
 
 void TypeChecker::Visit(ReturnStm* n) {
-
-}
-
-/* ---------- Functions ---------- */
-void TypeChecker::Visit(FunctionDecl* n) {
-
-}
-
-void TypeChecker::Visit(MainFunction* n) {
-
-}
-
-void TypeChecker::Visit(FunctionParam* n) {
 
 }
 
