@@ -21,28 +21,30 @@ class BooleanLiteral;
 class NumType; 
 class BoolType; 
 class VoidType; 
-class ReturnStm; 
+class FunctionType;
+class ReturnStm;
 
 
 class IVisitor
 {
 public:
-	virtual void Visit(Program* n) = 0; 
-	
-	// Statements
+	virtual void Visit(Program* n) = 0;
+
+	/*********** Statements ***********/
 	virtual void Visit(Assignment* n) = 0;
 	virtual void Visit(Block* n) = 0;
 	virtual void Visit(IfThenElse* n) = 0;
 	virtual void Visit(While* n) = 0;
 	virtual void Visit(VarDecl* n) = 0;
-	virtual void Visit(ReturnStm* n) = 0; 
+	virtual void Visit(ReturnStm* n) = 0;
 
-	// Functions
+	/*********** Functions ***********/
 	virtual void Visit(FunctionDecl* n) = 0;
 	virtual void Visit(MainFunction* n) = 0;
 	virtual void Visit(FunctionParam* n) = 0;
+	virtual void Visit(FunctionType* n) = 0;
 
-	// Expressions
+	/*********** Expressions ***********/
 	virtual void Visit(Identifier* n) = 0;
 	virtual void Visit(BinaryOp* n) = 0;
 	virtual void Visit(UnaryOp* n) = 0;
@@ -51,7 +53,7 @@ public:
 	virtual void Visit(NumLiteral* n) = 0;
 	virtual void Visit(BooleanLiteral* n) = 0;
 
-	// Types
+	/*********** Types ***********/
 	virtual void Visit(NumType* n) = 0;
 	virtual void Visit(BoolType* n) = 0;
 	virtual void Visit(VoidType* n) = 0;

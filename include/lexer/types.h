@@ -37,7 +37,6 @@ enum TokenType {
 	ElseKeyword,                        // else
 	ReturnKeyword,                      // return
 	WhileKeyword,                       // while
-	ForKeyword,                         // for
 	TrueKeyword,                        // true
 	FalseKeyword,                       // false
 	NumberKeyword,                      // num

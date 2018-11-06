@@ -6,6 +6,7 @@ enum Type {
 	NUMBER,
 	BOOL,
 	VOID,
+	FUNCTION
 }; // enum Type
 
 class StaticType : public ASTNode

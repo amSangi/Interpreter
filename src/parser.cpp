@@ -27,7 +27,7 @@ shared_ptr<Program> Parser::Parse() {
 	return program;
 }
 
-/* ---------- Functions ---------- */
+/*********** Functions ***********/
 shared_ptr<FunctionDecl> Parser::ConsumeMain() {
 	auto main = make_shared<FunctionDecl>();
 
@@ -92,7 +92,7 @@ shared_ptr<FunctionParam> Parser::ConsumeFunctionParam() {
 	return param;
 }
 
-/* ---------- Statements ---------- */
+/*********** Statements ***********/
 shared_ptr<Statement> Parser::ConsumeStatement() {
 	shared_ptr<Statement> stm;
 
@@ -211,7 +211,7 @@ shared_ptr<Assignment> Parser::ConsumeAssignment() {
 	return assign; 
 }
 
-/* ---------- Expressions ---------- */
+/*********** Expressions ***********/
 shared_ptr<Expression> Parser::ConsumeExpression() {
     return ConsumeAndOrExpression();
 }
@@ -417,7 +417,7 @@ shared_ptr<StaticType> Parser::ConsumeStaticType() {
 }
 
 
-/* ---------- Helpers ---------- */
+/*********** Helpers ***********/
 void Parser::NextToken() {
 	current_token_ =  next_token_; 
 	next_token_ = lexer_.GetNext(); 
@@ -446,6 +446,7 @@ bool Parser::Accept(TokenType token) {
 	return false; 
 }
 
+// TODO: Implement parser error handling
 void Parser::Error(const std::string msg) {
     std::cout << msg << std::endl;
 }

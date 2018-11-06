@@ -6,8 +6,8 @@
 using namespace sangi;
 
 // Static list of reserved words in the same order they appear in TokenType
-const std::vector<std::string> Lexer::kReservedWords{
-	"if", "else", "return", "while", "for", "true", "false", "num", "bool", "void", "main"
+const std::vector<std::string> Lexer::kReservedWords {
+	"if", "else", "return", "while", "true", "false", "num", "bool", "void", "main"
 };
 
 size_t Lexer::GetCurrentLine() const {
@@ -199,20 +199,18 @@ Token Lexer::RecognizeReserved(const std::string& word) {
 		case 2:
 			return Token(ReturnKeyword);
 		case 3:
-			return Token(WhileKeyword); 
+			return Token(WhileKeyword);
 		case 4:
-			return Token(ForKeyword); 
-		case 5:
 			return Token(TrueKeyword);
-		case 6:
+		case 5:
 			return Token(FalseKeyword);
-		case 7:
+		case 6:
 			return Token(NumberKeyword);
-		case 8:
+		case 7:
 			return Token(BoolKeyword);
-		case 9: 
+		case 8:
 			return Token(VoidKeyword); 
-		case 10:
+		case 9:
 			return Token(MainKeyword); 
 		}
 	}

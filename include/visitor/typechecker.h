@@ -1,21 +1,25 @@
 #pragma once
 
-#include "ast_node.h"
-#include "ivisitor.h"
+#include <memory>
+#include <string>
+#include "visitor/ivisitor.h"
+#include "checked_program.h"
 
-class Interpreter : public IVisitor
+
+class TypeChecker : public IVisitor
 {
-
 public:
-    Interpreter() = default;
-    ~Interpreter() = default;
+    TypeChecker() = default;
+    ~TypeChecker() = default;
 
-    int evaluate(std::shared_ptr<Program> program);
+    CheckedProgram Check(std::shared_ptr<Program> program);
 
 private:
+    SymbolTable symbolTable_;
+
     void Visit(Program* n) override;
 
-    // Statements
+    /*********** Statements ***********/
     void Visit(Assignment* n) override;
     void Visit(Block* n) override;
     void Visit(IfThenElse* n) override;
@@ -23,12 +27,12 @@ private:
     void Visit(VarDecl* n) override;
     void Visit(ReturnStm* n) override;
 
-    // Functions
+    /*********** Functions ***********/
     void Visit(FunctionDecl* n) override;
     void Visit(MainFunction* n) override;
     void Visit(FunctionParam* n) override;
 
-    // Expressions
+    /*********** Expressions ***********/
     void Visit(Identifier* n) override;
     void Visit(BinaryOp* n) override;
     void Visit(UnaryOp* n) override;
@@ -37,9 +41,9 @@ private:
     void Visit(NumLiteral* n) override;
     void Visit(BooleanLiteral* n) override;
 
-    // Types
+    /*********** Types ***********/
     void Visit(NumType* n) override;
     void Visit(BoolType* n) override;
     void Visit(VoidType* n) override;
 
-}; // class Interpreter
+}; // class TypeChecker

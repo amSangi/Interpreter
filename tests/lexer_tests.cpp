@@ -14,7 +14,7 @@ TEST_F(TestLexer, TestAllTokens) {
 			PlusToken, MinusToken, AsteriskToken, ForwardSlashToken, DoubleAmpersandToken, 
 			AmpersandToken, ExclamationToken, DoubleBarToken, BarToken, QuestionToken, 
 		IdentifierToken, IfKeyword, ElseKeyword, ReturnKeyword, TrueKeyword, FalseKeyword, 
-			NumberKeyword, BoolKeyword, VoidKeyword, ForKeyword, WhileKeyword
+			NumberKeyword, BoolKeyword, VoidKeyword, WhileKeyword
 	}; 
 
 	TestFile("tokens.txt", expected_types);

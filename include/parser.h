@@ -19,14 +19,14 @@ private:
 	void NextToken(); 
 	bool Expect(TokenType token);
 	bool Accept(TokenType token); 
-	void Error(const std::string msg); 
+	void Error(const std::string msg);
 
-	// Program
+	/*********** Functions ***********/
 	std::shared_ptr<FunctionDecl> ConsumeMain();
 	std::shared_ptr<FunctionDecl> ConsumeFunctionDecl();
 	std::shared_ptr<FunctionParam> ConsumeFunctionParam();
 
-	// Statements
+	/*********** Statements ***********/
 	std::shared_ptr<Statement> ConsumeStatement();
 	std::shared_ptr<ReturnStm> ConsumeReturnStm();
 	std::shared_ptr<Block> ConsumeBlock();
@@ -34,8 +34,8 @@ private:
 	std::shared_ptr<While> ConsumeWhile();
 	std::shared_ptr<VarDecl> ConsumeVarDecl();
 	std::shared_ptr<Assignment> ConsumeAssignment();
-	
-	// Expressions
+
+	/*********** Expressions ***********/
 	std::shared_ptr<Expression> ConsumeExpression();
 	std::shared_ptr<Expression> ConsumeUnaryOp();
 	std::shared_ptr<Expression> ConsumeAndOrExpression();
@@ -46,8 +46,8 @@ private:
 	std::shared_ptr<Expression> ConsumePrimaryExpression();
 	std::shared_ptr<FunctionCall> ConsumeFunctionCall();
 	std::shared_ptr<Identifier> ConsumeIdentifier();
-	
-	// Type
+
+	/*********** Type ***********/
 	std::shared_ptr<StaticType> ConsumeStaticType();
 
 };  // class Parser

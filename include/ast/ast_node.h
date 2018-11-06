@@ -2,7 +2,7 @@
 
 #include <memory>
 #include <string>
-#include "ivisitor.h"
+#include "visitor/ivisitor.h"
 
 class ASTNode
 {

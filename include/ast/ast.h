@@ -12,6 +12,7 @@
 #include "function_call.h"
 #include "function_decl.h"
 #include "function_param.h"
+#include "function_type.h"
 #include "identifier.h"
 #include "if_then_else.h"
 #include "num_literal.h"
