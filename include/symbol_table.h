@@ -19,15 +19,21 @@ public:
 
     /*********** Symbol ***********/
     void Put(string symbol, T value)                   { tables_.top()[symbol] = value; }
+    void PutFunction(string symbol, T value)           { function_table_[symbol] = value; }
 
-    T Get(string symbol) const {
-        table t = tables_.top().find(symbol);
+    T Get(const string& symbol) const                  { return GetSymbol(symbol, tables_.top()); }
+
+    T GetFunction(const string& symbol) const          { return GetSymbol(symbol, function_table_); }
+
+private:
+    std::stack<table> tables_;
+    table function_table_;
+
+
+    T GetSymbol(const string& symbol, table t) const {
         auto it = t.find(symbol);
         if (it == t.end()) return nullptr;
         return it->second;
     }
-
-private:
-    std::stack<table> tables_;
 
 }; // class SymbolTable

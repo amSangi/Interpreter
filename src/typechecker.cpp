@@ -1,14 +1,15 @@
+#include <utility>
 #include "visitor/typechecker.h"
+#include "function_type.h"
 
 CheckedProgram TypeChecker::Check(std::shared_ptr<Program> program){
-    symbolTable_.EnterScope();
     program->Accept(this);
-    return CheckedProgram(program, symbolTable_);
+    return CheckedProgram(std::move(program), symbolTable_);
 }
 
 void TypeChecker::Visit(Program* n) {
-    for (auto &decl : n->GetFunctions()) {
-        decl->Accept(this);
+    for (auto& fun_decl : n->GetFunctions()) {
+        fun_decl->Accept(this);
     }
     n->GetMain()->Accept(this);
 }
@@ -24,6 +25,10 @@ void TypeChecker::Visit(MainFunction* n) {
 }
 
 void TypeChecker::Visit(FunctionParam* n) {
+
+}
+
+void TypeChecker::Visit(FunctionType* n) {
 
 }
 

@@ -4,6 +4,7 @@
 #include <string>
 #include "visitor/ivisitor.h"
 #include "checked_program.h"
+#include "static_type.h"
 
 
 class TypeChecker : public IVisitor
@@ -15,7 +16,7 @@ public:
     CheckedProgram Check(std::shared_ptr<Program> program);
 
 private:
-    SymbolTable symbolTable_;
+    SymbolTable<std::shared_ptr<StaticType>> symbolTable_;
 
     void Visit(Program* n) override;
 
@@ -23,6 +24,7 @@ private:
     void Visit(FunctionDecl* n) override;
     void Visit(MainFunction* n) override;
     void Visit(FunctionParam* n) override;
+    void Visit(FunctionType* n) override;
 
     /*********** Statements ***********/
     void Visit(Assignment* n) override;
