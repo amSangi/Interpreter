@@ -14,7 +14,7 @@ protected:
 
     CheckedProgram Check(const std::string& file) {
         std::shared_ptr<Program> program = ParseFile(file);
-        return TypeChecker().Check(program);
+        return TypeChecker().TypeCheck(program);
     }
 
 

@@ -9,7 +9,7 @@ public:
 	explicit Identifier(string name) : name_(name) {}
 	~Identifier() override = default;
 
-	void Accept(std::shared_ptr<IVisitor> v) override           {   v->Visit(this); }
+	void Accept(IVisitor* v) override                           {   v->Visit(this); }
 	std::string ToString() override                             {   return name_; }
 
 	string GetName() const                                      {   return name_; }

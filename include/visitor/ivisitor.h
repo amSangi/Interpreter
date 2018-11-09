@@ -10,8 +10,7 @@ class While;
 class VarDecl;
 class FunctionDecl;
 class FunctionParam;
-class MainFunction; 
-class Identifier; 
+class Identifier;
 class BinaryOp; 
 class UnaryOp; 
 class FunctionCall; 
@@ -32,7 +31,6 @@ public:
 
 	/*********** Functions ***********/
 	virtual void Visit(FunctionDecl* n) = 0;
-	virtual void Visit(MainFunction* n) = 0;
 	virtual void Visit(FunctionParam* n) = 0;
 	virtual void Visit(FunctionType* n) = 0;
 

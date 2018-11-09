@@ -11,7 +11,7 @@ public:
     FunctionParam() = default;
     ~FunctionParam() override = default;
 
-    void Accept(std::shared_ptr<IVisitor> v) override       {   v->Visit(this); }
+    void Accept(IVisitor* v) override                       {   v->Visit(this); }
     std::string ToString() override                         {   return type_->ToString() + " " + identifier_name_; }
 
     void SetType(TypePtr type)                              {   type_ = std::move(type); }

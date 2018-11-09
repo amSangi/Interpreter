@@ -12,6 +12,6 @@ enum Type {
 class StaticType : public ASTNode
 {
 public:
-	virtual Type GetType() const = 0; 
+	virtual Type GetValue() const = 0; 
 
 }; // class StaticType

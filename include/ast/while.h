@@ -11,8 +11,8 @@ class While : public Statement
 public:
 	While() = default; 
 	~While() override = default;
-	
-	void Accept(std::shared_ptr<IVisitor> v) override           {   v->Visit(this);	}
+
+	void Accept(IVisitor* v) override                           {   v->Visit(this); }
 	std::string ToString() override {
 		std::string res = "while (" + test_->ToString() + ")\n";
 		res += block_->ToString();

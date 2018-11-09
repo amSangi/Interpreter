@@ -9,7 +9,7 @@ public:
 	Conditional() = default; 
 	~Conditional() override = default;
 
-	void Accept(std::shared_ptr<IVisitor> v) override           {   v->Visit(this);	}
+	void Accept(IVisitor* v) override                           {   v->Visit(this); }
 	std::string ToString() override                             {   return predicate_->ToString()
                                                                            + " ? " + tval_->ToString()
                                                                            + " : " + fval_->ToString(); }

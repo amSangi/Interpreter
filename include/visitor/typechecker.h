@@ -5,6 +5,7 @@
 #include "visitor/ivisitor.h"
 #include "checked_program.h"
 #include "static_type.h"
+#include "expression.h"
 
 
 class TypeChecker : public IVisitor
@@ -13,16 +14,16 @@ public:
     TypeChecker() = default;
     ~TypeChecker() = default;
 
-    CheckedProgram Check(std::shared_ptr<Program> program);
+    CheckedProgram TypeCheck(std::shared_ptr<Program> program);
 
 private:
     SymbolTable<std::shared_ptr<StaticType>> symbolTable_;
+    std::string current_function_name_;
 
     void Visit(Program* n) override;
 
     /*********** Functions ***********/
     void Visit(FunctionDecl* n) override;
-    void Visit(MainFunction* n) override;
     void Visit(FunctionParam* n) override;
     void Visit(FunctionType* n) override;
 
@@ -47,5 +48,10 @@ private:
     void Visit(NumType* n) override;
     void Visit(BoolType* n) override;
     void Visit(VoidType* n) override;
+
+
+    /*********** Helpers ***********/
+    void AddToFunctionTable(std::shared_ptr<FunctionDecl> n);
+    void Check(Expression* e, Type t);
 
 }; // class TypeChecker

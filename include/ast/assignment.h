@@ -11,7 +11,7 @@ public:
 	Assignment() = default;
 	~Assignment() override = default;
 
-	void Accept(std::shared_ptr<IVisitor> v) override   {   v->Visit(this); }
+	void Accept(IVisitor* v) override                   {   v->Visit(this); }
 	std::string ToString() override                     {   return identifier_name_ + " = "
                                                                    + value_->ToString() + ";";}
 

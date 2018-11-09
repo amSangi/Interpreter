@@ -11,7 +11,7 @@ public:
 	IfThenElse() = default; 
 	~IfThenElse() override = default;
 
-	void Accept(std::shared_ptr<IVisitor> v) override       {   v->Visit(this); }
+	void Accept(IVisitor* v) override                       {   v->Visit(this); }
 	std::string ToString() override {
 		std::string res = "if (" + predicate_->ToString() + ")\n";
 		res += then_->ToString() + "\n";

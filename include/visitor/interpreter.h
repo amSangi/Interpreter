@@ -17,8 +17,8 @@ private:
 
     /*********** Functions ***********/
     void Visit(FunctionDecl* n) override;
-    void Visit(MainFunction* n) override;
     void Visit(FunctionParam* n) override;
+    void Visit(FunctionType* n) override;
 
     /*********** Statements ***********/
     void Visit(Assignment* n) override;

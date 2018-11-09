@@ -8,4 +8,5 @@ add_library(${PROJECT_NAME} input_source.cpp
                             parser.cpp
                             token.cpp
                             utility.cpp
-                            operator.cpp)
+                            operator.cpp
+                            typechecker.cpp)
