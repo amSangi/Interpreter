@@ -30,7 +30,7 @@ private:
     table function_table_;
 
 
-    T GetSymbol(const string& symbol, table t) const {
+    T GetSymbol(const string& symbol, const table& t) const {
         auto it = t.find(symbol);
         if (it == t.end()) return nullptr;
         return it->second;

@@ -1,4 +1,4 @@
-#include <utility>
+#include <iostream>
 #include "visitor/typechecker.h"
 #include "ast.h"
 
@@ -17,11 +17,20 @@ void TypeChecker::Visit(Program* n) {
     for (const auto& fun_decl : n->GetFunctions()) {
         AddToFunctionTable(fun_decl);
     }
+    shared_ptr<FunctionDecl> main(n->GetMain());
+    AddToFunctionTable(main);
 
+    // Typecheck functions
     for (const auto& fun_decl : n->GetFunctions()) {
+        symbolTable_.EnterScope();
         fun_decl->Accept(this);
+        symbolTable_.LeaveScope();
     }
+
+    // Typecheck main
+    symbolTable_.EnterScope();
     n->GetMain()->Accept(this);
+    symbolTable_.LeaveScope();
 }
 
 
@@ -74,7 +83,7 @@ void TypeChecker::Visit(VarDecl* n) {
     auto id = n->GetId();
     shared_ptr<StaticType> type(n->GetType());
     string name = id->GetName();
-    if (symbolTable_.Get(name)) HandleDuplicateNameDecl(name);
+    if (symbolTable_.Get(name) != nullptr) HandleDuplicateNameDecl(name);
     symbolTable_.Put(name, type);
 }
 
@@ -92,7 +101,7 @@ void TypeChecker::Visit(Identifier* n) {
         return;
     }
 
-    shared_ptr<StaticType> id_type(type);
+    const shared_ptr<StaticType> &id_type(type);
     n->SetType(id_type);
 }
 
@@ -181,24 +190,34 @@ void TypeChecker::AddToFunctionTable(std::shared_ptr<FunctionDecl> n) {
 void TypeChecker::Check(Expression* e, Type type) {
     // Error Handling
     // TODO: Finish Implementation
+    if (e->GetType() == nullptr) std::cout << "TYPE HAS NOT BEEN SET" << std::endl;
+    else if (e->GetType()->GetValue() != type) {
+        std::cerr << "EXPECTED: " << StaticType::TypeToString(type)
+                  << " RECEIVED: "
+                     << StaticType::TypeToString(e->GetType()->GetValue()) << std::endl;
+    }
 }
 
 
 void TypeChecker::HandleDuplicateNameDecl(const std::string name) {
     // Error Handling
     // TODO: Finish Implementation
+    std::cerr << "DUPLICATE NAME DECL : " << name << std::endl;
 }
 
 void TypeChecker::HandleUndefinedIdentifier(const std::string name) {
     // Error Handling
     // TODO: Finish Implementation
+    std::cerr << "UNDEFINED NAME : " << name << std::endl;
 }
 
 void TypeChecker::CheckParameterArgumentMatch(std::vector<TypeChecker::ExpPtr> arguments,
                                               std::vector<Type> parameter_types) {
 
     // TODO: Update size equality check -- error handling
-    assert(arguments.size() == parameter_types.size());
+    if (arguments.size() != parameter_types.size()) {
+        std::cerr << "PARAMETER/TYPE MISMATCH : " << std::endl;
+    }
 
     for (int i = 0; i < arguments.size(); ++i) {
         Check(arguments[i].get(), parameter_types[i]);

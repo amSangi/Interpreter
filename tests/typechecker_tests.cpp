@@ -9,5 +9,5 @@ using std::string;
 
 
 TEST_F(TestTypeChecker, SimpleProgram) {
-
+    CheckedProgram checkedProgram = Check("add.txt");
 }
