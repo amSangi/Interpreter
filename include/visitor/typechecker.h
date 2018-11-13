@@ -2,6 +2,7 @@
 
 #include <memory>
 #include <string>
+#include <vector>
 #include "visitor/ivisitor.h"
 #include "checked_program.h"
 #include "static_type.h"
@@ -10,6 +11,7 @@
 
 class TypeChecker : public IVisitor
 {
+    typedef std::shared_ptr<Expression> ExpPtr;
 public:
     TypeChecker() = default;
     ~TypeChecker() = default;
@@ -22,7 +24,7 @@ public:
     CheckedProgram TypeCheck(std::shared_ptr<Program> program);
 
 private:
-    SymbolTable<StaticType*> symbolTable_;
+    SymbolTable<std::shared_ptr<StaticType>> symbolTable_;
     std::string current_function_name_;
 
     void Visit(Program* n) override;
@@ -75,5 +77,20 @@ private:
      * @param name  The name to check
      */
     void HandleDuplicateNameDecl(const std::string name);
+
+
+    /**
+     * @brief       Handle undefined identifier use
+     * @param name  The undefined identifier name
+     */
+    void HandleUndefinedIdentifier(const std::string name);
+
+
+    /**
+     * @brief                  Check to see if the arguments match the parameter types
+     * @param arguments        The argument expressions
+     * @param parameter_types  A function's parameter types in their declared order
+     */
+    void CheckParameterArgumentMatch(std::vector<ExpPtr> arguments, std::vector<Type> parameter_types);
 
 }; // class TypeChecker

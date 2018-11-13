@@ -2,8 +2,10 @@
 #include "visitor/typechecker.h"
 #include "ast.h"
 
+using std::shared_ptr;
 using std::make_shared;
 using std::string;
+using std::vector;
 
 CheckedProgram TypeChecker::TypeCheck(std::shared_ptr<Program> program){
     program->Accept(this);
@@ -31,7 +33,7 @@ void TypeChecker::Visit(FunctionDecl* n) {
     }
 }
 
-// Types already set by parser
+// Types already set by Parser
 void TypeChecker::Visit(FunctionParam* n) {}
 void TypeChecker::Visit(FunctionType* n) {}
 
@@ -70,48 +72,95 @@ void TypeChecker::Visit(While* n) {
 
 void TypeChecker::Visit(VarDecl* n) {
     auto id = n->GetId();
-    auto type = n->GetType();
+    shared_ptr<StaticType> type(n->GetType());
     string name = id->GetName();
     if (symbolTable_.Get(name)) HandleDuplicateNameDecl(name);
     symbolTable_.Put(name, type);
 }
 
 void TypeChecker::Visit(ReturnStm* n) {
-    n->GetExpression()->Accept(this);
+    auto expression = n->GetExpression();
+    expression->Accept(this);
+    Check(expression, symbolTable_.GetFunction(current_function_name_)->GetValue());
 }
 
 /* ---------- Expressions ---------- */
 void TypeChecker::Visit(Identifier* n) {
-    // TODO: Finish Implementation
+    auto type = symbolTable_.Get(n->GetName());
+    if (type == nullptr) {
+        HandleUndefinedIdentifier(n->GetName());
+        return;
+    }
+
+    shared_ptr<StaticType> id_type(type);
+    n->SetType(id_type);
 }
 
 void TypeChecker::Visit(BinaryOp* n) {
-    // TODO: Finish Implementation
+    auto left_value = n->GetLeft();
+    auto right_value = n->GetRight();
+
+    left_value->Accept(this);
+    right_value->Accept(this);
+
+    Type type = n->GetType()->GetValue();
+    Check(left_value, type);
+    Check(right_value, type);
 }
 
 void TypeChecker::Visit(UnaryOp* n) {
-    // TODO: Finish Implementation
+    auto expression = n->GetExpression();
+    expression->Accept(this);
+    Check(expression, n->GetType()->GetValue());
 }
 
 void TypeChecker::Visit(FunctionCall* n) {
-    // TODO: Finish Implementation
+    auto function_id = n->GetId();
+    shared_ptr<StaticType> type = symbolTable_.GetFunction(function_id->GetName());
+
+    if (type == nullptr) {
+        HandleUndefinedIdentifier(function_id->GetName());
+        return;
+    }
+
+    // Set call type to be return type of function
+    shared_ptr<FunctionType> function_type = std::dynamic_pointer_cast<FunctionType>(type);
+    shared_ptr<StaticType> call_type(function_type->GetReturnType());
+    n->SetType(call_type);
+
+    // Check argument types
+    for (const auto& argument : n->GetArguments()) {
+        argument->Accept(this);
+    }
+
+    // Check argument/parameter match
+    CheckParameterArgumentMatch(n->GetArguments(), function_type->GetParameters());
 }
 
 void TypeChecker::Visit(Conditional* n) {
-    // TODO: Finish Implementation
+    auto predicate = n->GetPredicate();
+    auto true_exp = n->GetTrueValue();
+    auto false_exp = n->GetFalseValue();
+
+    predicate->Accept(this);
+    Check(predicate, BOOL);
+
+    true_exp->Accept(this);
+    false_exp->Accept(this);
+
+    // True/False expressions have the same type
+    Check(true_exp, false_exp->GetType()->GetValue());
+    shared_ptr<StaticType> type(true_exp->GetType());
+    n->SetType(type);
 }
 
-void TypeChecker::Visit(NumLiteral* n) {
-    // TODO: Finish Implementation
-}
-
-void TypeChecker::Visit(BooleanLiteral* n) {
-    // TODO: Finish Implementation
-}
+// Types already set by Parser
+void TypeChecker::Visit(NumLiteral* n) {}
+void TypeChecker::Visit(BooleanLiteral* n) {}
 
 /* ---------- Types ---------- */
 
-// Do nothing
+// Trivial --Do nothing
 void TypeChecker::Visit(NumType* n) {}
 void TypeChecker::Visit(BoolType* n) {}
 void TypeChecker::Visit(VoidType* n) {}
@@ -124,8 +173,9 @@ void TypeChecker::AddToFunctionTable(std::shared_ptr<FunctionDecl> n) {
     for (const auto& formal : n->GetFormals()) {
         type->AddParamType(formal->GetType()->GetValue());
     }
-    type->SetReturnType(n->GetReturnType()->GetValue());
-    symbolTable_.PutFunction(n->GetId()->GetName(), type.get());
+    shared_ptr<StaticType> return_type(n->GetReturnType());
+    type->SetReturnType(return_type);
+    symbolTable_.PutFunction(n->GetId()->GetName(), type);
 }
 
 void TypeChecker::Check(Expression* e, Type type) {
@@ -137,4 +187,20 @@ void TypeChecker::Check(Expression* e, Type type) {
 void TypeChecker::HandleDuplicateNameDecl(const std::string name) {
     // Error Handling
     // TODO: Finish Implementation
+}
+
+void TypeChecker::HandleUndefinedIdentifier(const std::string name) {
+    // Error Handling
+    // TODO: Finish Implementation
+}
+
+void TypeChecker::CheckParameterArgumentMatch(std::vector<TypeChecker::ExpPtr> arguments,
+                                              std::vector<Type> parameter_types) {
+
+    // TODO: Update size equality check -- error handling
+    assert(arguments.size() == parameter_types.size());
+
+    for (int i = 0; i < arguments.size(); ++i) {
+        Check(arguments[i].get(), parameter_types[i]);
+    }
 }

@@ -16,13 +16,13 @@ public:
     string ToString() override                              {   return "function"; }
 
     Type GetValue() const override                          {   return type_; }
-    void SetReturnType(Type type)                           {   return_type_ = type; }
-    Type GetReturnType() const                              {   return return_type_; }
+    void SetReturnType(std::shared_ptr<StaticType> type)    {   return_type_ = std::move(type); }
+    StaticType* GetReturnType() const                       {   return return_type_.get(); }
     void AddParamType(Type type)                            {   param_types_.push_back(type); }
-    std::vector<Type> AddParamType()                        {   return param_types_; }
+    std::vector<Type> GetParameters()                       {   return param_types_; }
 private:
     Type type_ = FUNCTION;
-    Type return_type_;
+    std::shared_ptr<StaticType> return_type_;
     std::vector<Type> param_types_;
 
 }; // class FunctionType

@@ -227,6 +227,7 @@ shared_ptr<Expression> Parser::ConsumeAndOrExpression() {
 
 	and_or->SetLeft(left_exp);
 	and_or->SetRight(ConsumeExpression());
+	and_or->SetType(make_shared<BoolType>());
 
 	return and_or; 
 }
@@ -275,6 +276,8 @@ shared_ptr<Expression> Parser::ConsumeComparison() {
 
     comp->SetLeft(left_exp);
     comp->SetRight(ConsumeAddSub());
+    comp->SetType(make_shared<BoolType>());
+
     return comp;
 }
 
@@ -293,6 +296,7 @@ shared_ptr<Expression> Parser::ConsumeAddSub() {
 
 	add_sub->SetLeft(left_exp);
 	add_sub->SetRight(ConsumeExpression());
+	add_sub->SetType(make_shared<NumType>());
 
 	return add_sub;
 }
@@ -315,6 +319,7 @@ shared_ptr<Expression> Parser::ConsumeMultDiv() {
 
 	exp->SetLeft(left_exp);
 	exp->SetRight(ConsumePrimaryExpression());
+	exp->SetType(make_shared<NumType>());
 
 	return exp;
 }
@@ -332,15 +337,18 @@ shared_ptr<Expression> Parser::ConsumePrimaryExpression() {
         break;
     case NumericLiteral:
         exp = make_shared<NumLiteral>(std::stod(current_token_.GetValue()));
+        exp->SetType(make_shared<NumType>());
         NextToken();
         break;
 	case TrueKeyword:
 		exp = make_shared<BooleanLiteral>(true);
+		exp->SetType(make_shared<BoolType>());
         NextToken();
         break;
 	case FalseKeyword:
 		exp = make_shared<BooleanLiteral>(false);
-        NextToken();
+		exp->SetType(make_shared<BoolType>());
+		NextToken();
         break;
     case ExclamationToken:
         exp = ConsumeUnaryOp();
@@ -362,6 +370,7 @@ shared_ptr<Expression> Parser::ConsumeUnaryOp() {
     auto unary_op = make_shared<UnaryOp>();
     unary_op->SetOp(NOT);
     unary_op->SetExpression(ConsumeExpression());
+    unary_op->SetType(make_shared<BoolType>());
 
     return unary_op;
 }
