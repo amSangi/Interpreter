@@ -1,3 +1,2 @@
 ## About ##
-A simple interpreter written in C++. Lexer is implemented and the Parser is under implementation at this time.
-Currently moving this project over to CLion and performing a few major refactorings.
+A simple interpreter written in C++. The interpreter includes a hand-written lexical analyzer, LL(1) parser, and typechecker. Currently working on typechecker tests.  
