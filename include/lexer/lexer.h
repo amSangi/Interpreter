@@ -17,14 +17,24 @@ public:
 	explicit Lexer(const std::string& file_name) : input_(file_name) {}
 	~Lexer() = default;
 
-	friend void swap(Lexer& first, Lexer& second) {
-		using std::swap;
-		swap(first.input_, second.input_);
-	}
-
+	/**
+	 * @return   The next token
+	 */
 	Token GetNext();
+
+	/**
+	 * @return   True if there is a valid next token
+	 */
 	bool HasNext();
-	size_t GetCurrentLine() const; 
+
+	/**
+	 * @return   The current line number in the file
+	 */
+	size_t GetCurrentLine() const;
+
+	/**
+	 * @return   The current column number in the file
+	 */
 	size_t GetCurrentColumn() const; 
 
 private:

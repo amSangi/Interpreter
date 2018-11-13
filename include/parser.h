@@ -10,6 +10,10 @@ public:
 	Parser(Lexer& lexer);
 	~Parser() = default;
 
+	/**
+	 * @brief     Parse an AST tree and return the root node
+	 * @return    an instance of Program
+	 */
 	std::shared_ptr<Program> Parse();
 private:
 	Lexer & lexer_;

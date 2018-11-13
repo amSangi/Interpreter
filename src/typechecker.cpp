@@ -3,6 +3,7 @@
 #include "ast.h"
 
 using std::make_shared;
+using std::string;
 
 CheckedProgram TypeChecker::TypeCheck(std::shared_ptr<Program> program){
     program->Accept(this);
@@ -36,27 +37,47 @@ void TypeChecker::Visit(FunctionType* n) {}
 
 /* ---------- Statements ---------- */
 void TypeChecker::Visit(Assignment* n) {
-    // TODO: Finish Implementation
+    auto l_value = n->GetLValue();
+    auto r_value = n->GetRValue();
+    l_value->Accept(this);
+    r_value->Accept(this);
+    Check(l_value, r_value->GetType()->GetValue());
 }
 
 void TypeChecker::Visit(Block* n) {
-    // TODO: Finish Implementation
+    for (const auto& statement : n->GetStatements()) {
+        statement->Accept(this);
+    }
 }
 
 void TypeChecker::Visit(IfThenElse* n) {
-    // TODO: Finish Implementation
+    auto predicate = n->GetPredicate();
+    auto then = n->GetThenStatement();
+    auto els = n->GetElseStatement();
+    predicate->Accept(this);
+    Check(predicate, BOOL);
+    then->Accept(this);
+    if (els != nullptr) els->Accept(this);
 }
 
 void TypeChecker::Visit(While* n) {
-    // TODO: Finish Implementation
+    auto predicate = n->GetPredicate();
+    auto block = n->GetBlock();
+    predicate->Accept(this);
+    Check(predicate, BOOL);
+    block->Accept(this);
 }
 
 void TypeChecker::Visit(VarDecl* n) {
-    // TODO: Finish Implementation
+    auto id = n->GetId();
+    auto type = n->GetType();
+    string name = id->GetName();
+    if (symbolTable_.Get(name)) HandleDuplicateNameDecl(name);
+    symbolTable_.Put(name, type);
 }
 
 void TypeChecker::Visit(ReturnStm* n) {
-    // TODO: Finish Implementation
+    n->GetExpression()->Accept(this);
 }
 
 /* ---------- Expressions ---------- */
@@ -89,17 +110,11 @@ void TypeChecker::Visit(BooleanLiteral* n) {
 }
 
 /* ---------- Types ---------- */
-void TypeChecker::Visit(NumType* n) {
-    // TODO: Finish Implementation
-}
 
-void TypeChecker::Visit(BoolType* n) {
-    // TODO: Finish Implementation
-}
-
-void TypeChecker::Visit(VoidType* n) {
-    // TODO: Finish Implementation
-}
+// Do nothing
+void TypeChecker::Visit(NumType* n) {}
+void TypeChecker::Visit(BoolType* n) {}
+void TypeChecker::Visit(VoidType* n) {}
 
 
 /* ---------- Helpers ---------- */
@@ -110,10 +125,16 @@ void TypeChecker::AddToFunctionTable(std::shared_ptr<FunctionDecl> n) {
         type->AddParamType(formal->GetType()->GetValue());
     }
     type->SetReturnType(n->GetReturnType()->GetValue());
-    symbolTable_.PutFunction(n->GetId()->GetName(), type);
+    symbolTable_.PutFunction(n->GetId()->GetName(), type.get());
 }
 
 void TypeChecker::Check(Expression* e, Type type) {
+    // Error Handling
+    // TODO: Finish Implementation
+}
+
+
+void TypeChecker::HandleDuplicateNameDecl(const std::string name) {
     // Error Handling
     // TODO: Finish Implementation
 }

@@ -14,10 +14,15 @@ public:
     TypeChecker() = default;
     ~TypeChecker() = default;
 
+    /**
+     * @brief          Typecheck the given program
+     * @param program  The program to typecheck
+     * @return         An instance of CheckedProgram
+     */
     CheckedProgram TypeCheck(std::shared_ptr<Program> program);
 
 private:
-    SymbolTable<std::shared_ptr<StaticType>> symbolTable_;
+    SymbolTable<StaticType*> symbolTable_;
     std::string current_function_name_;
 
     void Visit(Program* n) override;
@@ -51,7 +56,24 @@ private:
 
 
     /*********** Helpers ***********/
+
+    /**
+     * @brief    Add the function to the global function symbol table
+     * @param n  The function to add
+     */
     void AddToFunctionTable(std::shared_ptr<FunctionDecl> n);
+    /**
+     * @brief       Check if the expression has a given type
+     * @param e     The expression to check
+     * @param type  The type to match to
+     */
     void Check(Expression* e, Type t);
+
+
+    /**
+     * @brief       Handle duplicate name declarations in the same scope
+     * @param name  The name to check
+     */
+    void HandleDuplicateNameDecl(const std::string name);
 
 }; // class TypeChecker

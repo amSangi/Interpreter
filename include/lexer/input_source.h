@@ -3,35 +3,46 @@
 #include <utility>
 #include <fstream>
 
-/***
-*	An std::ifstream wrapper to handle lookaheads, retrieval of next characters,
-*	column/line references, and EndOfFile checks.
-*
-*	Warning: Column/Line tracking is not thread safe.
-*	That is, multiple InputSources using the same ifstream may not have the corrent
-*	line/column values.
-*/
 class InputSource
 {
 public:
     InputSource(std::string file_name) : input_(file_name) {}
     ~InputSource() = default;
 
-    friend void swap(InputSource& first, InputSource& second) {
-        using std::swap;
 
-        swap(first.input_, second.input_);
-        swap(first.line_, second.line_);
-        swap(first.column_, second.column_);
-    }
-
+    /**
+     * @return  The next character in the input file
+     */
     char GetNextChar();
+
+    /**
+     * @brief   Skip the next character in the input file
+     */
     void ConsumeNext();
+
+    /**
+     * @brief   Skip to the next non-whitespace/non-newline character
+     */
     void SkipWhiteSpaceAndNewLines();
 
+    /**
+     * @return  The next character from the input file without changing position
+     */
     char LookAheadOne();
+
+    /**
+     * @return  True if input_ is at the end of the file
+     */
     bool IsEndOfFile();
+
+    /**
+     * @return  The current line in input_
+     */
     size_t GetCurrentLine() const;
+
+    /**
+     * @return  The current column in input_
+     */
     size_t GetCurrentColumn() const;
 
 private:
