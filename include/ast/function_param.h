@@ -2,24 +2,26 @@
 
 #include "ast_node.h"
 #include "static_type.h"
+#include "identifier.h"
 
 class FunctionParam : public ASTNode
 {
-    typedef std::string string;
+    typedef std::shared_ptr<Identifier> IdPtr;
     typedef std::shared_ptr<StaticType> TypePtr;
 public:
     FunctionParam() = default;
     ~FunctionParam() override = default;
 
     void Accept(IVisitor* v) override                       {   v->Visit(this); }
-    std::string ToString() override                         {   return type_->ToString() + " " + identifier_name_; }
+    std::string ToString() override                         {   return type_->ToString() + " "
+                                                                       + id_->ToString(); }
 
     void SetType(TypePtr type)                              {   type_ = std::move(type); }
-    void SetName(const string name)                         {   identifier_name_ = name; }
+    void SetName(IdPtr id)                                  {   id_ = std::move(id); }
     StaticType* GetType() const                             {   return type_.get(); }
-    string GetParamName() const                             {   return identifier_name_; }
+    Identifier* GetId() const                               {   return id_.get(); }
 private:
     TypePtr type_;
-    string identifier_name_;
+    IdPtr id_;
 
 }; // class FunctionParam

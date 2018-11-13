@@ -2,25 +2,26 @@
 
 #include "statement.h"
 #include "expression.h"
+#include "identifier.h"
 
 class Assignment : public Statement
 {
-	typedef std::string string;
+	typedef std::shared_ptr<Identifier> IdPtr;
 	typedef std::shared_ptr<Expression> ExpPtr;
 public:
 	Assignment() = default;
 	~Assignment() override = default;
 
 	void Accept(IVisitor* v) override                   {   v->Visit(this); }
-	std::string ToString() override                     {   return identifier_name_ + " = "
+	std::string ToString() override                     {   return id_->ToString() + " = "
                                                                    + value_->ToString() + ";";}
 
-	void SetLValue(const string value)                  {   identifier_name_ = value; }
+	void SetLValue(IdPtr id)                            {   id_ = std::move(id); }
 	void SetRValue(ExpPtr value)                        {   value_ = std::move(value); }
-	string GetLValue() const                            {   return identifier_name_; }
+	Identifier* GetLValue() const                       {   return id_.get(); }
 	Expression* GetRValue() const                       {   return value_.get(); }
 private:
-	string identifier_name_;
+	IdPtr id_;
 	ExpPtr value_;
 
 }; // class Assignment

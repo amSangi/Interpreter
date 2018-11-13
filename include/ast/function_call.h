@@ -2,10 +2,11 @@
 
 #include <vector>
 #include "expression.h"
+#include "identifier.h"
 
 class FunctionCall : public Expression
 {
-	typedef std::string string;
+	typedef std::shared_ptr<Identifier> IdPtr;
 	typedef std::shared_ptr<Expression> ExpPtr;
 public:
 	FunctionCall() = default;
@@ -13,7 +14,7 @@ public:
 
 	void Accept(IVisitor* v) override                   {   v->Visit(this); }
 	std::string ToString() override {
-		string res = identifier_name_ + "(";
+		std::string res = id_->ToString() + "(";
 		for (int i = 0; i < arguments_.size(); ++i) {
 			res += arguments_[i]->ToString();
 			if (i + 1 < arguments_.size()) res += ", ";
@@ -22,13 +23,13 @@ public:
 		return res;
 	}
 
-	void SetName(const string name)                     {   identifier_name_ = name; }
+	void SetId(IdPtr id)                                {   id_ = std::move(id); }
 	void AddArgument(ExpPtr arg)                        {   arguments_.emplace_back(std::move(arg)); }
 
-	string GetIdentifierName() const                    {   return identifier_name_; }
+	Identifier* GetId() const                           {   return id_.get(); }
 	const std::vector<ExpPtr>& GetArguments() const     {   return arguments_; }
 private:
-	string identifier_name_; 
+	IdPtr id_;
 	std::vector<ExpPtr> arguments_;
 
 }; // class FunctionCall

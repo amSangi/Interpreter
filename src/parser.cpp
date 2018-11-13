@@ -35,7 +35,7 @@ shared_ptr<FunctionDecl> Parser::ConsumeMain() {
 	main->SetReturnType(make_shared<NumType>());
 
 	Expect(MainKeyword);
-	main->SetName("main");
+	main->SetId(make_shared<Identifier>("main"));
 
 	Expect(OpenParanToken);
 	Expect(CloseParanToken);
@@ -54,10 +54,7 @@ shared_ptr<FunctionDecl> Parser::ConsumeFunctionDecl() {
 	auto fun_decl = make_shared<FunctionDecl>();
 	auto type = ConsumeStaticType();
 	fun_decl->SetReturnType(type);
-
-	std::string val = current_token_.GetValue();
-	Expect(IdentifierToken);
-	fun_decl->SetName(val);
+	fun_decl->SetId(ConsumeIdentifier());
 
 	Expect(OpenParanToken);
 
@@ -87,7 +84,7 @@ shared_ptr<FunctionParam> Parser::ConsumeFunctionParam() {
 	auto param = make_shared<FunctionParam>();
 
 	param->SetType(ConsumeStaticType());
-	param->SetName(ConsumeIdentifier()->GetName());
+	param->SetName(ConsumeIdentifier());
 
 	return param;
 }
@@ -193,7 +190,7 @@ shared_ptr<VarDecl> Parser::ConsumeVarDecl() {
 	auto var_decl = make_shared<VarDecl>();
 
 	var_decl->SetType(ConsumeStaticType());
-	var_decl->SetName(ConsumeIdentifier()->GetName());
+	var_decl->SetId(ConsumeIdentifier());
 
 	return var_decl; 
 }
@@ -205,7 +202,7 @@ shared_ptr<Assignment> Parser::ConsumeAssignment() {
 	Expect(EqualToken); 
 	auto exp = ConsumeExpression();
 
-	assign->SetLValue(id->GetName()); 
+	assign->SetLValue(id);
 	assign->SetRValue(exp);
 
 	return assign; 
@@ -372,7 +369,7 @@ shared_ptr<Expression> Parser::ConsumeUnaryOp() {
 shared_ptr<FunctionCall> Parser::ConsumeFunctionCall() {
 	auto call = make_shared<FunctionCall>();
 
-	call->SetName(ConsumeIdentifier()->GetName());
+	call->SetId(ConsumeIdentifier());
 	Expect(OpenParanToken);
 	while (current_token_.GetType() != CloseParanToken) {
 		call->AddArgument(ConsumeExpression());

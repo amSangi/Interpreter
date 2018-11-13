@@ -1,6 +1,6 @@
 #include <utility>
 #include "visitor/typechecker.h"
-#include "function_type.h"
+#include "ast.h"
 
 using std::make_shared;
 
@@ -24,7 +24,7 @@ void TypeChecker::Visit(Program* n) {
 
 /* ---------- Functions ---------- */
 void TypeChecker::Visit(FunctionDecl* n) {
-    current_function_name_ = n->GetName();
+    current_function_name_ = n->GetId()->GetName();
     for (const auto& statement : n->GetStatements()) {
         statement->Accept(this);
     }
@@ -110,7 +110,7 @@ void TypeChecker::AddToFunctionTable(std::shared_ptr<FunctionDecl> n) {
         type->AddParamType(formal->GetType()->GetValue());
     }
     type->SetReturnType(n->GetReturnType()->GetValue());
-    symbolTable_.PutFunction(n->GetName(), type);
+    symbolTable_.PutFunction(n->GetId()->GetName(), type);
 }
 
 void TypeChecker::Check(Expression* e, Type type) {
