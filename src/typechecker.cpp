@@ -17,7 +17,7 @@ void TypeChecker::Visit(Program* n) {
     for (const auto& fun_decl : n->GetFunctions()) {
         AddToFunctionTable(fun_decl);
     }
-    shared_ptr<FunctionDecl> main(n->GetMain());
+    auto main = n->GetMain();
     AddToFunctionTable(main);
 
     // Typecheck functions
@@ -29,7 +29,7 @@ void TypeChecker::Visit(Program* n) {
 
     // Typecheck main
     symbolTable_.EnterScope();
-    n->GetMain()->Accept(this);
+    main->Accept(this);
     symbolTable_.LeaveScope();
 }
 
@@ -81,16 +81,19 @@ void TypeChecker::Visit(While* n) {
 
 void TypeChecker::Visit(VarDecl* n) {
     auto id = n->GetId();
-    shared_ptr<StaticType> type(n->GetType());
+    auto type = n->GetType();
     string name = id->GetName();
     if (symbolTable_.Get(name) != nullptr) HandleDuplicateNameDecl(name);
-    symbolTable_.Put(name, type);
+    else symbolTable_.Put(name, type);
 }
 
 void TypeChecker::Visit(ReturnStm* n) {
     auto expression = n->GetExpression();
     expression->Accept(this);
-    Check(expression, symbolTable_.GetFunction(current_function_name_)->GetValue());
+
+    auto type = symbolTable_.GetFunction(current_function_name_);
+    auto function_type = std::dynamic_pointer_cast<FunctionType>(type);
+    Check(expression, function_type->GetReturnType()->GetValue());
 }
 
 /* ---------- Expressions ---------- */
@@ -101,8 +104,7 @@ void TypeChecker::Visit(Identifier* n) {
         return;
     }
 
-    const shared_ptr<StaticType> &id_type(type);
-    n->SetType(id_type);
+    n->SetType(type);
 }
 
 void TypeChecker::Visit(BinaryOp* n) {
@@ -125,7 +127,7 @@ void TypeChecker::Visit(UnaryOp* n) {
 
 void TypeChecker::Visit(FunctionCall* n) {
     auto function_id = n->GetId();
-    shared_ptr<StaticType> type = symbolTable_.GetFunction(function_id->GetName());
+    auto type = symbolTable_.GetFunction(function_id->GetName());
 
     if (type == nullptr) {
         HandleUndefinedIdentifier(function_id->GetName());
@@ -133,9 +135,8 @@ void TypeChecker::Visit(FunctionCall* n) {
     }
 
     // Set call type to be return type of function
-    shared_ptr<FunctionType> function_type = std::dynamic_pointer_cast<FunctionType>(type);
-    shared_ptr<StaticType> call_type(function_type->GetReturnType());
-    n->SetType(call_type);
+    auto function_type = std::dynamic_pointer_cast<FunctionType>(type);
+    n->SetType(function_type->GetReturnType());
 
     // Check argument types
     for (const auto& argument : n->GetArguments()) {
@@ -159,17 +160,19 @@ void TypeChecker::Visit(Conditional* n) {
 
     // True/False expressions have the same type
     Check(true_exp, false_exp->GetType()->GetValue());
-    shared_ptr<StaticType> type(true_exp->GetType());
-    n->SetType(type);
+    n->SetType(true_exp->GetType());
 }
 
-// Types already set by Parser
-void TypeChecker::Visit(NumLiteral* n) {}
-void TypeChecker::Visit(BooleanLiteral* n) {}
+void TypeChecker::Visit(NumLiteral* n) {
+    n->SetType(make_shared<NumType>());
+}
+void TypeChecker::Visit(BooleanLiteral* n) {
+    n->SetType(make_shared<BoolType>());
+}
 
 /* ---------- Types ---------- */
 
-// Trivial --Do nothing
+// Trivial -- Do nothing
 void TypeChecker::Visit(NumType* n) {}
 void TypeChecker::Visit(BoolType* n) {}
 void TypeChecker::Visit(VoidType* n) {}
@@ -182,12 +185,11 @@ void TypeChecker::AddToFunctionTable(std::shared_ptr<FunctionDecl> n) {
     for (const auto& formal : n->GetFormals()) {
         type->AddParamType(formal->GetType()->GetValue());
     }
-    shared_ptr<StaticType> return_type(n->GetReturnType());
-    type->SetReturnType(return_type);
+    type->SetReturnType(n->GetReturnType());
     symbolTable_.PutFunction(n->GetId()->GetName(), type);
 }
 
-void TypeChecker::Check(Expression* e, Type type) {
+void TypeChecker::Check(ExpPtr e, Type type) {
     // Error Handling
     // TODO: Finish Implementation
     if (e->GetType() == nullptr) std::cout << "TYPE HAS NOT BEEN SET" << std::endl;
@@ -220,6 +222,6 @@ void TypeChecker::CheckParameterArgumentMatch(std::vector<TypeChecker::ExpPtr> a
     }
 
     for (int i = 0; i < arguments.size(); ++i) {
-        Check(arguments[i].get(), parameter_types[i]);
+        Check(arguments[i], parameter_types[i]);
     }
 }

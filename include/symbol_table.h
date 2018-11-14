@@ -1,6 +1,7 @@
 #pragma once
 
 #include <unordered_map>
+#include <utility>
 #include <stack>
 #include <string>
 
@@ -18,8 +19,8 @@ public:
     void LeaveScope()                                  { tables_.pop(); }
 
     /*********** Symbol ***********/
-    void Put(string symbol, T value)                   { tables_.top()[symbol] = value; }
-    void PutFunction(string symbol, T value)           { function_table_[symbol] = value; }
+    void Put(string symbol, T value)                   { tables_.top().insert(std::make_pair(symbol, value)); }
+    void PutFunction(string symbol, T value)           { function_table_.insert(std::make_pair(symbol, value)); }
 
     T Get(const string& symbol) const                  { return GetSymbol(symbol, tables_.top()); }
 

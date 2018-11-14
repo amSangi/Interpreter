@@ -18,8 +18,8 @@ public:
 
     void SetType(TypePtr type)                              {   type_ = std::move(type); }
     void SetName(IdPtr id)                                  {   id_ = std::move(id); }
-    StaticType* GetType() const                             {   return type_.get(); }
-    Identifier* GetId() const                               {   return id_.get(); }
+    TypePtr GetType() const                                 {   return type_; }
+    IdPtr GetId() const                                     {   return id_; }
 private:
     TypePtr type_;
     IdPtr id_;

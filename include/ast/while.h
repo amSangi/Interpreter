@@ -21,8 +21,8 @@ public:
 
 	void SetPredicate(ExpPtr exp)                               {   test_  = std::move(exp); }
 	void SetBlock(BlockPtr block)                               {   block_ = std::move(block); }
-	Expression* GetPredicate() const                            {   return test_.get(); }
-	Block* GetBlock() const                                     {   return block_.get(); }
+	ExpPtr GetPredicate() const                                 {   return test_; }
+	BlockPtr GetBlock() const                                   {   return block_; }
 private:
 	ExpPtr test_; 
 	BlockPtr block_; 

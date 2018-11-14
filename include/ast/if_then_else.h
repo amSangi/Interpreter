@@ -28,9 +28,9 @@ public:
 	void SetThen(StmPtr stm)                                {   then_ = std::move(stm); }
 	void SetElse(StmPtr stm)                                {   else_ = std::move(stm); }
 
-	Expression* GetPredicate() const                        {   return predicate_.get(); }
-	Statement* GetThenStatement() const                     {   return then_.get(); }
-	Statement* GetElseStatement() const                     {   return else_.get(); }
+	ExpPtr GetPredicate() const                             {   return predicate_; }
+	StmPtr GetThenStatement() const                         {   return then_; }
+	StmPtr GetElseStatement() const                         {   return else_; }
 private:
 	ExpPtr predicate_;
 	StmPtr then_;

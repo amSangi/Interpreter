@@ -38,8 +38,8 @@ public:
 	void AddFormal(ParamPtr var)                                {   formals_.emplace_back(std::move(var)); }
 	void AddStm(StmPtr stm)                                     {   statements_.emplace_back(std::move(stm)); }
 
-	StaticType* GetReturnType() const                           {   return return_type_.get(); }
-	Identifier* GetId() const                                   {   return id_.get(); }
+	TypePtr GetReturnType() const                               {   return return_type_; }
+	IdPtr GetId() const                                         {   return id_; }
 	const std::vector<ParamPtr>& GetFormals() const             {   return formals_; }
 	const std::vector<StmPtr>& GetStatements() const            {   return statements_; }
 private:

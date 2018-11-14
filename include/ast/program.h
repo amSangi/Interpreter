@@ -23,7 +23,7 @@ public:
 	void SetMain(FunDeclPtr main)                               {   main_ = std::move(main); }
 	void AddFuncDecl(FunDeclPtr fun)                            {   functions_.emplace_back(std::move(fun)); }
 	const std::vector<FunDeclPtr>& GetFunctions() const         {   return functions_; }
-	FunctionDecl* GetMain() const                               {   return main_.get(); }
+	FunDeclPtr GetMain() const                                  {   return main_; }
 private:
 	std::vector<FunDeclPtr> functions_;
 	FunDeclPtr main_;

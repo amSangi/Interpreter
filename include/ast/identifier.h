@@ -1,12 +1,13 @@
 #pragma once
 
+#include <utility>
 #include "expression.h"
 
 class Identifier : public Expression 
 {
 	typedef std::string string;
 public:
-	explicit Identifier(string name) : name_(name) {}
+	explicit Identifier(string name) : name_(std::move(name)) {}
 	~Identifier() override = default;
 
 	void Accept(IVisitor* v) override                           {   v->Visit(this); }

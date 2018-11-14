@@ -42,7 +42,8 @@ shared_ptr<FunctionDecl> Parser::ConsumeMain() {
 	Expect(OpenBraceToken);
 
 	// Parse statements
-	while (current_token_.GetType() != CloseBraceToken) {
+	while (current_token_.GetType() != CloseBraceToken
+			&& current_token_.GetType() != EndOfFileToken) {
 		main->AddStm(ConsumeStatement());
 	}
 
@@ -337,17 +338,14 @@ shared_ptr<Expression> Parser::ConsumePrimaryExpression() {
         break;
     case NumericLiteral:
         exp = make_shared<NumLiteral>(std::stod(current_token_.GetValue()));
-        exp->SetType(make_shared<NumType>());
         NextToken();
         break;
 	case TrueKeyword:
 		exp = make_shared<BooleanLiteral>(true);
-		exp->SetType(make_shared<BoolType>());
         NextToken();
         break;
 	case FalseKeyword:
 		exp = make_shared<BooleanLiteral>(false);
-		exp->SetType(make_shared<BoolType>());
 		NextToken();
         break;
     case ExclamationToken:
@@ -434,6 +432,9 @@ bool Parser::Expect(TokenType token) {
 		return true; 
 	}
 
+	// Attempt to recover
+	NextToken();
+
 	// Record error
 	std::stringstream ss;
 	ss << "Invalid token at line: " << lexer_.GetCurrentLine()
@@ -449,7 +450,7 @@ bool Parser::Accept(TokenType token) {
 		return true;
 	}
 
-	return false; 
+	return false;
 }
 
 // TODO: Implement parser error handling

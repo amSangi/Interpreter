@@ -20,8 +20,8 @@ public:
 	void SetRight(ExpPtr right)                                 {   right_ = std::move(right);  }
 
 	BOperator GetOperator() const                               {   return op_; }
-	Expression* GetLeft() const                                 {   return left_.get(); }
-	Expression* GetRight() const                                {   return right_.get(); }
+	ExpPtr GetLeft() const                                      {   return left_; }
+	ExpPtr GetRight() const                                     {   return right_; }
 private:
 	BOperator op_; 
 	ExpPtr left_;

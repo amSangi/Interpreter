@@ -26,7 +26,7 @@ public:
 	void SetId(IdPtr id)                                {   id_ = std::move(id); }
 	void AddArgument(ExpPtr arg)                        {   arguments_.emplace_back(std::move(arg)); }
 
-	Identifier* GetId() const                           {   return id_.get(); }
+	IdPtr GetId() const                                 {   return id_; }
 	const std::vector<ExpPtr>& GetArguments() const     {   return arguments_; }
 private:
 	IdPtr id_;

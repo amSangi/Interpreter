@@ -13,7 +13,7 @@ public:
 	std::string ToString() override                     {   return "return " + exp_->ToString() + ";"; }
 
 	void SetExpression(ExpPtr exp)                      {   exp_ = std::move(exp); }
-	Expression* GetExpression() const                   {   return exp_.get(); }
+	ExpPtr GetExpression() const                        {   return exp_; }
 private:
 	ExpPtr exp_; 
 

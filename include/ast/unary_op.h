@@ -17,7 +17,7 @@ public:
 	void SetExpression(ExpPtr exp)                          {   exp_ = std::move(exp); }
 	void SetOp(UOperator op)                                {   op_ = op; }
 	UOperator GetOperator() const                           {   return op_; }
-	Expression* GetExpression() const                       {   return exp_.get(); }
+	ExpPtr GetExpression() const                            {   return exp_; }
 private:
 	UOperator op_; 
 	ExpPtr exp_;

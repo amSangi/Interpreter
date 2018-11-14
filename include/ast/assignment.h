@@ -18,8 +18,8 @@ public:
 
 	void SetLValue(IdPtr id)                            {   id_ = std::move(id); }
 	void SetRValue(ExpPtr value)                        {   value_ = std::move(value); }
-	Identifier* GetLValue() const                       {   return id_.get(); }
-	Expression* GetRValue() const                       {   return value_.get(); }
+	IdPtr GetLValue() const                             {   return id_; }
+	ExpPtr GetRValue() const                            {   return value_; }
 private:
 	IdPtr id_;
 	ExpPtr value_;

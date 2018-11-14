@@ -69,7 +69,7 @@ private:
      * @param e     The expression to check
      * @param type  The type to match to
      */
-    void Check(Expression* e, Type t);
+    void Check(ExpPtr e, Type t);
 
 
     /**

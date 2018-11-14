@@ -18,9 +18,9 @@ public:
 	void SetTrueValue(ExpPtr tval)                              {   tval_ = std::move(tval); }
 	void SetFalseValue(ExpPtr fval)                             {   fval_ = std::move(fval); }
 
-	Expression* GetPredicate() const                            {   return predicate_.get(); }
-	Expression* GetTrueValue() const                            {   return tval_.get();	}
-	Expression* GetFalseValue() const                           {   return fval_.get();	}
+	ExpPtr GetPredicate() const                                 {   return predicate_; }
+	ExpPtr GetTrueValue() const                                 {   return tval_;	}
+	ExpPtr GetFalseValue() const                                {   return fval_;	}
 private:
 	ExpPtr predicate_;
 	ExpPtr tval_;
