@@ -23,9 +23,12 @@ public:
      */
     CheckedProgram TypeCheck(std::shared_ptr<Program> program);
 
+    const std::vector<std::string>& GetErrors() const;
+
 private:
     SymbolTable<std::shared_ptr<StaticType>> symbolTable_;
     std::string current_function_name_;
+    std::vector<std::string> errors_;
 
     void Visit(Program* n) override;
 
@@ -92,5 +95,12 @@ private:
      * @param parameter_types  A function's parameter types in their declared order
      */
     void CheckParameterArgumentMatch(std::vector<ExpPtr> arguments, std::vector<Type> parameter_types);
+
+
+    /**
+     * @brief          Log an error in 'errors_'
+     * @param message  The error message
+     */
+    void RecordError(const std::string message);
 
 }; // class TypeChecker

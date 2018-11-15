@@ -66,7 +66,7 @@ TEST_F(TestLexer, TestSimpleSubtract) {
 			IdentifierToken, MinusToken,
 			IdentifierToken, MinusToken,
 			IdentifierToken, MinusToken,
-			IdentifierToken, SemiColonToken,
+			MinusToken, IdentifierToken, SemiColonToken,
 
         ReturnKeyword, IdentifierToken, SemiColonToken, CloseBraceToken
 	};

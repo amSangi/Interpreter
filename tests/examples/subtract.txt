@@ -6,7 +6,7 @@ num main() {
 	num total;
 
     a = 3; b = -4; c = 3; d = 5;
-	total = -100 - a - b - c - d;
+	total = -100 - a - b - c - -d;
 
 	return total; 
 }

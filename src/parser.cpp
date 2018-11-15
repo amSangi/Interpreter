@@ -276,7 +276,7 @@ shared_ptr<Expression> Parser::ConsumeComparison() {
     NextToken(); // > >= == < <=
 
     comp->SetLeft(left_exp);
-    comp->SetRight(ConsumeAddSub());
+    comp->SetRight(ConsumeExpression());
     comp->SetType(make_shared<BoolType>());
 
     return comp;
@@ -319,7 +319,7 @@ shared_ptr<Expression> Parser::ConsumeMultDiv() {
 	NextToken(); // * /
 
 	exp->SetLeft(left_exp);
-	exp->SetRight(ConsumePrimaryExpression());
+	exp->SetRight(ConsumeExpression());
 	exp->SetType(make_shared<NumType>());
 
 	return exp;
@@ -330,32 +330,51 @@ shared_ptr<Expression> Parser::ConsumePrimaryExpression() {
 	shared_ptr<Expression> exp;
 
 	switch (current_token_.GetType()) {
-	case IdentifierToken:
-		if (next_token_.GetType() == OpenParanToken) {
-		    exp = ConsumeFunctionCall();
-		}
+	case IdentifierToken: {
+		if (next_token_.GetType() == OpenParanToken)  exp = ConsumeFunctionCall();
 		else exp = ConsumeIdentifier();
-        break;
-    case NumericLiteral:
-        exp = make_shared<NumLiteral>(std::stod(current_token_.GetValue()));
-        NextToken();
-        break;
-	case TrueKeyword:
+		break;
+	}
+    case NumericLiteral: {
+		exp = make_shared<NumLiteral>(std::stod(current_token_.GetValue()));
+		NextToken();
+		break;
+	}
+	case TrueKeyword: {
+		// true
 		exp = make_shared<BooleanLiteral>(true);
-        NextToken();
-        break;
-	case FalseKeyword:
+		NextToken();
+		break;
+	}
+	case FalseKeyword: {
+		// false
 		exp = make_shared<BooleanLiteral>(false);
 		NextToken();
-        break;
-    case ExclamationToken:
-        exp = ConsumeUnaryOp();
-        break;
-	case OpenParanToken:
-	    NextToken();
+		break;
+	}
+    case ExclamationToken: {
+		// !
+		exp = ConsumeUnaryOp();
+		break;
+	}
+	case OpenParanToken: {
+		// (
+		NextToken();
 		exp = ConsumeExpression();
 		Expect(CloseParanToken);
 		break;
+	}
+	case MinusToken: {
+		// Handle negatives (e.g. -3, -some_variable)
+		NextToken();
+		auto mult = make_shared<BinaryOp>();
+		mult->SetLeft(make_shared<NumLiteral>(-1));
+		mult->SetOperator(MULTIPLY);
+		mult->SetRight(ConsumePrimaryExpression());
+		mult->SetType(make_shared<NumType>());
+		exp = mult;
+		break;
+	}
 	default:
 		return nullptr; 
 	}
@@ -369,7 +388,6 @@ shared_ptr<Expression> Parser::ConsumeUnaryOp() {
     unary_op->SetOp(NOT);
     unary_op->SetExpression(ConsumeExpression());
     unary_op->SetType(make_shared<BoolType>());
-
     return unary_op;
 }
 

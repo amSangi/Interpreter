@@ -1,5 +1,8 @@
 num main() {
-	num a; num b; num c; num d;
+	num a;
+	num b;
+	num c;
+	num d;
     num sum;
 
     a = 1; b = 2; c = 3; d = 4;

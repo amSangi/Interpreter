@@ -1,4 +1,4 @@
-#include <iostream>
+#include <sstream>
 #include "visitor/typechecker.h"
 #include "ast.h"
 
@@ -11,6 +11,12 @@ CheckedProgram TypeChecker::TypeCheck(std::shared_ptr<Program> program){
     program->Accept(this);
     return CheckedProgram(std::move(program), symbolTable_);
 }
+
+
+const vector<string>& TypeChecker::GetErrors() const {
+    return errors_;
+}
+
 
 void TypeChecker::Visit(Program* n) {
     // Build function table
@@ -180,7 +186,7 @@ void TypeChecker::Visit(VoidType* n) {}
 
 /* ---------- Helpers ---------- */
 
-void TypeChecker::AddToFunctionTable(std::shared_ptr<FunctionDecl> n) {
+void TypeChecker::AddToFunctionTable(shared_ptr<FunctionDecl> n) {
     auto type = make_shared<FunctionType>();
     for (const auto& formal : n->GetFormals()) {
         type->AddParamType(formal->GetType()->GetValue());
@@ -189,39 +195,37 @@ void TypeChecker::AddToFunctionTable(std::shared_ptr<FunctionDecl> n) {
     symbolTable_.PutFunction(n->GetId()->GetName(), type);
 }
 
-void TypeChecker::Check(ExpPtr e, Type type) {
-    // Error Handling
-    // TODO: Finish Implementation
-    if (e->GetType() == nullptr) std::cout << "TYPE HAS NOT BEEN SET" << std::endl;
+void TypeChecker::Check(TypeChecker::ExpPtr e, Type type) {
+    if (e->GetType() == nullptr) RecordError("Type has not been set");
     else if (e->GetType()->GetValue() != type) {
-        std::cerr << "EXPECTED: " << StaticType::TypeToString(type)
-                  << " RECEIVED: "
-                     << StaticType::TypeToString(e->GetType()->GetValue()) << std::endl;
+        std::stringstream ss;
+        ss << "EXPECTED: " << StaticType::TypeToString(type)
+           << " RECEIVED: " << StaticType::TypeToString(e->GetType()->GetValue());
+        RecordError(ss.str());
     }
 }
 
 
-void TypeChecker::HandleDuplicateNameDecl(const std::string name) {
-    // Error Handling
-    // TODO: Finish Implementation
-    std::cerr << "DUPLICATE NAME DECL : " << name << std::endl;
+void TypeChecker::HandleDuplicateNameDecl(const string name) {
+    RecordError("Duplicate name declaration: " + name);
 }
 
-void TypeChecker::HandleUndefinedIdentifier(const std::string name) {
-    // Error Handling
-    // TODO: Finish Implementation
-    std::cerr << "UNDEFINED NAME : " << name << std::endl;
+void TypeChecker::HandleUndefinedIdentifier(const string name) {
+    RecordError("Undefined variable: " + name);
 }
 
-void TypeChecker::CheckParameterArgumentMatch(std::vector<TypeChecker::ExpPtr> arguments,
-                                              std::vector<Type> parameter_types) {
+void TypeChecker::CheckParameterArgumentMatch(vector<TypeChecker::ExpPtr> arguments,
+                                              vector<Type> parameter_types) {
 
-    // TODO: Update size equality check -- error handling
     if (arguments.size() != parameter_types.size()) {
-        std::cerr << "PARAMETER/TYPE MISMATCH : " << std::endl;
+        RecordError("Parameter/Argument mismatch");
     }
 
     for (int i = 0; i < arguments.size(); ++i) {
         Check(arguments[i], parameter_types[i]);
     }
+}
+
+void TypeChecker::RecordError(const string message) {
+    errors_.emplace_back(message);
 }

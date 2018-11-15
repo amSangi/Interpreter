@@ -14,7 +14,19 @@ protected:
 
     CheckedProgram Check(const std::string& file) {
         std::shared_ptr<Program> program = ParseFile(file);
-        return TypeChecker().TypeCheck(program);
+        TypeChecker checker;
+        CheckedProgram checked_program = checker.TypeCheck(program);
+
+        std::vector<std::string> errors = checker.GetErrors();
+        if (!errors.empty()) {
+            for (const std::string& s : errors) {
+                std::cerr << s << std::endl;
+            }
+        }
+        // Sanity Check
+        EXPECT_TRUE(errors.empty());
+
+        return checked_program;
     }
 
 

@@ -7,6 +7,84 @@ using std::vector;
 using std::shared_ptr;
 using std::string;
 
+TEST_F(TestParser, Add) {
+    auto program = ParseFile("add.txt");
+    SanityCheck(program);
+    string actual = program->ToString();
+    string expected = "num main() {\n"
+                      "num a;\n"
+                      "num b;\n"
+                      "num c;\n"
+                      "num d;\n"
+                      "num sum;\n"
+                      "a = 1.000000;\n"
+                      "b = 2.000000;\n"
+                      "c = 3.000000;\n"
+                      "d = 4.000000;\n"
+                      "sum = (a) + ((b) + ((c) + ((d) + (100.000000))));\n"
+                      "return sum;\n"
+                      "}\n";
+    EXPECT_EQ(expected, actual);
+}
+
+TEST_F(TestParser, Sub) {
+    auto program = ParseFile("subtract.txt");
+    SanityCheck(program);
+    string actual = program->ToString();
+    string expected = "num main() {\n"
+                      "num a;\n"
+                      "num b;\n"
+                      "num c;\n"
+                      "num d;\n"
+                      "num total;\n"
+                      "a = 3.000000;\n"
+                      "b = (-1.000000) * (4.000000);\n"
+                      "c = 3.000000;\n"
+                      "d = 5.000000;\n"
+                      "total = ((-1.000000) * (100.000000)) - ((a) - ((b) - ((c) - ((-1.000000) * (d)))));\n"
+                      "return total;\n"
+                      "}\n";
+    EXPECT_EQ(expected, actual);
+}
+
+TEST_F(TestParser, Multiply) {
+    auto program = ParseFile("multiply.txt");
+    SanityCheck(program);
+    string actual = program->ToString();
+    string expected = "num main() {\n"
+                      "num a;\n"
+                      "num b;\n"
+                      "num c;\n"
+                      "num d;\n"
+                      "num product;\n"
+                      "a = 3.000000;\n"
+                      "b = 1.000000;\n"
+                      "c = 5.000000;\n"
+                      "d = (-1.000000) * (10.000000);\n"
+                      "product = (a) * ((b) * ((c) * ((d) * ((-1.000000) * (3.000000)))));\n"
+                      "return product;\n"
+                      "}\n";
+    EXPECT_EQ(expected, actual);
+}
+
+TEST_F(TestParser, Division) {
+    auto program = ParseFile("division.txt");
+    SanityCheck(program);
+    string actual = program->ToString();
+    string expected = "num main() {\n"
+                      "num a;\n"
+                      "num b;\n"
+                      "num c;\n"
+                      "num result;\n"
+                      "a = 10.000000;\n"
+                      "b = (-1.000000) * (1000.000000);\n"
+                      "c = 35.000000;\n"
+                      "result = (b) * (((-1.000000) * (c)) / (a));\n"
+                      "return result;\n"
+                      "}\n";
+    EXPECT_EQ(expected, actual);
+}
+
 TEST_F(TestParser, SimpleProgram) {
     auto program = ParseFile("simple_program.txt");
     SanityCheck(program);
@@ -50,7 +128,7 @@ TEST_F(TestParser, ComplexProgram) {
                       "return (x) - (y);\n"
                       "}\n"
                       "num gcd(num x, num y) {\n"
-                      "if (((x) % (y)) == (0.000000))\n{\n"
+                      "if ((x) % ((y) == (0.000000)))\n{\n"
                       "return y;\n"
                       "}\n"
                       "else\n{\n"
