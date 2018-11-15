@@ -35,7 +35,7 @@ public:
 	/**
 	 * @return   The current column number in the file
 	 */
-	size_t GetCurrentColumn() const; 
+	size_t GetCurrentColumn() const;
 
 private:
 	static const std::vector<std::string> kReservedWords;

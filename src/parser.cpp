@@ -27,6 +27,11 @@ shared_ptr<Program> Parser::Parse() {
 	return program;
 }
 
+
+const vector<string>& Parser::GetErrors() const {
+	return errors_;
+}
+
 /*********** Functions ***********/
 shared_ptr<FunctionDecl> Parser::ConsumeMain() {
 	auto main = make_shared<FunctionDecl>();
@@ -216,7 +221,7 @@ shared_ptr<Expression> Parser::ConsumeExpression() {
 
 shared_ptr<Expression> Parser::ConsumeAndOrExpression() {
 	auto and_or = make_shared<BinaryOp>();
-	auto left_exp = ConsumeConditional();
+	auto left_exp = ConsumeComparison();
 
     bool is_and = current_token_.GetType() == DoubleAmpersandToken;
     bool is_or = current_token_.GetType() == DoubleBarToken;
@@ -233,25 +238,9 @@ shared_ptr<Expression> Parser::ConsumeAndOrExpression() {
 	return and_or; 
 }
 
-shared_ptr<Expression> Parser::ConsumeConditional() {
-	auto conditional = make_shared<Conditional>();
-
-	// Parse predicate
-	auto predicate = ConsumeComparison();
-	if (!Accept(QuestionToken)) return predicate; 
-
-	auto tval = ConsumeExpression();
-	Expect(ColonToken);
-	conditional->SetPredicate(predicate);
-	conditional->SetTrueValue(tval);
-	conditional->SetFalseValue(ConsumeExpression());
-
-	return conditional;
-}
-
 shared_ptr<Expression> Parser::ConsumeComparison() {
     auto comp = make_shared<BinaryOp>();
-    auto left_exp = ConsumeAddSub();
+    auto left_exp = ConsumeConditional();
 
     switch (current_token_.GetType()) {
         case GreaterThanToken:
@@ -280,6 +269,21 @@ shared_ptr<Expression> Parser::ConsumeComparison() {
     comp->SetType(make_shared<BoolType>());
 
     return comp;
+}
+
+shared_ptr<Expression> Parser::ConsumeConditional() {
+    auto conditional = make_shared<Conditional>();
+
+    auto predicate = ConsumeAddSub();
+    if (!Accept(QuestionToken)) return predicate;
+
+    auto tval = ConsumeExpression();
+    Expect(ColonToken);
+    conditional->SetPredicate(predicate);
+    conditional->SetTrueValue(tval);
+    conditional->SetFalseValue(ConsumeExpression());
+
+    return conditional;
 }
 
 shared_ptr<Expression> Parser::ConsumeAddSub() {
@@ -319,7 +323,7 @@ shared_ptr<Expression> Parser::ConsumeMultDiv() {
 	NextToken(); // * /
 
 	exp->SetLeft(left_exp);
-	exp->SetRight(ConsumeExpression());
+	exp->SetRight(ConsumeConditional());
 	exp->SetType(make_shared<NumType>());
 
 	return exp;
@@ -337,19 +341,22 @@ shared_ptr<Expression> Parser::ConsumePrimaryExpression() {
 	}
     case NumericLiteral: {
 		exp = make_shared<NumLiteral>(std::stod(current_token_.GetValue()));
-		NextToken();
+        exp->SetType(make_shared<NumType>());
+        NextToken();
 		break;
 	}
 	case TrueKeyword: {
 		// true
 		exp = make_shared<BooleanLiteral>(true);
+		exp->SetType(make_shared<BoolType>());
 		NextToken();
 		break;
 	}
 	case FalseKeyword: {
 		// false
 		exp = make_shared<BooleanLiteral>(false);
-		NextToken();
+        exp->SetType(make_shared<BoolType>());
+        NextToken();
 		break;
 	}
     case ExclamationToken: {
@@ -368,7 +375,9 @@ shared_ptr<Expression> Parser::ConsumePrimaryExpression() {
 		// Handle negatives (e.g. -3, -some_variable)
 		NextToken();
 		auto mult = make_shared<BinaryOp>();
-		mult->SetLeft(make_shared<NumLiteral>(-1));
+		auto negative_one = make_shared<NumLiteral>(-1);
+		negative_one->SetType(make_shared<NumType>());
+		mult->SetLeft(negative_one);
 		mult->SetOperator(MULTIPLY);
 		mult->SetRight(ConsumePrimaryExpression());
 		mult->SetType(make_shared<NumType>());
@@ -430,7 +439,7 @@ shared_ptr<StaticType> Parser::ConsumeStaticType() {
 		type = make_shared<VoidType>();
 		break; 
 	default:
-		Error("Type: Expected num, bool, or void"); 
+		RecordError("Type: Expected num, bool, or void");
 		return nullptr; 
 	}
 
@@ -457,7 +466,7 @@ bool Parser::Expect(TokenType token) {
 	std::stringstream ss;
 	ss << "Invalid token at line: " << lexer_.GetCurrentLine()
 		<< " column: " << lexer_.GetCurrentColumn();
-	Error(ss.str());
+	RecordError(ss.str());
 
 	return false; 
 }
@@ -471,7 +480,6 @@ bool Parser::Accept(TokenType token) {
 	return false;
 }
 
-// TODO: Implement parser error handling
-void Parser::Error(const std::string msg) {
-    std::cout << msg << std::endl;
+void Parser::RecordError(const std::string message){
+    errors_.emplace_back(message);
 }

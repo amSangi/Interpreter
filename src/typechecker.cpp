@@ -43,6 +43,12 @@ void TypeChecker::Visit(Program* n) {
 /* ---------- Functions ---------- */
 void TypeChecker::Visit(FunctionDecl* n) {
     current_function_name_ = n->GetId()->GetName();
+    // Add formal parameters into symbol table
+    for (const auto& parameter : n->GetFormals()) {
+        // Types set at parse level
+        symbolTable_.Put(parameter->GetId()->GetName(), parameter->GetType());
+    }
+
     for (const auto& statement : n->GetStatements()) {
         statement->Accept(this);
     }
@@ -120,9 +126,26 @@ void TypeChecker::Visit(BinaryOp* n) {
     left_value->Accept(this);
     right_value->Accept(this);
 
-    Type type = n->GetType()->GetValue();
-    Check(left_value, type);
-    Check(right_value, type);
+    switch (n->GetOperator()) {
+        case PLUS:
+        case MINUS:
+        case MULTIPLY:
+        case DIVIDE:
+        case MODULO:
+        case GT:
+        case GTE:
+        case LT:
+        case LTE:
+        case EQ:
+            Check(left_value, NUMBER);
+            Check(right_value, NUMBER);
+            break;
+        case AND:
+        case OR:
+            Check(left_value, BOOL);
+            Check(right_value, BOOL);
+            break;
+    }
 }
 
 void TypeChecker::Visit(UnaryOp* n) {
@@ -169,12 +192,9 @@ void TypeChecker::Visit(Conditional* n) {
     n->SetType(true_exp->GetType());
 }
 
-void TypeChecker::Visit(NumLiteral* n) {
-    n->SetType(make_shared<NumType>());
-}
-void TypeChecker::Visit(BooleanLiteral* n) {
-    n->SetType(make_shared<BoolType>());
-}
+// Parser set their types already
+void TypeChecker::Visit(NumLiteral* n) {}
+void TypeChecker::Visit(BooleanLiteral* n) {}
 
 /* ---------- Types ---------- */
 
@@ -195,7 +215,7 @@ void TypeChecker::AddToFunctionTable(shared_ptr<FunctionDecl> n) {
     symbolTable_.PutFunction(n->GetId()->GetName(), type);
 }
 
-void TypeChecker::Check(TypeChecker::ExpPtr e, Type type) {
+void TypeChecker::Check(ExpPtr e, Type type) {
     if (e->GetType() == nullptr) RecordError("Type has not been set");
     else if (e->GetType()->GetValue() != type) {
         std::stringstream ss;
@@ -214,7 +234,7 @@ void TypeChecker::HandleUndefinedIdentifier(const string name) {
     RecordError("Undefined variable: " + name);
 }
 
-void TypeChecker::CheckParameterArgumentMatch(vector<TypeChecker::ExpPtr> arguments,
+void TypeChecker::CheckParameterArgumentMatch(vector<ExpPtr> arguments,
                                               vector<Type> parameter_types) {
 
     if (arguments.size() != parameter_types.size()) {

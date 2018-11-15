@@ -4,6 +4,14 @@
 #include "lexer.h"
 #include "token.h"
 
+/**
+ *  Create an AST tree from a stream of Tokens
+ *  Note: Parser will set node types if they are trivial
+ *  	e.g. 	Numeric/Boolean literals,
+ *  			Mathematical expressions,
+ *  			Variable declarations,
+ *  			Comparisons
+ */
 class Parser
 {
 public:
@@ -15,15 +23,18 @@ public:
 	 * @return    an instance of Program
 	 */
 	std::shared_ptr<Program> Parse();
+
+	const std::vector<std::string>& GetErrors() const;
+
 private:
 	Lexer & lexer_;
 	Token current_token_; 
-	Token next_token_; 
+	Token next_token_;
+	std::vector<std::string> errors_;
 	
 	void NextToken(); 
 	bool Expect(TokenType token);
 	bool Accept(TokenType token); 
-	void Error(const std::string msg);
 
 	/*********** Functions ***********/
 	std::shared_ptr<FunctionDecl> ConsumeMain();
@@ -53,5 +64,7 @@ private:
 
 	/*********** Type ***********/
 	std::shared_ptr<StaticType> ConsumeStaticType();
+
+	void RecordError(const std::string message);
 
 };  // class Parser

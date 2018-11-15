@@ -128,7 +128,7 @@ TEST_F(TestParser, ComplexProgram) {
                       "return (x) - (y);\n"
                       "}\n"
                       "num gcd(num x, num y) {\n"
-                      "if ((x) % ((y) == (0.000000)))\n{\n"
+                      "if (((x) % (y)) == (0.000000))\n{\n"
                       "return y;\n"
                       "}\n"
                       "else\n{\n"
