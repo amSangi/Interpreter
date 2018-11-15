@@ -1,6 +1,6 @@
 #include "visitor/interpreter.h"
 
-int Interpreter::Evaluate(std::shared_ptr<Program> program) {
+int Interpreter::Evaluate(CheckedProgram checked_program) {
     // TODO: Finish Implementation
     return 0;
 }

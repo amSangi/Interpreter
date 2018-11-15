@@ -2,6 +2,7 @@
 
 #include "ast_node.h"
 #include "ivisitor.h"
+#include "checked_program.h"
 
 class Interpreter : public IVisitor
 {
@@ -10,7 +11,7 @@ public:
     Interpreter() = default;
     ~Interpreter() = default;
 
-    int Evaluate(std::shared_ptr<Program> program);
+    int Evaluate(CheckedProgram checked_program);
 
 private:
     void Visit(Program* n) override;
