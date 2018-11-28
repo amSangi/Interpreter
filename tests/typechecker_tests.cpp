@@ -9,30 +9,42 @@ using std::string;
 
 
 TEST_F(TestTypeChecker, Add) {
-    CheckedProgram checkedProgram = Check("add.txt");
+    Check("add.txt");
 }
 
 
 TEST_F(TestTypeChecker, Sub) {
-    CheckedProgram checkedProgram = Check("subtract.txt");
+    Check("subtract.txt");
 }
 
 
 TEST_F(TestTypeChecker, Multiply) {
-    CheckedProgram checkedProgram = Check("multiply.txt");
+    Check("multiply.txt");
 }
 
-
 TEST_F(TestTypeChecker, Division) {
-    CheckedProgram checkedProgram = Check("division.txt");
+    Check("division.txt");
 }
 
 
 TEST_F(TestTypeChecker, SimpleProgram) {
-    CheckedProgram checkedProgram = Check("simple_program.txt");
+    Check("simple_program.txt");
 }
 
 
 TEST_F(TestTypeChecker, ComplexProgram) {
-    CheckedProgram checkedProgram = Check("complex_program.txt");
+    Check("complex_program.txt");
+}
+
+
+TEST_F(TestTypeChecker, BinaryOpTypeMismatch) {
+    vector<string> errors = GetErrors("binary_op_type_mismatch.txt");
+    ASSERT_EQ(1, errors.size());
+    EXPECT_EQ("EXPECTED: BOOL RECEIVED: NUMBER", errors[0]);
+}
+
+TEST_F(TestTypeChecker, ReturnTypeMismatch) {
+    vector<string> errors = GetErrors("return_type_mismatch.txt");
+    ASSERT_EQ(1, errors.size());
+    EXPECT_EQ("EXPECTED: NUMBER RECEIVED: BOOL", errors[0]);
 }

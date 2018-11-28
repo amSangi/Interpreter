@@ -1,7 +1,6 @@
 #include "visitor/interpreter.h"
 
-int Interpreter::Evaluate(CheckedProgram checked_program) {
-    // TODO: Finish Implementation
+double Interpreter::Evaluate(CheckedProgram checked_program) {
     return 0;
 }
 

@@ -64,7 +64,7 @@ void TypeChecker::Visit(Assignment* n) {
     auto r_value = n->GetRValue();
     l_value->Accept(this);
     r_value->Accept(this);
-    Check(l_value, r_value->GetType()->GetValue());
+    Check(r_value, l_value->GetType()->GetValue());
 }
 
 void TypeChecker::Visit(Block* n) {
@@ -239,6 +239,7 @@ void TypeChecker::CheckParameterArgumentMatch(vector<ExpPtr> arguments,
 
     if (arguments.size() != parameter_types.size()) {
         RecordError("Parameter/Argument mismatch");
+        return; 
     }
 
     for (int i = 0; i < arguments.size(); ++i) {

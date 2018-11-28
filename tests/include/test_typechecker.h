@@ -12,7 +12,7 @@ class TestTypeChecker : public TestParser
 {
 protected:
 
-    CheckedProgram Check(const std::string& file) {
+    void Check(const std::string& file) {
         std::shared_ptr<Program> program = ParseFile(file);
         TypeChecker checker;
         CheckedProgram checked_program = checker.TypeCheck(program);
@@ -25,9 +25,15 @@ protected:
         }
         // Sanity Check
         EXPECT_TRUE(errors.empty());
-
-        return checked_program;
     }
 
+
+    std::vector<std::string> GetErrors(const std::string& file) {
+        std::shared_ptr<Program> program = ParseFile(file);
+        TypeChecker checker;
+        CheckedProgram checked_program = checker.TypeCheck(program);
+
+        return checker.GetErrors();
+    }
 
 }; // class TestTypeChecker

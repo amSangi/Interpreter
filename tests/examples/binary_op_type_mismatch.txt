@@ -1,0 +1,11 @@
+num main() {
+	bool a;
+	num b;
+	num c;
+	num d;
+	num product;
+
+    a = 1;
+
+	return 1;
+}
