@@ -29,8 +29,8 @@ private:
         bool bool_val;
     }; // union Value
 
-    SymbolTable<std::shared_ptr<Value>> typechecker_table_;
-    SymbolTable<double> evaluation_table_;
+    SymbolTable<std::shared_ptr<StaticType>> typechecker_table_;
+    SymbolTable<Value> evaluation_table_;
 
     void Visit(Program* n) override;
 
