@@ -13,7 +13,7 @@ public:
     FunctionType() = default;
     ~FunctionType() override = default;
 
-    void Accept(IVisitor* v) override                       {   v->Visit(this); }
+    VisitorValue Accept(IVisitor* v) override               {   return v->Visit(this); }
     string ToString() override                              {   return "function"; }
 
     Type GetValue() const override                          {   return type_; }

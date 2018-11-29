@@ -8,7 +8,7 @@ class ASTNode
 {
 public:
 	virtual ~ASTNode() = default;
-	virtual void Accept(IVisitor* v) = 0;
+	virtual VisitorValue Accept(IVisitor* v) = 0;
 	virtual std::string ToString() = 0;
 
 }; // interface ASTNode

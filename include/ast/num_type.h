@@ -8,7 +8,7 @@ public:
 	NumType() = default; 
 	~NumType() override = default;
 
-	void Accept(IVisitor* v) override                       {   v->Visit(this); }
+	VisitorValue Accept(IVisitor* v) override               {   return v->Visit(this); }
 	std::string ToString() override                         {   return "num"; }
 	
 	Type GetValue() const override                          {   return type_; }

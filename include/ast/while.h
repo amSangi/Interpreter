@@ -12,7 +12,7 @@ public:
 	While() = default; 
 	~While() override = default;
 
-	void Accept(IVisitor* v) override                           {   v->Visit(this); }
+	VisitorValue Accept(IVisitor* v) override                   {   return v->Visit(this); }
 	std::string ToString() override {
 		std::string res = "while (" + test_->ToString() + ")\n";
 		res += block_->ToString();

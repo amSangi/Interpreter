@@ -3,8 +3,7 @@
 double Interpreter::Evaluate(CheckedProgram checked_program) {
     typechecker_table_ = checked_program.GetSymbolTable();
     evaluation_table_.EnterScope();
-    checked_program.GetProgram()->Accept(this);
-    return 0.0; // stub
+    return checked_program.GetProgram()->Accept(this).double_value;
 }
 
 VisitorValue Interpreter::Visit(Program* n) {

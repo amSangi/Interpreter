@@ -12,7 +12,7 @@ public:
     FunctionParam() = default;
     ~FunctionParam() override = default;
 
-    void Accept(IVisitor* v) override                       {   v->Visit(this); }
+    VisitorValue Accept(IVisitor* v) override               {   return v->Visit(this); }
     std::string ToString() override                         {   return type_->ToString() + " "
                                                                        + id_->ToString(); }
 

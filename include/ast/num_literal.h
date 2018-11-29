@@ -8,7 +8,7 @@ public:
 	explicit NumLiteral(double value) : value_(value) {}
 	~NumLiteral() override = default;
 
-	void Accept(IVisitor* v) override                       {   v->Visit(this); }
+	VisitorValue Accept(IVisitor* v) override               {   return v->Visit(this); }
 	std::string ToString() override                         {   return std::to_string(value_); }
 
 	double GetValue() const                                 {   return value_; }

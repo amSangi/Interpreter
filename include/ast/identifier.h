@@ -10,7 +10,7 @@ public:
 	explicit Identifier(string name) : name_(std::move(name)) {}
 	~Identifier() override = default;
 
-	void Accept(IVisitor* v) override                           {   v->Visit(this); }
+	VisitorValue Accept(IVisitor* v) override                   {   return v->Visit(this); }
 	std::string ToString() override                             {   return name_; }
 
 	string GetName() const                                      {   return name_; }

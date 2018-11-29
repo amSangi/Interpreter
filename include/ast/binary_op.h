@@ -10,7 +10,7 @@ public:
 	BinaryOp() = default;
 	~BinaryOp() override = default;
 
-	void Accept(IVisitor* v) override                           {   v->Visit(this); }
+	VisitorValue Accept(IVisitor* v) override                   {   return v->Visit(this); }
 	std::string ToString() override                             {   return "(" + left_->ToString() + ")"
                                                                             + " " + BOpToString(op_) + " "
                                                                             + "(" + right_->ToString() + ")"; }

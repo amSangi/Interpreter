@@ -9,7 +9,7 @@ public:
 	ReturnStm() = default; 
 	~ReturnStm() override = default;
 
-	void Accept(IVisitor* v) override                   {   v->Visit(this); }
+	VisitorValue Accept(IVisitor* v) override           {   return v->Visit(this); }
 	std::string ToString() override                     {   return "return " + exp_->ToString() + ";"; }
 
 	void SetExpression(ExpPtr exp)                      {   exp_ = std::move(exp); }

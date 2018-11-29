@@ -8,7 +8,7 @@ public:
 	BoolType() = default;
 	~BoolType() override = default;
 
-	void Accept(IVisitor* v) override                   {   v->Visit(this); }
+	VisitorValue Accept(IVisitor* v) override           {   return v->Visit(this); }
 	std::string ToString() override                     {   return "bool"; }
 
 	Type GetValue() const override                      {   return type_; }
