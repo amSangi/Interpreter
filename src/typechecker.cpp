@@ -2,10 +2,13 @@
 #include "visitor/typechecker.h"
 #include "ast.h"
 
+#define VOID VisitorValue(nullptr)
+
 using std::shared_ptr;
 using std::make_shared;
 using std::string;
 using std::vector;
+
 
 CheckedProgram TypeChecker::TypeCheck(std::shared_ptr<Program> program){
     program->Accept(this);
@@ -18,7 +21,7 @@ const vector<string>& TypeChecker::GetErrors() const {
 }
 
 
-void TypeChecker::Visit(Program* n) {
+VisitorValue TypeChecker::Visit(Program* n) {
     // Build function table
     for (const auto& fun_decl : n->GetFunctions()) {
         AddToFunctionTable(fun_decl);
@@ -37,11 +40,13 @@ void TypeChecker::Visit(Program* n) {
     symbolTable_.EnterScope();
     main->Accept(this);
     symbolTable_.LeaveScope();
+
+    return VOID; // visitor returns nothing
 }
 
 
 /* ---------- Functions ---------- */
-void TypeChecker::Visit(FunctionDecl* n) {
+VisitorValue TypeChecker::Visit(FunctionDecl* n) {
     current_function_name_ = n->GetId()->GetName();
     // Add formal parameters into symbol table
     for (const auto& parameter : n->GetFormals()) {
@@ -52,28 +57,36 @@ void TypeChecker::Visit(FunctionDecl* n) {
     for (const auto& statement : n->GetStatements()) {
         statement->Accept(this);
     }
+
+    return VOID; // visitor returns nothing
 }
 
 // Types already set by Parser
-void TypeChecker::Visit(FunctionParam* n) {}
-void TypeChecker::Visit(FunctionType* n) {}
+VisitorValue TypeChecker::Visit(FunctionParam* n) {
+    return VOID; // visitor returns nothing
+}
+VisitorValue TypeChecker::Visit(FunctionType* n) {
+    return VOID; // visitor returns nothing
+}
 
 /* ---------- Statements ---------- */
-void TypeChecker::Visit(Assignment* n) {
+VisitorValue TypeChecker::Visit(Assignment* n) {
     auto l_value = n->GetLValue();
     auto r_value = n->GetRValue();
     l_value->Accept(this);
     r_value->Accept(this);
     Check(r_value, l_value->GetType()->GetValue());
+    return VOID; // visitor returns nothing
 }
 
-void TypeChecker::Visit(Block* n) {
+VisitorValue TypeChecker::Visit(Block* n) {
     for (const auto& statement : n->GetStatements()) {
         statement->Accept(this);
     }
+    return VOID; // visitor returns nothing
 }
 
-void TypeChecker::Visit(IfThenElse* n) {
+VisitorValue TypeChecker::Visit(IfThenElse* n) {
     auto predicate = n->GetPredicate();
     auto then = n->GetThenStatement();
     auto els = n->GetElseStatement();
@@ -81,45 +94,55 @@ void TypeChecker::Visit(IfThenElse* n) {
     Check(predicate, BOOL);
     then->Accept(this);
     if (els != nullptr) els->Accept(this);
+
+    return VOID; // visitor returns nothing
 }
 
-void TypeChecker::Visit(While* n) {
+VisitorValue TypeChecker::Visit(While* n) {
     auto predicate = n->GetPredicate();
     auto block = n->GetBlock();
     predicate->Accept(this);
     Check(predicate, BOOL);
     block->Accept(this);
+
+    return VOID; // visitor returns nothing
 }
 
-void TypeChecker::Visit(VarDecl* n) {
+VisitorValue TypeChecker::Visit(VarDecl* n) {
     auto id = n->GetId();
     auto type = n->GetType();
     string name = id->GetName();
     if (symbolTable_.Get(name) != nullptr) HandleDuplicateNameDecl(name);
     else symbolTable_.Put(name, type);
+
+    return VOID; // visitor returns nothing
 }
 
-void TypeChecker::Visit(ReturnStm* n) {
+VisitorValue TypeChecker::Visit(ReturnStm* n) {
     auto expression = n->GetExpression();
     expression->Accept(this);
 
     auto type = symbolTable_.GetFunction(current_function_name_);
     auto function_type = std::dynamic_pointer_cast<FunctionType>(type);
     Check(expression, function_type->GetReturnType()->GetValue());
+
+    return VOID; // visitor returns nothing
 }
 
 /* ---------- Expressions ---------- */
-void TypeChecker::Visit(Identifier* n) {
+VisitorValue TypeChecker::Visit(Identifier* n) {
     auto type = symbolTable_.Get(n->GetName());
     if (type == nullptr) {
         HandleUndefinedIdentifier(n->GetName());
-        return;
+        return VOID;
     }
 
     n->SetType(type);
+
+    return VOID; // visitor returns nothing
 }
 
-void TypeChecker::Visit(BinaryOp* n) {
+VisitorValue TypeChecker::Visit(BinaryOp* n) {
     auto left_value = n->GetLeft();
     auto right_value = n->GetRight();
 
@@ -146,21 +169,25 @@ void TypeChecker::Visit(BinaryOp* n) {
             Check(right_value, BOOL);
             break;
     }
+
+    return VOID; // visitor returns nothing
 }
 
-void TypeChecker::Visit(UnaryOp* n) {
+VisitorValue TypeChecker::Visit(UnaryOp* n) {
     auto expression = n->GetExpression();
     expression->Accept(this);
     Check(expression, n->GetType()->GetValue());
+
+    return VOID; // visitor returns nothing
 }
 
-void TypeChecker::Visit(FunctionCall* n) {
+VisitorValue TypeChecker::Visit(FunctionCall* n) {
     auto function_id = n->GetId();
     auto type = symbolTable_.GetFunction(function_id->GetName());
 
     if (type == nullptr) {
         HandleUndefinedIdentifier(function_id->GetName());
-        return;
+        return VOID; // visitor returns nothing
     }
 
     // Set call type to be return type of function
@@ -174,9 +201,11 @@ void TypeChecker::Visit(FunctionCall* n) {
 
     // Check argument/parameter match
     CheckParameterArgumentMatch(n->GetArguments(), function_type->GetParameters());
+
+    return VOID; // visitor returns nothing
 }
 
-void TypeChecker::Visit(Conditional* n) {
+VisitorValue TypeChecker::Visit(Conditional* n) {
     auto predicate = n->GetPredicate();
     auto true_exp = n->GetTrueValue();
     auto false_exp = n->GetFalseValue();
@@ -190,18 +219,30 @@ void TypeChecker::Visit(Conditional* n) {
     // True/False expressions have the same type
     Check(true_exp, false_exp->GetType()->GetValue());
     n->SetType(true_exp->GetType());
+
+    return VOID; // visitor returns nothing
 }
 
 // Parser set their types already
-void TypeChecker::Visit(NumLiteral* n) {}
-void TypeChecker::Visit(BooleanLiteral* n) {}
+VisitorValue TypeChecker::Visit(NumLiteral* n) {
+    return VOID; // visitor returns nothing
+}
+VisitorValue TypeChecker::Visit(BooleanLiteral* n) {
+    return VOID; // visitor returns nothing
+}
 
 /* ---------- Types ---------- */
 
 // Trivial -- Do nothing
-void TypeChecker::Visit(NumType* n) {}
-void TypeChecker::Visit(BoolType* n) {}
-void TypeChecker::Visit(VoidType* n) {}
+VisitorValue TypeChecker::Visit(NumType* n) {
+    return VOID; // visitor returns nothing
+}
+VisitorValue TypeChecker::Visit(BoolType* n) {
+    return VOID; // visitor returns nothing
+}
+VisitorValue TypeChecker::Visit(VoidType* n) {
+    return VOID; // visitor returns nothing
+}
 
 
 /* ---------- Helpers ---------- */

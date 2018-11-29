@@ -27,38 +27,41 @@ private:
     union Value {
         double double_val;
         bool bool_val;
+        explicit Value(double v) : double_val(v) {}
+        explicit Value(bool v) : bool_val(v) {}
     }; // union Value
 
     SymbolTable<std::shared_ptr<StaticType>> typechecker_table_;
     SymbolTable<Value> evaluation_table_;
+    Value current_return_value_;
 
-    void Visit(Program* n) override;
+    VisitorValue Visit(Program* n) override;
 
     /*********** Functions ***********/
-    void Visit(FunctionDecl* n) override;
-    void Visit(FunctionParam* n) override;
-    void Visit(FunctionType* n) override;
+    VisitorValue Visit(FunctionDecl* n) override;
+    VisitorValue Visit(FunctionParam* n) override;
+    VisitorValue Visit(FunctionType* n) override;
 
     /*********** Statements ***********/
-    void Visit(Assignment* n) override;
-    void Visit(Block* n) override;
-    void Visit(IfThenElse* n) override;
-    void Visit(While* n) override;
-    void Visit(VarDecl* n) override;
-    void Visit(ReturnStm* n) override;
+    VisitorValue Visit(Assignment* n) override;
+    VisitorValue Visit(Block* n) override;
+    VisitorValue Visit(IfThenElse* n) override;
+    VisitorValue Visit(While* n) override;
+    VisitorValue Visit(VarDecl* n) override;
+    VisitorValue Visit(ReturnStm* n) override;
 
     /*********** Expressions ***********/
-    void Visit(Identifier* n) override;
-    void Visit(BinaryOp* n) override;
-    void Visit(UnaryOp* n) override;
-    void Visit(FunctionCall* n) override;
-    void Visit(Conditional* n) override;
-    void Visit(NumLiteral* n) override;
-    void Visit(BooleanLiteral* n) override;
+    VisitorValue Visit(Identifier* n) override;
+    VisitorValue Visit(BinaryOp* n) override;
+    VisitorValue Visit(UnaryOp* n) override;
+    VisitorValue Visit(FunctionCall* n) override;
+    VisitorValue Visit(Conditional* n) override;
+    VisitorValue Visit(NumLiteral* n) override;
+    VisitorValue Visit(BooleanLiteral* n) override;
 
     /*********** Types ***********/
-    void Visit(NumType* n) override;
-    void Visit(BoolType* n) override;
-    void Visit(VoidType* n) override;
+    VisitorValue Visit(NumType* n) override;
+    VisitorValue Visit(BoolType* n) override;
+    VisitorValue Visit(VoidType* n) override;
 
 }; // class Interpreter

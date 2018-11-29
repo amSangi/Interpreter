@@ -1,89 +1,112 @@
 #include "visitor/interpreter.h"
 
 double Interpreter::Evaluate(CheckedProgram checked_program) {
-    return 0;
+    typechecker_table_ = checked_program.GetSymbolTable();
+    evaluation_table_.EnterScope();
+    checked_program.GetProgram()->Accept(this);
+    return 0.0; // stub
 }
 
-void Interpreter::Visit(Program* n) {
+VisitorValue Interpreter::Visit(Program* n) {
     // TODO: Finish Implementation
+    return VisitorValue(nullptr); // stub
 }
 
 /*********** Functions ***********/
-void Interpreter::Visit(FunctionDecl* n) {
+VisitorValue Interpreter::Visit(FunctionDecl* n) {
     // TODO: Finish Implementation
+    return VisitorValue(nullptr); // stub
 }
 
-void Interpreter::Visit(FunctionParam* n) {
+VisitorValue Interpreter::Visit(FunctionParam* n) {
     // TODO: Finish Implementation
+    return VisitorValue(nullptr); // stub
 }
 
-void Interpreter::Visit(FunctionType* n) {
+VisitorValue Interpreter::Visit(FunctionType* n) {
     // TODO: Finish Implementation
+    return VisitorValue(nullptr); // stub
 }
 
 /*********** Statements ***********/
-void Interpreter::Visit(Assignment* n) {
+VisitorValue Interpreter::Visit(Assignment* n) {
     // TODO: Finish Implementation
+    return VisitorValue(nullptr); // stub
 }
 
-void Interpreter::Visit(Block* n) {
+VisitorValue Interpreter::Visit(Block* n) {
     // TODO: Finish Implementation
+    return VisitorValue(nullptr); // stub
 }
 
-void Interpreter::Visit(IfThenElse* n) {
+VisitorValue Interpreter::Visit(IfThenElse* n) {
     // TODO: Finish Implementation
+    return VisitorValue(nullptr); // stub
 }
 
-void Interpreter::Visit(While* n) {
+VisitorValue Interpreter::Visit(While* n) {
     // TODO: Finish Implementation
+    return VisitorValue(nullptr); // stub
 }
 
-void Interpreter::Visit(VarDecl* n) {
+VisitorValue Interpreter::Visit(VarDecl* n) {
     // TODO: Finish Implementation
+    return VisitorValue(nullptr); // stub
 }
 
-void Interpreter::Visit(ReturnStm* n) {
+VisitorValue Interpreter::Visit(ReturnStm* n) {
     // TODO: Finish Implementation
+    return VisitorValue(nullptr); // stub
 }
 
 /*********** Expressions ***********/
-void Interpreter::Visit(Identifier* n) {
+VisitorValue Interpreter::Visit(Identifier* n) {
     // TODO: Finish Implementation
+    return VisitorValue(nullptr); // stub
 }
 
-void Interpreter::Visit(BinaryOp* n) {
+VisitorValue Interpreter::Visit(BinaryOp* n) {
     // TODO: Finish Implementation
+    return VisitorValue(nullptr); // stub
 }
 
-void Interpreter::Visit(UnaryOp* n) {
+VisitorValue Interpreter::Visit(UnaryOp* n) {
     // TODO: Finish Implementation
+    return VisitorValue(nullptr); // stub
 }
 
-void Interpreter::Visit(FunctionCall* n) {
+VisitorValue Interpreter::Visit(FunctionCall* n) {
     // TODO: Finish Implementation
+    return VisitorValue(nullptr); // stub
 }
 
-void Interpreter::Visit(Conditional* n) {
+VisitorValue Interpreter::Visit(Conditional* n) {
     // TODO: Finish Implementation
+    return VisitorValue(nullptr); // stub
 }
 
-void Interpreter::Visit(NumLiteral* n) {
+VisitorValue Interpreter::Visit(NumLiteral* n) {
     // TODO: Finish Implementation
+    return VisitorValue(nullptr); // stub
 }
 
-void Interpreter::Visit(BooleanLiteral* n) {
+VisitorValue Interpreter::Visit(BooleanLiteral* n) {
     // TODO: Finish Implementation
+    return VisitorValue(nullptr); // stub
 }
 
 /*********** Types ***********/
-void Interpreter::Visit(NumType* n) {
+VisitorValue Interpreter::Visit(NumType* n) {
     // TODO: Finish Implementation
+    return VisitorValue(nullptr); // stub
 }
 
-void Interpreter::Visit(BoolType* n) {
+VisitorValue Interpreter::Visit(BoolType* n) {
     // TODO: Finish Implementation
+    return VisitorValue(nullptr); // stub
 }
 
-void Interpreter::Visit(VoidType* n) {
+VisitorValue Interpreter::Visit(VoidType* n) {
     // TODO: Finish Implementation
+    return VisitorValue(nullptr); // stub
 }

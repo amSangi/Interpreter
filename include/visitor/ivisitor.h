@@ -1,6 +1,7 @@
 #pragma once
 
 #include <memory>
+#include <cstddef>
 
 class Program; 
 class Assignment; 
@@ -24,37 +25,45 @@ class FunctionType;
 class ReturnStm;
 
 
+
+union VisitorValue {
+    double double_value;
+    void* void_value;
+    bool bool_value;
+    explicit VisitorValue(std::nullptr_t t) : void_value(t) {}
+}; // union VisitorValue
+
 class IVisitor
 {
 public:
-	virtual void Visit(Program* n) = 0;
+	virtual VisitorValue Visit(Program* n) = 0;
 
 	/*********** Functions ***********/
-	virtual void Visit(FunctionDecl* n) = 0;
-	virtual void Visit(FunctionParam* n) = 0;
-	virtual void Visit(FunctionType* n) = 0;
+	virtual VisitorValue Visit(FunctionDecl* n) = 0;
+	virtual VisitorValue Visit(FunctionParam* n) = 0;
+	virtual VisitorValue Visit(FunctionType* n) = 0;
 
 	/*********** Statements ***********/
-	virtual void Visit(Assignment* n) = 0;
-	virtual void Visit(Block* n) = 0;
-	virtual void Visit(IfThenElse* n) = 0;
-	virtual void Visit(While* n) = 0;
-	virtual void Visit(VarDecl* n) = 0;
-	virtual void Visit(ReturnStm* n) = 0;
+	virtual VisitorValue Visit(Assignment* n) = 0;
+	virtual VisitorValue Visit(Block* n) = 0;
+	virtual VisitorValue Visit(IfThenElse* n) = 0;
+	virtual VisitorValue Visit(While* n) = 0;
+	virtual VisitorValue Visit(VarDecl* n) = 0;
+	virtual VisitorValue Visit(ReturnStm* n) = 0;
 
 	/*********** Expressions ***********/
-	virtual void Visit(Identifier* n) = 0;
-	virtual void Visit(BinaryOp* n) = 0;
-	virtual void Visit(UnaryOp* n) = 0;
-	virtual void Visit(FunctionCall* n) = 0;
-	virtual void Visit(Conditional* n) = 0;
-	virtual void Visit(NumLiteral* n) = 0;
-	virtual void Visit(BooleanLiteral* n) = 0;
+	virtual VisitorValue Visit(Identifier* n) = 0;
+	virtual VisitorValue Visit(BinaryOp* n) = 0;
+	virtual VisitorValue Visit(UnaryOp* n) = 0;
+	virtual VisitorValue Visit(FunctionCall* n) = 0;
+	virtual VisitorValue Visit(Conditional* n) = 0;
+	virtual VisitorValue Visit(NumLiteral* n) = 0;
+	virtual VisitorValue Visit(BooleanLiteral* n) = 0;
 
 	/*********** Types ***********/
-	virtual void Visit(NumType* n) = 0;
-	virtual void Visit(BoolType* n) = 0;
-	virtual void Visit(VoidType* n) = 0;
+	virtual VisitorValue Visit(NumType* n) = 0;
+	virtual VisitorValue Visit(BoolType* n) = 0;
+	virtual VisitorValue Visit(VoidType* n) = 0;
 
 }; // interface IVisitor
 
