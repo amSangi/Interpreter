@@ -13,11 +13,11 @@ class TestEvaluator : public TestParser
 {
 protected:
 
-		double Evaluate(const std::string& file) {
-				std::shared_ptr<Program> program = ParseFile(file);
-				TypeChecker checker;
-				Evaluator evaluator;
-				return evaluator.Evaluate(checker.TypeCheck(program));
-		}
+	double Evaluate(const std::string& file) {
+		std::shared_ptr<Program> program = ParseFile(file);
+		TypeChecker checker;
+		Evaluator evaluator;
+		return evaluator.Evaluate(checker.TypeCheck(program));
+	}
 
 }; // class TestEvaluator

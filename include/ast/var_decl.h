@@ -12,7 +12,6 @@ public:
 	~VarDecl() override = default;
 
 	VisitorValue Accept(IVisitor* v) override               {   return v->Visit(this); }
-	bool IsReturn() const override                              {   return false; }
 	std::string ToString() override                         {   return type_->ToString() + " "
                                                                        + id_->ToString() + ";"; }
 

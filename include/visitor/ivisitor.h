@@ -27,11 +27,11 @@ class ReturnStm;
 
 
 union VisitorValue {
-    double double_value;
-    void* void_value;
-    bool bool_value;
-    explicit VisitorValue(double val) : double_value(val) {}
-	explicit VisitorValue(std::nullptr_t val) : void_value(val) {}
+	double double_value;
+	void* void_value;
+	bool bool_value;
+	VisitorValue() : void_value(nullptr) {}
+	explicit VisitorValue(double val) : double_value(val) {}
 	explicit VisitorValue(bool val) : bool_value(val) {}
 }; // union VisitorValue
 

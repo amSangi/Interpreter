@@ -6,22 +6,22 @@
 
 class FunctionParam : public ASTNode
 {
-    typedef std::shared_ptr<Identifier> IdPtr;
-    typedef std::shared_ptr<StaticType> TypePtr;
+  typedef std::shared_ptr<Identifier> IdPtr;
+  typedef std::shared_ptr<StaticType> TypePtr;
 public:
-    FunctionParam() = default;
-    ~FunctionParam() override = default;
+  FunctionParam() = default;
+  ~FunctionParam() override = default;
 
-    VisitorValue Accept(IVisitor* v) override               {   return v->Visit(this); }
-    std::string ToString() override                         {   return type_->ToString() + " "
-                                                                       + id_->ToString(); }
+  VisitorValue Accept(IVisitor* v) override               {   return v->Visit(this); }
+  std::string ToString() override                         {   return type_->ToString() + " "
+                                                                     + id_->ToString(); }
 
-    void SetType(TypePtr type)                              {   type_ = std::move(type); }
-    void SetName(IdPtr id)                                  {   id_ = std::move(id); }
-    TypePtr GetType() const                                 {   return type_; }
-    IdPtr GetId() const                                     {   return id_; }
+  void SetType(TypePtr type)                              {   type_ = std::move(type); }
+  void SetName(IdPtr id)                                  {   id_ = std::move(id); }
+  TypePtr GetType() const                                 {   return type_; }
+  IdPtr GetId() const                                     {   return id_; }
 private:
-    TypePtr type_;
-    IdPtr id_;
+  TypePtr type_;
+  IdPtr id_;
 
 }; // class FunctionParam
