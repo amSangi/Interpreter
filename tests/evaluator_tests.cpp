@@ -8,7 +8,7 @@ TEST_F(TestEvaluator, Add) {
 
 TEST_F(TestEvaluator, Subtract) {
 	double result = Evaluate("subtract.txt");
-	double expected = -100 - 3 - -4 - 3 - -5;
+	double expected = (-100 - (3 - (-4 - (3 - -5))));
 	EXPECT_EQ(expected, result);
 }
 
