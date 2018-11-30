@@ -4,13 +4,12 @@
 #include "ivisitor.h"
 #include "checked_program.h"
 
-class Interpreter : public IVisitor
+class Evaluator : public IVisitor
 {
     typedef std::shared_ptr<FunctionDecl> FunDeclPtr;
-
 public:
-    Interpreter() : evaluation_table_(VisitorValue(0.0)) {}
-    ~Interpreter() = default;
+    Evaluator() : evaluation_table_(VisitorValue(0.0)) {}
+    ~Evaluator() = default;
 
     /**
      * Evaluate the type checked program.
@@ -58,4 +57,4 @@ private:
     VisitorValue Visit(VoidType* n) override;
     VisitorValue Visit(FunctionType* n) override;
 
-}; // class Interpreter
+}; // class Evaluator

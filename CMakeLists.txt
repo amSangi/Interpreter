@@ -9,6 +9,7 @@ set(INTERPRETER_TEST_OUT_PATH ${PROJECT_SOURCE_DIR}/bin)
 include_directories(include)
 include_directories(include/ast)
 include_directories(include/lexer)
+include_directories(include/visitor)
 
 add_subdirectory(googletest)
 add_subdirectory(src)
