@@ -35,7 +35,6 @@ private:
     /*********** Functions ***********/
     VisitorValue Visit(FunctionDecl* n) override;
     VisitorValue Visit(FunctionParam* n) override;
-    VisitorValue Visit(FunctionType* n) override;
 
     /*********** Statements ***********/
     VisitorValue Visit(Assignment* n) override;
@@ -58,6 +57,7 @@ private:
     VisitorValue Visit(NumType* n) override;
     VisitorValue Visit(BoolType* n) override;
     VisitorValue Visit(VoidType* n) override;
+    VisitorValue Visit(FunctionType* n) override;
 
 
     /*********** Helpers ***********/

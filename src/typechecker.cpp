@@ -65,9 +65,6 @@ VisitorValue TypeChecker::Visit(FunctionDecl* n) {
 VisitorValue TypeChecker::Visit(FunctionParam* n) {
     return VOID; // visitor returns nothing
 }
-VisitorValue TypeChecker::Visit(FunctionType* n) {
-    return VOID; // visitor returns nothing
-}
 
 /* ---------- Statements ---------- */
 VisitorValue TypeChecker::Visit(Assignment* n) {
@@ -243,7 +240,9 @@ VisitorValue TypeChecker::Visit(BoolType* n) {
 VisitorValue TypeChecker::Visit(VoidType* n) {
     return VOID; // visitor returns nothing
 }
-
+VisitorValue TypeChecker::Visit(FunctionType* n) {
+    return VOID; // visitor returns nothing
+}
 
 /* ---------- Helpers ---------- */
 

@@ -43,7 +43,6 @@ public:
 	/*********** Functions ***********/
 	virtual VisitorValue Visit(FunctionDecl* n) = 0;
 	virtual VisitorValue Visit(FunctionParam* n) = 0;
-	virtual VisitorValue Visit(FunctionType* n) = 0;
 
 	/*********** Statements ***********/
 	virtual VisitorValue Visit(Assignment* n) = 0;
@@ -66,6 +65,7 @@ public:
 	virtual VisitorValue Visit(NumType* n) = 0;
 	virtual VisitorValue Visit(BoolType* n) = 0;
 	virtual VisitorValue Visit(VoidType* n) = 0;
+	virtual VisitorValue Visit(FunctionType* n) = 0;
 
 }; // interface IVisitor
 

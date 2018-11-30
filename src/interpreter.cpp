@@ -27,44 +27,40 @@ VisitorValue Interpreter::Visit(FunctionDecl* n) {
 }
 
 VisitorValue Interpreter::Visit(FunctionParam* n) {
-    // TODO: Finish Implementation
-    return VisitorValue(nullptr); // stub
+    return VisitorValue(nullptr); // return not needed
 }
 
-VisitorValue Interpreter::Visit(FunctionType* n) {
-    // TODO: Finish Implementation
-    return VisitorValue(nullptr); // stub
-}
 
 /*********** Statements ***********/
 VisitorValue Interpreter::Visit(Assignment* n) {
-    // TODO: Finish Implementation
-    return VisitorValue(nullptr); // stub
+    string name = n->GetLValue()->GetName();
+    VisitorValue value = n->GetRValue()->Accept(this);
+    evaluation_table_.Put(name, value);
+    return VisitorValue(nullptr); // return not needed
 }
 
 VisitorValue Interpreter::Visit(Block* n) {
     // TODO: Finish Implementation
-    return VisitorValue(nullptr); // stub
+    return VisitorValue(nullptr); // return not needed
 }
 
 VisitorValue Interpreter::Visit(IfThenElse* n) {
     // TODO: Finish Implementation
-    return VisitorValue(nullptr); // stub
+    return VisitorValue(nullptr); // return not needed
 }
 
 VisitorValue Interpreter::Visit(While* n) {
     // TODO: Finish Implementation
-    return VisitorValue(nullptr); // stub
+    return VisitorValue(nullptr); // return not needed
 }
 
 VisitorValue Interpreter::Visit(VarDecl* n) {
-    // TODO: Finish Implementation
-    return VisitorValue(nullptr); // stub
+    evaluation_table_.Put(n->GetId()->GetName(), VisitorValue(0.0));
+    return VisitorValue(nullptr); // return not needed
 }
 
 VisitorValue Interpreter::Visit(ReturnStm* n) {
-    // TODO: Finish Implementation
-    return VisitorValue(nullptr); // stub
+    return n->GetExpression()->Accept(this);
 }
 
 /*********** Expressions ***********/
@@ -151,13 +147,17 @@ VisitorValue Interpreter::Visit(BooleanLiteral* n) {
 
 /*********** Types ***********/
 VisitorValue Interpreter::Visit(NumType* n) {
-    return VisitorValue(nullptr); // Do not do anything
+    return VisitorValue(nullptr); // return not needed
 }
 
 VisitorValue Interpreter::Visit(BoolType* n) {
-    return VisitorValue(nullptr); // Do not do anything
+    return VisitorValue(nullptr); // return not needed
 }
 
 VisitorValue Interpreter::Visit(VoidType* n) {
-    return VisitorValue(nullptr); // Do not do anything
+    return VisitorValue(nullptr); // return not needed
+}
+
+VisitorValue Interpreter::Visit(FunctionType* n) {
+    return VisitorValue(nullptr); // return not needed
 }
