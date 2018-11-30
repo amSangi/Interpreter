@@ -30,7 +30,9 @@ union VisitorValue {
     double double_value;
     void* void_value;
     bool bool_value;
-    explicit VisitorValue(std::nullptr_t t) : void_value(t) {}
+    explicit VisitorValue(double val) : double_value(val) {}
+	explicit VisitorValue(std::nullptr_t val) : void_value(val) {}
+	explicit VisitorValue(bool val) : bool_value(val) {}
 }; // union VisitorValue
 
 class IVisitor

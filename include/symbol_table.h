@@ -12,6 +12,7 @@ class SymbolTable
     typedef std::unordered_map<string, T> table;
 public:
     SymbolTable() = default;
+    explicit SymbolTable(T default_value) : default_value_(default_value) {}
     ~SymbolTable() = default;
 
     /*********** Scope ***********/
@@ -27,13 +28,14 @@ public:
     T GetFunction(const string& symbol) const          { return GetSymbol(symbol, function_table_); }
 
 private:
+    T default_value_ = nullptr;
     std::stack<table> tables_;
     table function_table_;
 
 
     T GetSymbol(const string& symbol, const table& t) const {
         auto it = t.find(symbol);
-        if (it == t.end()) return nullptr;
+        if (it == t.end()) return default_value_;
         return it->second;
     }
 

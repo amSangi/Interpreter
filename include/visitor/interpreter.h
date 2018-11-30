@@ -7,8 +7,9 @@
 class Interpreter : public IVisitor
 {
 
+    typedef std::shared_ptr<FunctionDecl> FunDeclPtr;
 public:
-    Interpreter() = default;
+    Interpreter() : evaluation_table_(VisitorValue(0.0)) {}
     ~Interpreter() = default;
 
     /**
@@ -24,16 +25,9 @@ private:
 
     static const long kMaxCallDepth = 100;
 
-    union Value {
-        double double_val;
-        bool bool_val;
-        explicit Value(double v) : double_val(v) {}
-        explicit Value(bool v) : bool_val(v) {}
-    }; // union Value
-
     SymbolTable<std::shared_ptr<StaticType>> typechecker_table_;
-    SymbolTable<Value> evaluation_table_;
-    Value current_return_value_;
+    SymbolTable<VisitorValue> evaluation_table_;
+    std::vector<FunDeclPtr> functions_;
 
     VisitorValue Visit(Program* n) override;
 
