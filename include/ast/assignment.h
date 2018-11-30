@@ -13,6 +13,7 @@ public:
 	~Assignment() override = default;
 
 	VisitorValue Accept(IVisitor* v) override           {   return v->Visit(this); }
+	bool IsReturn() const override                      {   return false; }
 	std::string ToString() override                     {   return id_->ToString() + " = "
                                                                    + value_->ToString() + ";";}
 

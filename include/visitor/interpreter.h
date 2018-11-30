@@ -27,6 +27,7 @@ private:
 
     SymbolTable<VisitorValue> evaluation_table_;
     std::unordered_map<std::string, FunDeclPtr> function_table_;
+    bool is_return_;
 
     VisitorValue Visit(Program* n) override;
 

@@ -17,12 +17,18 @@ VisitorValue Interpreter::Visit(Program* n) {
     for (auto fun : n->GetFunctions()) {
         function_table_.insert({fun->GetId()->GetName(), fun});
     }
+
     return n->GetMain()->Accept(this);
 }
 
 /*********** Functions ***********/
 VisitorValue Interpreter::Visit(FunctionDecl* n) {
-    // TODO: Finish Implementation
+    is_return_ = false;
+    for (const auto& stm : n->GetStatements()) {
+        VisitorValue value = stm->Accept(this);
+        if (stm->IsReturn()) return value;
+    }
+
     return VisitorValue(nullptr);
 }
 
@@ -36,21 +42,31 @@ VisitorValue Interpreter::Visit(Assignment* n) {
     string name = n->GetLValue()->GetName();
     VisitorValue value = n->GetRValue()->Accept(this);
     evaluation_table_.Put(name, value);
+
     return VisitorValue(nullptr); // return not needed
 }
 
 VisitorValue Interpreter::Visit(Block* n) {
-    // TODO: Finish Implementation
-    return VisitorValue(nullptr); // return not needed
+    for (const auto& stm : n->GetStatements()) {
+        VisitorValue value = stm->Accept(this);
+        if (stm->IsReturn()) return value;
+    }
+
+    return VisitorValue(nullptr);
 }
 
 VisitorValue Interpreter::Visit(IfThenElse* n) {
-    // TODO: Finish Implementation
-    return VisitorValue(nullptr); // return not needed
+    VisitorValue predicate = n->GetPredicate()->Accept(this);
+
+    return predicate.bool_value ? n->GetThenStatement()->Accept(this) : n->GetElseStatement()->Accept(this);
 }
 
 VisitorValue Interpreter::Visit(While* n) {
-    // TODO: Finish Implementation
+    while (n->GetPredicate()->Accept(this).bool_value) {
+        VisitorValue value = n->GetBlock()->Accept(this);
+        if (is_return_) return value;
+    }
+
     return VisitorValue(nullptr); // return not needed
 }
 

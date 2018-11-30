@@ -12,6 +12,7 @@ public:
 	~IfThenElse() override = default;
 
 	VisitorValue Accept(IVisitor* v) override               {   return v->Visit(this); }
+	bool IsReturn() const override                          {   return false; }
 	std::string ToString() override {
 		std::string res = "if (" + predicate_->ToString() + ")\n";
 		res += then_->ToString() + "\n";

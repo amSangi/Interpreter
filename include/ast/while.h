@@ -13,6 +13,7 @@ public:
 	~While() override = default;
 
 	VisitorValue Accept(IVisitor* v) override                   {   return v->Visit(this); }
+	bool IsReturn() const override                              {   return false; }
 	std::string ToString() override {
 		std::string res = "while (" + test_->ToString() + ")\n";
 		res += block_->ToString();
