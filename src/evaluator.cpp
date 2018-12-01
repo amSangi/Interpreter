@@ -42,7 +42,6 @@ VisitorValue Evaluator::Visit(Assignment *n) {
   string name = n->GetLValue()->GetName();
   VisitorValue value = n->GetRValue()->Accept(this);
   evaluation_table_.Set(name, value);
-  VisitorValue getVal = evaluation_table_.Get(name);
   return VisitorValue(); // return not needed
 }
 
@@ -76,8 +75,8 @@ VisitorValue Evaluator::Visit(VarDecl *n) {
 }
 
 VisitorValue Evaluator::Visit(ReturnStm *n) {
-  is_return_ = true;
   VisitorValue value = n->GetExpression()->Accept(this);
+  is_return_ = true;
   return value;
 }
 
@@ -131,20 +130,30 @@ VisitorValue Evaluator::Visit(UnaryOp *n) {
 VisitorValue Evaluator::Visit(FunctionCall *n) {
   FunDeclPtr fun = function_table_[n->GetId()->GetName()];
 
-  evaluation_table_.EnterScope();
 
   // Map Arguments to Parameters
   vector<shared_ptr<Expression>> arguments = n->GetArguments();
   vector<shared_ptr<FunctionParam>> parameters = fun->GetFormals();
+  std::unordered_map<string, VisitorValue> param_arg_map;
 
+  bool prev = is_return_;
   for (int i = 0; i < arguments.size(); ++i) {
     auto arg = arguments[i];
     auto param = parameters[i];
-    evaluation_table_.Put(param->GetId()->GetName(), arg->Accept(this));
+    auto p = make_pair(param->GetId()->GetName(), arg->Accept(this));
+    param_arg_map.insert(p);
+    is_return_ = prev;
+  }
+
+  // Add arguments to new scope
+  evaluation_table_.EnterScope();
+  for (const auto& p : param_arg_map) {
+    evaluation_table_.Put(p.first, p.second);
   }
 
   // Execute function
   VisitorValue call_value = fun->Accept(this);
+  is_return_ = prev;
 
   evaluation_table_.LeaveScope();
 

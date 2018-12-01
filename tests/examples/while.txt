@@ -1,0 +1,12 @@
+num add(num x, num y) {
+    return x + y;
+}
+
+num main() {
+    num x;
+    x = 1;
+    while (x < 15) {
+        x = add(x, 1);
+    }
+    return x;
+}

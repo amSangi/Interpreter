@@ -1,4 +1,6 @@
+#include <numeric>
 #include "test_evaluator.h"
+
 
 TEST_F(TestEvaluator, Add) {
 	double result = Evaluate("add.txt");
@@ -23,3 +25,26 @@ TEST_F(TestEvaluator, Division) {
 	double expected = -1000 * -35 / 10;
 	EXPECT_EQ(expected, result);
 }
+
+TEST_F(TestEvaluator, SimpleProgram) {
+	double result = Evaluate("simple_program.txt");
+	double expected = 200;
+	EXPECT_EQ(expected, result);
+}
+
+
+TEST_F(TestEvaluator, ComplexProgram) {
+  double result = Evaluate("complex_program.txt");
+  double expected = 9;
+  EXPECT_EQ(expected, result);
+}
+
+
+TEST_F(TestEvaluator, While) {
+  double result = Evaluate("while.txt");
+  double expected = 15;
+  EXPECT_EQ(expected, result);
+}
+
+
+
