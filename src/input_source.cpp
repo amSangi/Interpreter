@@ -46,3 +46,8 @@ size_t InputSource::GetCurrentLine() const {
 size_t InputSource::GetCurrentColumn() const {
 	return column_; 
 }
+
+
+bool InputSource::IsFileOpen() const {
+	return input_.is_open();
+}

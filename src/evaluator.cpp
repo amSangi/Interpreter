@@ -97,8 +97,16 @@ VisitorValue Evaluator::Visit(BinaryOp *n) {
     case MULTIPLY:
       return VisitorValue(left.double_value * right.double_value);
     case DIVIDE:
+      if ((long)right.double_value == 0) {
+        RecordError("Runtime error: Division by 0");
+        return VisitorValue(0.0);
+      }
       return VisitorValue(left.double_value / right.double_value);
     case MODULO:
+      if ((long)right.double_value == 0) {
+        RecordError("Runtime error: Modulo by 0");
+        return VisitorValue(0.0);
+      }
       return VisitorValue((double) ((long) left.double_value % (long) right.double_value));
     case AND:
       return VisitorValue(left.bool_value && right.bool_value);
@@ -130,6 +138,11 @@ VisitorValue Evaluator::Visit(UnaryOp *n) {
 VisitorValue Evaluator::Visit(FunctionCall *n) {
   FunDeclPtr fun = function_table_[n->GetId()->GetName()];
 
+  // Check call stack
+  if (call_stack_size_ >= Evaluator::kMaxCallDepth) {
+    RecordError("Exceeded max call depth");
+    return VisitorValue(0.0);
+  }
 
   // Map Arguments to Parameters
   vector<shared_ptr<Expression>> arguments = n->GetArguments();
@@ -146,6 +159,7 @@ VisitorValue Evaluator::Visit(FunctionCall *n) {
   }
 
   // Add arguments to new scope
+  ++call_stack_size_;
   evaluation_table_.EnterScope();
   for (const auto& p : param_arg_map) {
     evaluation_table_.Put(p.first, p.second);
@@ -188,4 +202,12 @@ VisitorValue Evaluator::Visit(VoidType *n) {
 
 VisitorValue Evaluator::Visit(FunctionType *n) {
   return VisitorValue(); // return not needed
+}
+
+void Evaluator::RecordError(const string message) {
+  errors_.emplace_back(message);
+}
+
+const vector<string>& Evaluator::GetErrors() const {
+  return errors_;
 }

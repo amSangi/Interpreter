@@ -10,8 +10,7 @@ class TestParser : public TestBase
 protected:
 	
   std::shared_ptr<Program> ParseFile(const std::string& filename) {
-    Lexer lexer(GetFilePath(filename));
-    Parser parser(lexer);
+    Parser parser(GetFilePath(filename));
     return parser.Parse();
   }
 

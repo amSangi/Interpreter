@@ -46,6 +46,11 @@ public:
    */
   size_t GetCurrentColumn() const;
 
+  /**
+   * @return  True if the file is open, otherwise false.
+   */
+  bool IsFileOpen() const;
+
 private:
   std::ifstream input_;
   size_t line_ = 1;

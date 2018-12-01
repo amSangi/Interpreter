@@ -18,6 +18,11 @@ public:
 	~Lexer() = default;
 
 	/**
+	 * @return   True if the file failed to open, otherwise false.
+	 */
+	bool FailedToOpen() const;
+
+	/**
 	 * @return   The next token
 	 */
 	Token GetNext();

@@ -15,7 +15,7 @@
 class Parser
 {
 public:
-	Parser(Lexer& lexer);
+	explicit Parser(const std::string& filename);
 	~Parser() = default;
 
 	/**
@@ -27,7 +27,7 @@ public:
 	const std::vector<std::string>& GetErrors() const;
 
 private:
-	Lexer & lexer_;
+	Lexer lexer_;
 	Token current_token_; 
 	Token next_token_;
 	std::vector<std::string> errors_;

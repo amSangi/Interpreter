@@ -7,7 +7,7 @@
 class Evaluator : public IVisitor {
   typedef std::shared_ptr<FunctionDecl> FunDeclPtr;
 public:
-  Evaluator() : evaluation_table_(VisitorValue(0.0)), is_return_(false) {}
+  Evaluator() : evaluation_table_(VisitorValue(0.0)) {}
 
   ~Evaluator() = default;
 
@@ -20,13 +20,20 @@ public:
    */
   double Evaluate(CheckedProgram checked_program);
 
+  const std::vector<std::string>& GetErrors() const;
+
 private:
 
-  static const long kMaxCallDepth = 100;
+  static const int kMaxCallDepth = 100;
 
   SymbolTable<VisitorValue> evaluation_table_;
   std::unordered_map <std::string, FunDeclPtr> function_table_;
-  bool is_return_;
+
+  std::vector<std::string> errors_;
+
+  int call_stack_size_ = 0;
+  bool is_return_ = false;
+
 
   VisitorValue Visit(Program *n) override;
 
@@ -56,5 +63,8 @@ private:
   VisitorValue Visit(BoolType *n) override;
   VisitorValue Visit(VoidType *n) override;
   VisitorValue Visit(FunctionType *n) override;
+
+
+  void RecordError(const std::string message);
 
 }; // class Evaluator

@@ -9,6 +9,11 @@ using namespace sangi;
 const std::vector<std::string> Lexer::kReservedWords{"if", "else", "return", "while", "true", "false", "num", "bool",
                                                      "void", "main"};
 
+
+bool Lexer::FailedToOpen() const {
+  return !input_.IsFileOpen();
+}
+
 size_t Lexer::GetCurrentLine() const {
   return input_.GetCurrentLine();
 }

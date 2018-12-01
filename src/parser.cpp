@@ -7,14 +7,23 @@ using std::shared_ptr;
 using std::vector;
 using std::string;
 
-Parser::Parser(Lexer &lexer) : lexer_(lexer), current_token_(lexer.GetNext()), next_token_(lexer_.GetNext()) {}
+Parser::Parser(const string& filename)
+  : lexer_(filename), current_token_(InvalidToken), next_token_(InvalidToken) {
+  current_token_ = lexer_.GetNext();
+  next_token_ = lexer_.GetNext();
+}
 
 
 shared_ptr<Program> Parser::Parse() {
   auto program = make_shared<Program>();
 
+  if (lexer_.FailedToOpen()) {
+    RecordError("Failed to open the file");
+    return program;
+  }
+
   // Parse function declarations
-  while (next_token_.GetType() != MainKeyword) {
+  while (lexer_.HasNext() && next_token_.GetType() != MainKeyword) {
     program->AddFuncDecl(ConsumeFunctionDecl());
   }
 
@@ -44,7 +53,9 @@ shared_ptr<FunctionDecl> Parser::ConsumeMain() {
   Expect(OpenBraceToken);
 
   // Parse statements
-  while (current_token_.GetType() != CloseBraceToken && current_token_.GetType() != EndOfFileToken) {
+  while (lexer_.HasNext()
+         && current_token_.GetType() != CloseBraceToken
+         && current_token_.GetType() != EndOfFileToken) {
     main->AddStm(ConsumeStatement());
   }
 
@@ -61,8 +72,9 @@ shared_ptr<FunctionDecl> Parser::ConsumeFunctionDecl() {
   Expect(OpenParanToken);
 
   // Parse formal arguments
-  while (current_token_.GetType() == BoolKeyword || current_token_.GetType() == VoidKeyword ||
-         current_token_.GetType() == NumberKeyword) {
+  while (lexer_.HasNext() && (current_token_.GetType() == BoolKeyword ||
+                              current_token_.GetType() == VoidKeyword ||
+                              current_token_.GetType() == NumberKeyword)) {
     fun_decl->AddFormal(ConsumeFunctionParam());
     if (current_token_.GetType() == CommaToken) {
       NextToken();
@@ -73,7 +85,7 @@ shared_ptr<FunctionDecl> Parser::ConsumeFunctionDecl() {
   Expect(OpenBraceToken);
 
   // Parse statements
-  while (current_token_.GetType() != CloseBraceToken) {
+  while (lexer_.HasNext() && current_token_.GetType() != CloseBraceToken) {
     fun_decl->AddStm(ConsumeStatement());
   }
 
@@ -121,6 +133,7 @@ shared_ptr<Statement> Parser::ConsumeStatement() {
       Expect(SemiColonToken);
       break;
     default:
+      NextToken();
       return nullptr;
   }
 
@@ -132,7 +145,7 @@ shared_ptr<Block> Parser::ConsumeBlock() {
 
   Expect(OpenBraceToken);
 
-  while (current_token_.GetType() != CloseBraceToken) {
+  while (lexer_.HasNext() && current_token_.GetType() != CloseBraceToken) {
     block->AddStatement(ConsumeStatement());
   }
 
@@ -400,7 +413,7 @@ shared_ptr<FunctionCall> Parser::ConsumeFunctionCall() {
 
   call->SetId(ConsumeIdentifier());
   Expect(OpenParanToken);
-  while (current_token_.GetType() != CloseParanToken) {
+  while (lexer_.HasNext() && current_token_.GetType() != CloseParanToken) {
     call->AddArgument(ConsumeExpression());
     if (current_token_.GetType() == CommaToken) {
       NextToken();
