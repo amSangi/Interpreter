@@ -10,4 +10,5 @@ add_library(${PROJECT_NAME} input_source.cpp
                             utility.cpp
                             operator.cpp
                             typechecker.cpp
-                            interpreter.cpp)
+                            interpreter.cpp
+                            main.cpp)
