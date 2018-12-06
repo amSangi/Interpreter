@@ -13,7 +13,7 @@ public:
 
   /**
    * Evaluate the type checked program.
-   * Throws an exception in the case of a runtime error;
+   * Records any runtime errors that occur.
    *
    * @param checked_program    the type checked program
    * @return                   the result of the main method (evaluation)
