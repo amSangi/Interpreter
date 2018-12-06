@@ -54,7 +54,8 @@ num main() {
 ```
 
 ## EBNF ##
-```Program --> (Function)* MainFunction
+```
+Program --> (Function)* MainFunction
 
 MainFunction --> "int" "main" "(" ")" Block
 Function --> Type Identifier "(" FormalList ")" Block
@@ -98,4 +99,5 @@ MulDiv --> "*" | "/"
 Comp --> "<" | "<=" | "==" | ">=" | ">"
 Cond --> "&&" | "||"
 Letter --> ["A" - "Z", "a" - "z"]
-Digit --> ["0" - "9"]```
+Digit --> ["0" - "9"]
+```
