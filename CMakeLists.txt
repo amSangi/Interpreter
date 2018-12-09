@@ -12,6 +12,6 @@ include_directories(include/lexer)
 include_directories(include/visitor)
 
 add_subdirectory(src)
-add_subdirectory(gtest)
+add_subdirectory(lib/googletest)
 add_subdirectory(tests)
 
