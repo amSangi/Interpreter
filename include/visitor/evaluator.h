@@ -1,6 +1,5 @@
 #pragma once
 
-#include "ast_node.h"
 #include "ivisitor.h"
 #include "checked_program.h"
 
