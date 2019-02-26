@@ -57,7 +57,7 @@ num main() {
 ```
 Program --> (Function)* MainFunction
 
-MainFunction --> "int" "main" "(" ")" Block
+MainFunction --> "num" "main" "(" ")" Block
 Function --> Type Identifier "(" FormalList ")" Block
 FormalList --> VarDecl ("," VarDecl)*
 
@@ -71,10 +71,11 @@ Return --> "return" Expression
 
 
 Expression --> AndOrExpression
-AndOrExpression --> CondExpression ( ("&&" | "||") CondExpression )*
-CondExpression --> AddSubExpression ( "?" AddSubExpression ":" AddSubExpression )*
-AddSubExpression --> MultDivExpression ( ("+" | "-") MultDivExpression )*
-MultDivExpression --> PrimaryExpression ( ("*" | "/") PrimaryExpression )*
+AndOrExpression --> CompExpression ( Cond Expression )?
+CompExpression --> CondExpression ( Comp Expression )?
+CondExpression --> AddSubExpression ( "?" Expression ":" Expression )?
+AddSubExpression --> MultDivExpression ( AddSub Expression )?
+MultDivExpression --> PrimaryExpression ( MulDiv CondExpression )?
 PrimaryExpression -->
 	Identifier
 	| FunctionCall
@@ -84,7 +85,7 @@ PrimaryExpression -->
 	| "-" PrimaryExpression
 	| "(" Expression ")"
 
-NotExpression --> ( "!" )? Expression
+NotExpression --> "!" Expression
 FunctionCall --> Identifier "(" ExpressionList ")"
 ExpressionList --> Expression ("," Expression)*
 
@@ -96,8 +97,8 @@ BooleanLiteral --> "true" | "false"
 
 AddSub --> "+" | "-"
 MulDiv --> "*" | "/"
-Comp --> "<" | "<=" | "==" | ">=" | ">"
 Cond --> "&&" | "||"
+Comp --> "<" | "<=" | "==" | ">=" | ">"
 Letter --> ["A" - "Z", "a" - "z"]
 Digit --> ["0" - "9"]
 ```
