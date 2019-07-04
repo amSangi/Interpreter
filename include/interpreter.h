@@ -14,6 +14,6 @@ public:
    * @param filename   The file to interpret
    * @return           The return value from main
    */
-  static double Interpet(const std::string& filename);
+  static double Interpret(const std::string& filename);
 
 }; // class Interpreter

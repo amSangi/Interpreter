@@ -9,7 +9,7 @@
 #define RUNTIME_ERROR_CODE    (-1)
 
 
-double Interpreter::Interpet(const std::string &filename) {
+double Interpreter::Interpret(const std::string &filename) {
 
   // Parse
   Parser parser(filename);
